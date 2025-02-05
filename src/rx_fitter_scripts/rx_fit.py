@@ -9,6 +9,7 @@ from ROOT                    import RDataFrame, RDF
 from rx_data.rdf_getter      import RDFGetter
 from rx_selection.selection  import load_selection_config
 from dmu.logging.log_store   import LogStore
+from dmu.rdataframe.atr_mgr  import AtrMgr
 
 log = LogStore.add_logger('rx_fitter:rx_fit')
 # ---------------------------------
@@ -36,11 +37,13 @@ def _parse_args() -> None:
 # ---------------------------------
 def _get_rdf(is_mc : bool) -> RDataFrame:
     kind     = 'mc' if is_mc else 'data'
-    out_path = f'{Data.cache_dir}/{kind}.root'
+    out_path = f'{Data.cache_dir}/{kind}_{Data.q2_bin}.root'
     if os.path.isfile(out_path):
+        log.info('DataFrame already cached, reloading')
         rdf = RDataFrame('tree', out_path)
         return rdf
 
+    log.info('DataFrame not cached')
     if is_mc:
         sample = 'Bu_Kmumu_eq_btosllball05_DPC'
     else:
@@ -48,10 +51,12 @@ def _get_rdf(is_mc : bool) -> RDataFrame:
 
     gtr = RDFGetter(sample=sample, trigger=Data.trigger)
     rdf = gtr.get_rdf()
-    rdf = _apply_selection(rdf)
+    _   = AtrMgr(rdf)
 
+    rdf      = _apply_selection(rdf)
     arr_mass = rdf.AsNumpy(['B_M'])['B_M']
-    rdf      = RDF.FromNumpy({'mass' : arr_mass})
+
+    rdf=RDF.FromNumpy({'mass' : arr_mass})
     rdf.Snapshot('tree', out_path)
 
     return rdf
