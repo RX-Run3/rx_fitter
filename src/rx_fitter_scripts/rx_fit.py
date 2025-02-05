@@ -2,14 +2,22 @@
 Script used to do fits to data
 '''
 import os
+import copy
 import argparse
 from dataclasses         import dataclass
 
+import ROOT
+import zfit
 from ROOT                    import RDataFrame, RDF
 from rx_data.rdf_getter      import RDFGetter
 from rx_selection.selection  import load_selection_config
+from rx_calibration.hltcalibration.fit_component import FitComponent
+from rx_calibration.hltcalibration.dt_fitter     import DTFitter
+
 from dmu.logging.log_store   import LogStore
 from dmu.rdataframe.atr_mgr  import AtrMgr
+from dmu.stats.model_factory import ModelFactory
+from dmu.stats.utilities     import print_pdf
 
 log = LogStore.add_logger('rx_fitter:rx_fit')
 # ---------------------------------
@@ -24,9 +32,39 @@ class Data:
     mss_mm   = '(B_M > 5180) && (B_M < 5600)'
     mva_cmb  = 'mva.mva_cmb > 0.8'
     mva_prc  = 'mva.mva_prc > 0.6'
+    obs      = zfit.Space('mass', limits=(5180, 5600))
 
     RDFGetter.samples_dir = '/home/acampove/Data/RX_run3/NO_q2_bdt_mass_Q2_central_VR_v1'
     cache_dir             = '/home/acampove/Data/RX_run3/cache/rx_fits'
+
+    mc_cfg = {
+            'name'   : 'signal',
+            'out_dir': 'plots/fit/signal',
+            'fitting':
+            {
+                'error_method'  : 'minuit_hesse',
+                'weights_column': 'weights',
+                },
+            'plotting' :
+            {
+                'nbins'   : 50,
+                'stacked' : True,
+                },
+            }
+
+    dt_cfg = {
+            'error_method' : 'minuit_hesse',
+            'out_dir'      : 'plots/fit/data',
+            'plotting'     :
+            {
+                'nbins'   : 50,
+                'stacked' : True,
+                'd_leg'   : {
+                    'SumPDF_ext'     : r'$B^+\to K^+\mu^+\mu^-$',
+                    'Exponential_ext': 'Combinatorial',
+                    }
+                },
+            }
 # ---------------------------------
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Script used to fit mass distributions')
@@ -80,8 +118,29 @@ def _apply_selection(rdf : RDataFrame) -> RDataFrame:
 def _initialize() -> None:
     os.makedirs(Data.cache_dir, exist_ok=True)
 # ---------------------------------
-def _fit():
-    pass
+def _get_signal() -> FitComponent:
+    rdf   = _get_rdf(is_mc= True)
+    rdf   = rdf.Define('weights', '1')
+
+    l_pdf = ['cbr'] + 2 * ['cbl']
+    l_shr = ['mu', 'sg']
+    mod   = ModelFactory(obs = Data.obs, l_pdf = l_pdf, l_shared=l_shr)
+    pdf   = mod.get_pdf()
+    obj   = FitComponent(cfg=Data.mc_cfg, rdf=rdf, pdf=pdf)
+
+    return obj
+# ---------------------------------
+def _get_combinatorial() -> FitComponent:
+    mc_cfg= copy.deepcopy(Data.mc_cfg)
+    del mc_cfg['fitting']
+
+    mc_cfg['name'] = 'comb'
+
+    mod   = ModelFactory(obs = Data.obs, l_pdf = ['exp'], l_shared=[])
+    pdf   = mod.get_pdf()
+    obj   = FitComponent(cfg=mc_cfg, rdf=None, pdf=pdf)
+
+    return obj
 # ---------------------------------
 def main():
     '''
@@ -90,9 +149,12 @@ def main():
     _parse_args()
     _initialize()
 
-    rdf = _get_rdf(is_mc=True)
+    cmp_sig = _get_signal()
+    cmp_cmb = _get_combinatorial()
+    rdf     = _get_rdf(is_mc=False)
 
-    _fit()
+    obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_sig], cfg = Data.dt_cfg)
+    obj.fit()
 # ---------------------------------
 if __name__ == '__main__':
     main()
