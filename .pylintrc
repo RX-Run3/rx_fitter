@@ -1,5 +1,5 @@
 [MESSAGES CONTROL]
-disable=logging-fstring-interpolation, too-few-public-methods, line-too-long
+disable=logging-fstring-interpolation, too-few-public-methods, line-too-long, no-name-in-module
 
 [MASTER]
 init-hook='import sys; sys.path.append("/home/acampove/micromamba/envs/rk/lib/python3.10/site-packages")'
