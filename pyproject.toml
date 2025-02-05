@@ -14,7 +14,7 @@ dev  = ['pytest']
 where   = ['src']
 
 [project.scripts]
-compare_root_files='rx_fitter_scripts.fit:main'
+rx_fit='rx_fitter_scripts.rx_fit:main'
 
 [tool.setuptools.package-data]
 
