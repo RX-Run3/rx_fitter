@@ -119,6 +119,10 @@ def _initialize() -> None:
     os.makedirs(Data.cache_dir, exist_ok=True)
 # ---------------------------------
 def _get_signal() -> FitComponent:
+    cfg            = copy.deepcopy(Data.mc_cfg)
+    out_dir        = cfg['out_dir']
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}'
+
     rdf   = _get_rdf(is_mc= True)
     rdf   = rdf.Define('weights', '1')
 
@@ -126,21 +130,30 @@ def _get_signal() -> FitComponent:
     l_shr = ['mu', 'sg']
     mod   = ModelFactory(obs = Data.obs, l_pdf = l_pdf, l_shared=l_shr)
     pdf   = mod.get_pdf()
-    obj   = FitComponent(cfg=Data.mc_cfg, rdf=rdf, pdf=pdf)
+    obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf)
 
     return obj
 # ---------------------------------
 def _get_combinatorial() -> FitComponent:
-    mc_cfg= copy.deepcopy(Data.mc_cfg)
-    del mc_cfg['fitting']
+    cfg            = copy.deepcopy(Data.mc_cfg)
+    out_dir        = cfg['out_dir']
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}'
 
-    mc_cfg['name'] = 'comb'
+    del cfg['fitting']
+    cfg['name'] = 'comb'
 
     mod   = ModelFactory(obs = Data.obs, l_pdf = ['exp'], l_shared=[])
     pdf   = mod.get_pdf()
-    obj   = FitComponent(cfg=mc_cfg, rdf=None, pdf=pdf)
+    obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf)
 
     return obj
+# ---------------------------------
+def _get_cfg() -> dict:
+    cfg            = copy.deepcopy(Data.dt_cfg)
+    out_dir        = cfg['out_dir']
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}'
+
+    return cfg
 # ---------------------------------
 def main():
     '''
@@ -152,8 +165,9 @@ def main():
     cmp_sig = _get_signal()
     cmp_cmb = _get_combinatorial()
     rdf     = _get_rdf(is_mc=False)
+    cfg     = _get_cfg()
 
-    obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_sig], cfg = Data.dt_cfg)
+    obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_sig], cfg=cfg)
     obj.fit()
 # ---------------------------------
 if __name__ == '__main__':
