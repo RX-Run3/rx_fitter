@@ -43,6 +43,8 @@ class Data:
             {
                 'error_method'  : 'minuit_hesse',
                 'weights_column': 'weights',
+                'ntries'        : 20,
+                'pvalue'        : 0.02,
                 },
             'plotting' :
             {
@@ -125,13 +127,30 @@ def _get_signal() -> FitComponent:
     rdf   = _get_rdf(is_mc= True)
     rdf   = rdf.Define('weights', '1')
 
-    l_pdf = ['cbr'] + 2 * ['cbl']
-    l_shr = ['mu', 'sg']
+    l_pdf, l_shr = _get_signal_fitting_model()
+
     mod   = ModelFactory(obs = Data.obs, l_pdf = l_pdf, l_shared=l_shr)
     pdf   = mod.get_pdf()
     obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf)
 
     return obj
+# ---------------------------------
+def _get_signal_fitting_model() -> tuple[list[str],list[str]]:
+    l_shr = ['mu', 'sg']
+
+    if Data.q2_bin == 'low':
+        l_pdf = ['cbr'] + 2 * ['cbl']
+        return l_pdf, l_shr
+
+    if Data.q2_bin == 'central':
+        l_pdf = ['dscb']
+        return l_pdf, l_shr
+
+    if Data.q2_bin == 'high':
+        l_pdf = ['dscb'] + ['cbl']
+        return l_pdf, l_shr
+
+    raise ValueError(f'Invalid q2 bin {Data.q2_bin}')
 # ---------------------------------
 def _get_combinatorial() -> FitComponent:
     cfg            = copy.deepcopy(Data.mc_cfg)
