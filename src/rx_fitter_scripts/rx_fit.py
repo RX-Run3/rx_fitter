@@ -17,7 +17,6 @@ from rx_calibration.hltcalibration.dt_fitter     import DTFitter
 from dmu.logging.log_store   import LogStore
 from dmu.rdataframe.atr_mgr  import AtrMgr
 from dmu.stats.model_factory import ModelFactory
-from dmu.stats.utilities     import print_pdf
 
 log = LogStore.add_logger('rx_fitter:rx_fit')
 # ---------------------------------
