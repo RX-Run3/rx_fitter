@@ -18,5 +18,6 @@ where   = ['src']
 rx_fit='rx_fitter_scripts.rx_fit:main'
 
 [tool.setuptools.package-data]
+rx_fitter_data=['*/*/*/*/*/*.json']
 
 [tool.setuptools]
