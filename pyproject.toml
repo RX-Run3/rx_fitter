@@ -15,7 +15,8 @@ dev  = ['pytest']
 where   = ['src']
 
 [project.scripts]
-rx_fit='rx_fitter_scripts.rx_fit:main'
+rx_fit_mm='rx_fitter_scripts.rx_fit_mm:main'
+rx_fit_ee='rx_fitter_scripts.rx_fit_ee:main'
 
 [tool.setuptools.package-data]
 rx_fitter_data=['*/*/*/*/*/*.json']
