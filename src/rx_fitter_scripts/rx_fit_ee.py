@@ -10,7 +10,7 @@ import ROOT
 import zfit
 from ROOT                    import RDataFrame, RDF
 from rx_data.rdf_getter      import RDFGetter
-from rx_selection.selection  import load_selection_config
+from rx_selection            import selection    as sel
 from rx_calibration.hltcalibration.fit_component import FitComponent
 from rx_calibration.hltcalibration.dt_fitter     import DTFitter
 
@@ -18,7 +18,7 @@ from dmu.logging.log_store   import LogStore
 from dmu.rdataframe.atr_mgr  import AtrMgr
 from dmu.stats.model_factory import ModelFactory
 
-log = LogStore.add_logger('rx_fitter:rx_fit')
+log = LogStore.add_logger('rx_fitter:rx_fit_ee')
 # ---------------------------------
 @dataclass
 class Data:
@@ -26,15 +26,39 @@ class Data:
     Class used to share attributes
     '''
     q2_bin  : str
+    min_mass = 4500
+    max_mass = 6200
 
-    trigger  = 'Hlt2RD_BuToKpMuMu_MVA'
-    mss_mm   = '(B_M > 5180) && (B_M < 5600)'
-    mva_cmb  = 'mva.mva_cmb > 0.8'
-    mva_prc  = 'mva.mva_prc > 0.6'
-    obs      = zfit.Space('mass', limits=(5180, 5600))
+    l_col    = [
+            'hop_mass',
+            'B_M',
+            'Jpsi_M',
+            'mva_cmb',
+            'mva_prc',
+            'swp_cascade_mass_swp',
+            'swp_jpsi_misid_mass_swp']
 
-    RDFGetter.samples_dir = '/home/acampove/Data/RX_run3/NO_q2_bdt_mass_Q2_central_VR_v1'
-    cache_dir             = '/home/acampove/Data/RX_run3/cache/rx_fits'
+    trigger  = 'Hlt2RD_BuToKpEE_MVA'
+    cmb_wp   = 0.90
+    prc_wp   = 0.60
+    obs      = zfit.Space('mass', limits=(min_mass, max_mass))
+
+    RDFGetter.samples= {
+            'main' : '/home/acampove/external_ssd/Data/samples/main.yaml',
+            'mva'  : '/home/acampove/external_ssd/Data/samples/mva.yaml',
+            'jps'  : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml',
+            'cas'  : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
+            'hop'  : '/home/acampove/external_ssd/Data/samples/hop.yaml'} 
+
+    cache_dir = '/home/acampove/external_ssd/Data/cache/rx_fit/ee'
+
+    l_use_cut = [
+            'jpsi_misid',
+            'cascade',
+            'bdt',
+            'hop',
+            'q2',
+            'mass']
 
     mc_cfg = {
             'name'   : 'signal',
@@ -74,9 +98,19 @@ def _parse_args() -> None:
 
     Data.q2_bin = args.q2bin
 # ---------------------------------
+def _get_wp_id() -> str:
+    cmb_wp = f'{Data.cmb_wp:.3f}'
+    prc_wp = f'{Data.prc_wp:.3f}'
+
+    wp_id  = f'{cmb_wp}_{prc_wp}'
+    wp_id  = wp_id.replace('.', 'p')
+
+    return wp_id
+# ---------------------------------
 def _get_rdf(is_mc : bool) -> RDataFrame:
     kind     = 'mc' if is_mc else 'data'
-    out_path = f'{Data.cache_dir}/{kind}_{Data.q2_bin}.root'
+    wp_id    = _get_wp_id()
+    out_path = f'{Data.cache_dir}/{kind}_{Data.q2_bin}_{wp_id}.root'
     if os.path.isfile(out_path):
         log.info('DataFrame already cached, reloading')
         rdf = RDataFrame('tree', out_path)
@@ -84,15 +118,15 @@ def _get_rdf(is_mc : bool) -> RDataFrame:
 
     log.info('DataFrame not cached')
     if is_mc:
-        sample = 'Bu_Kmumu_eq_btosllball05_DPC'
+        sample = 'Bu_Kee_eq_btosllball05_DPC'
     else:
         sample = 'DATA_24_Mag*_24c*'
 
     gtr = RDFGetter(sample=sample, trigger=Data.trigger)
-    rdf = gtr.get_rdf()
+    rdf = gtr.get_rdf(columns=Data.l_col)
     _   = AtrMgr(rdf)
 
-    rdf      = _apply_selection(rdf)
+    rdf      = _apply_selection(rdf, process = sample)
     arr_mass = rdf.AsNumpy(['B_M'])['B_M']
 
     rdf=RDF.FromNumpy({'mass' : arr_mass})
@@ -100,17 +134,18 @@ def _get_rdf(is_mc : bool) -> RDataFrame:
 
     return rdf
 # ---------------------------------
-def _apply_selection(rdf : RDataFrame) -> RDataFrame:
-    cfg = load_selection_config()
-    qsq = cfg['q2_common'][Data.q2_bin]
+def _apply_selection(rdf : RDataFrame, process : str) -> RDataFrame:
+    d_sel = sel.selection(project='RK', analysis='EE', q2bin=Data.q2_bin, process=process)
+    d_use = { name : cut for name, cut in d_sel.items() if name in Data.l_use_cut }
 
-    rdf = rdf.Filter(qsq, 'q2')
-    rdf = rdf.Filter(Data.mva_cmb, 'MVA cmb')
-    rdf = rdf.Filter(Data.mva_prc, 'MVA prc')
-    rdf = rdf.Filter(Data.mss_mm, 'mass')
+    for name, cut in d_use.items():
+        if name == 'bdt':
+            rdf = rdf.Filter(f'mva_prc > {Data.prc_wp}', 'mva_prc')
+            rdf = rdf.Filter(f'mva_cmb > {Data.cmb_wp}', 'mva_cmb')
+        else:
+            rdf = rdf.Filter(cut, name)
 
     log.info(f'Using dataframe for {Data.q2_bin} q2 bin')
-    log.info(f'{"Mass":<20}{Data.mss_mm:<50}')
     rep = rdf.Report()
     rep.Print()
 
