@@ -40,7 +40,7 @@ class Data:
 
     trigger  = 'Hlt2RD_BuToKpEE_MVA'
     cmb_wp   = 0.90
-    prc_wp   = 0.60
+    prc_wp   = 0.80
     obs      = zfit.Space('mass', limits=(min_mass, max_mass))
 
     RDFGetter.samples= {
@@ -98,39 +98,35 @@ def _parse_args() -> None:
 
     Data.q2_bin = args.q2bin
 # ---------------------------------
-def _get_wp_id() -> str:
-    cmb_wp = f'{Data.cmb_wp:.3f}'
-    prc_wp = f'{Data.prc_wp:.3f}'
-
-    wp_id  = f'{cmb_wp}_{prc_wp}'
-    wp_id  = wp_id.replace('.', 'p')
-
-    return wp_id
-# ---------------------------------
-def _get_rdf(is_mc : bool) -> RDataFrame:
-    kind     = 'mc' if is_mc else 'data'
-    wp_id    = _get_wp_id()
-    out_path = f'{Data.cache_dir}/{kind}_{Data.q2_bin}_{wp_id}.root'
+def _load_rdf(sample : str) -> RDataFrame:
+    sample_name = sample.replace('*', 'p')
+    out_path    = f'{Data.cache_dir}/{sample_name}_{Data.q2_bin}.root'
     if os.path.isfile(out_path):
         log.info('DataFrame already cached, reloading')
         rdf = RDataFrame('tree', out_path)
         return rdf
 
     log.info('DataFrame not cached')
-    if is_mc:
-        sample = 'Bu_Kee_eq_btosllball05_DPC'
-    else:
-        sample = 'DATA_24_Mag*_24c*'
 
     gtr = RDFGetter(sample=sample, trigger=Data.trigger)
     rdf = gtr.get_rdf(columns=Data.l_col)
     _   = AtrMgr(rdf)
 
-    rdf      = _apply_selection(rdf, process = sample)
-    arr_mass = rdf.AsNumpy(['B_M'])['B_M']
+    rdf    = _apply_selection(rdf, process = sample)
+    d_data = rdf.AsNumpy(['B_M', 'mva_cmb', 'mva_prc'])
 
-    rdf=RDF.FromNumpy({'mass' : arr_mass})
+    rdf=RDF.FromNumpy(d_data)
     rdf.Snapshot('tree', out_path)
+
+    return rdf
+# ---------------------------------
+def _get_rdf(sample : str) -> RDataFrame:
+    rdf = _load_rdf(sample)
+    rdf = rdf.Filter(f'mva_cmb > {Data.cmb_wp}', 'CMB')
+    rdf = rdf.Filter(f'mva_prc > {Data.prc_wp}', 'PRC')
+
+    rep = rdf.Report()
+    rep.Print()
 
     return rdf
 # ---------------------------------
@@ -140,10 +136,8 @@ def _apply_selection(rdf : RDataFrame, process : str) -> RDataFrame:
 
     for name, cut in d_use.items():
         if name == 'bdt':
-            rdf = rdf.Filter(f'mva_prc > {Data.prc_wp}', 'mva_prc')
-            rdf = rdf.Filter(f'mva_cmb > {Data.cmb_wp}', 'mva_cmb')
-        else:
-            rdf = rdf.Filter(cut, name)
+            continue
+        rdf = rdf.Filter(cut, name)
 
     log.info(f'Using dataframe for {Data.q2_bin} q2 bin')
     rep = rdf.Report()
@@ -154,12 +148,12 @@ def _apply_selection(rdf : RDataFrame, process : str) -> RDataFrame:
 def _initialize() -> None:
     os.makedirs(Data.cache_dir, exist_ok=True)
 # ---------------------------------
-def _get_signal() -> FitComponent:
+def _get_signal(sample : str) -> FitComponent:
     cfg            = copy.deepcopy(Data.mc_cfg)
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}'
 
-    rdf   = _get_rdf(is_mc= True)
+    rdf   = _get_rdf(sample)
     rdf   = rdf.Define('weights', '1')
 
     l_pdf, l_shr = _get_signal_fitting_model()
