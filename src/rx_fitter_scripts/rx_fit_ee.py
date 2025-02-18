@@ -158,7 +158,7 @@ def _get_mc(sample : str) -> FitComponent:
     cfg            = copy.deepcopy(Data.mc_cfg)
     cfg['name']    = sample
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{sample}/{Data.q2_bin}'
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/{sample}'
 
     rdf   = _get_rdf(sample)
     rdf   = rdf.Define('weights', '1')
