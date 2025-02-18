@@ -1,0 +1,11 @@
+central:
+  Bu_Kee_eq_btosllball05_DPC :
+    model:
+      - dscb
+    shared:
+      - mu
+      - sg
+  Bu_JpsiK_ee_eq_DPC:
+    model:
+      - kde 
+    shared: []
