@@ -26,7 +26,7 @@ class Data:
     Class used to share attributes
     '''
     q2_bin  : str
-    min_mass = 4500
+    min_mass = 4600
     max_mass = 6200
 
     l_col    = [
@@ -124,6 +124,7 @@ def _get_rdf(sample : str) -> RDataFrame:
     rdf = _load_rdf(sample)
     rdf = rdf.Filter(f'mva_cmb > {Data.cmb_wp}', 'CMB')
     rdf = rdf.Filter(f'mva_prc > {Data.prc_wp}', 'PRC')
+    rdf = rdf.Define('mass', 'B_M')
 
     rep = rdf.Report()
     rep.Print()
