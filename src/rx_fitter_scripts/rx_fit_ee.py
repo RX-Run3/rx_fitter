@@ -5,9 +5,11 @@ import os
 import copy
 import argparse
 from dataclasses         import dataclass
+from importlib.resources import files
 
 import ROOT
 import zfit
+import yaml
 from ROOT                    import RDataFrame, RDF
 from rx_data.rdf_getter      import RDFGetter
 from rx_selection            import selection    as sel
@@ -26,6 +28,7 @@ class Data:
     Class used to share attributes
     '''
     q2_bin  : str
+    fit_cfg : dict
     min_mass = 4600
     max_mass = 6200
 
@@ -39,8 +42,8 @@ class Data:
             'swp_jpsi_misid_mass_swp']
 
     trigger  = 'Hlt2RD_BuToKpEE_MVA'
-    cmb_wp   = 0.90
-    prc_wp   = 0.80
+    cmb_wp   = 0.00
+    prc_wp   = 0.00
     obs      = zfit.Space('mass', limits=(min_mass, max_mass))
 
     RDFGetter.samples= {
@@ -61,8 +64,7 @@ class Data:
             'mass']
 
     mc_cfg = {
-            'name'   : 'signal',
-            'out_dir': 'plots/fit/signal',
+            'out_dir': 'plots/fit',
             'fitting':
             {
                 'error_method'  : 'minuit_hesse',
