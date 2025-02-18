@@ -150,39 +150,34 @@ def _apply_selection(rdf : RDataFrame, process : str) -> RDataFrame:
 # ---------------------------------
 def _initialize() -> None:
     os.makedirs(Data.cache_dir, exist_ok=True)
+    cfg_path = files('rx_fitter_data').joinpath('config/v1.yaml')
+    with open(cfg_path, encoding='utf-8') as ifile:
+        Data.fit_cfg = yaml.safe_load(ifile)
 # ---------------------------------
-def _get_signal(sample : str) -> FitComponent:
+def _get_mc(sample : str) -> FitComponent:
     cfg            = copy.deepcopy(Data.mc_cfg)
+    cfg['name']    = sample
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}'
+    cfg['out_dir'] = f'{out_dir}/{sample}/{Data.q2_bin}'
 
     rdf   = _get_rdf(sample)
     rdf   = rdf.Define('weights', '1')
 
-    l_pdf, l_shr = _get_signal_fitting_model()
+    l_pdf, l_shr = _get_fitting_model(sample)
+    if l_pdf == ['kde']:
+        pdf = None
+    else:
+        mod   = ModelFactory(obs = Data.obs, l_pdf = l_pdf, l_shared=l_shr)
+        pdf   = mod.get_pdf()
 
-    mod   = ModelFactory(obs = Data.obs, l_pdf = l_pdf, l_shared=l_shr)
-    pdf   = mod.get_pdf()
-    obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf)
+    obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=Data.obs)
 
     return obj
 # ---------------------------------
-def _get_signal_fitting_model() -> tuple[list[str],list[str]]:
-    l_shr = ['mu', 'sg']
+def _get_fitting_model(sample : str) -> tuple[list[str],list[str]]:
+    cfg = Data.fit_cfg[Data.q2_bin][sample]
 
-    if Data.q2_bin == 'low':
-        l_pdf = ['cbr'] + 2 * ['cbl']
-        return l_pdf, l_shr
-
-    if Data.q2_bin == 'central':
-        l_pdf = ['dscb']
-        return l_pdf, l_shr
-
-    if Data.q2_bin == 'high':
-        l_pdf = ['dscb'] + ['cbl']
-        return l_pdf, l_shr
-
-    raise ValueError(f'Invalid q2 bin {Data.q2_bin}')
+    return cfg['model'], cfg['shared']
 # ---------------------------------
 def _get_combinatorial() -> FitComponent:
     cfg            = copy.deepcopy(Data.mc_cfg)
