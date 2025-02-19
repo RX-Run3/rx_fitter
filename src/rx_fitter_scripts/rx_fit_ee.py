@@ -155,10 +155,11 @@ def _initialize() -> None:
         Data.fit_cfg = yaml.safe_load(ifile)
 # ---------------------------------
 def _get_mc(sample : str) -> FitComponent:
+    wp_name        = _get_wp_name()
     cfg            = copy.deepcopy(Data.mc_cfg)
     cfg['name']    = sample
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/{sample}'
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/{sample}_{wp_name}'
 
     rdf   = _get_rdf(sample)
     rdf   = rdf.Define('weights', '1')
