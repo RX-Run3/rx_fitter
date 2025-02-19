@@ -224,12 +224,31 @@ def main():
     _parse_args()
     _initialize()
 
-    cmp_sig = _get_signal()
+    res_sample = 'Bu_JpsiK_ee_eq_DPC'
+    sig_sample = 'Bu_Kee_eq_btosllball05_DPC'
+    dat_sample = 'DATA_24_Mag*_24c*'
+    bdk_sample = 'Bd_Kstee_eq_btosllball05_DPC'
+    buk_sample = 'Bu_Kstee_Kpi0_eq_btosllball05_DPC'
+
     cmp_cmb = _get_combinatorial()
-    rdf     = _get_rdf(is_mc=False)
+    cmp_cmb.run()
+
+    cmp_res = _get_mc(sample = res_sample)
+    cmp_res.run()
+
+    cmp_buk = _get_mc(sample = buk_sample)
+    cmp_buk.run()
+
+    cmp_bdk = _get_mc(sample = bdk_sample)
+    cmp_bdk.run()
+
+    cmp_sig = _get_mc(sample = sig_sample)
+    cmp_sig.run()
+
+    rdf     = _get_rdf(sample=dat_sample)
     cfg     = _get_cfg()
 
-    obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_sig], cfg=cfg)
+    obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_bdk, cmp_buk, cmp_res, cmp_sig], cfg=cfg)
     obj.fit()
 # ---------------------------------
 if __name__ == '__main__':
