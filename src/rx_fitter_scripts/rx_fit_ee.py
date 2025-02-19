@@ -104,7 +104,7 @@ def _load_rdf(sample : str) -> RDataFrame:
     sample_name = sample.replace('*', 'p')
     out_path    = f'{Data.cache_dir}/{sample_name}_{Data.q2_bin}.root'
     if os.path.isfile(out_path):
-        log.info('DataFrame already cached, reloading')
+        log.info(f'DataFrame for {sample} already cached, reloading')
         rdf = RDataFrame('tree', out_path)
         return rdf
 
@@ -182,7 +182,7 @@ def _get_fitting_model(sample : str) -> tuple[list[str],list[str]]:
 def _get_combinatorial() -> FitComponent:
     cfg            = copy.deepcopy(Data.mc_cfg)
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}'
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/combinatorial'
 
     del cfg['fitting']
     cfg['name'] = 'comb'
@@ -190,6 +190,7 @@ def _get_combinatorial() -> FitComponent:
     mod   = ModelFactory(obs = Data.obs, l_pdf = ['exp'], l_shared=[])
     pdf   = mod.get_pdf()
     obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf)
+    obj.run()
 
     return obj
 # ---------------------------------
