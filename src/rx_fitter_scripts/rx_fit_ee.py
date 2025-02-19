@@ -168,7 +168,7 @@ def _get_mc(sample : str) -> FitComponent:
     if l_pdf == ['kde']:
         pdf = None
     else:
-        mod   = ModelFactory(obs = Data.obs, l_pdf = l_pdf, l_shared=l_shr)
+        mod   = ModelFactory(preffix=sample, obs = Data.obs, l_pdf = l_pdf, l_shared=l_shr)
         pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=Data.obs)
@@ -184,7 +184,7 @@ def _get_combinatorial() -> FitComponent:
     del cfg['fitting']
     cfg['name'] = 'comb'
 
-    mod   = ModelFactory(obs = Data.obs, l_pdf = ['exp'], l_shared=[])
+    mod   = ModelFactory(preffix='combinatorial', obs = Data.obs, l_pdf = ['exp'], l_shared=[])
     pdf   = mod.get_pdf()
     obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf)
 
