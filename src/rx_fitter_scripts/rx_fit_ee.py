@@ -187,9 +187,28 @@ def _get_combinatorial() -> FitComponent:
     mod   = ModelFactory(obs = Data.obs, l_pdf = ['exp'], l_shared=[])
     pdf   = mod.get_pdf()
     obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf)
-    obj.run()
 
     return obj
+# ---------------------------------
+def _get_wp_name() -> str:
+    cmb_wp  = 100 * Data.cmb_wp
+    prc_wp  = 100 * Data.prc_wp
+
+    cmb_str = f'{cmb_wp:.0f}'
+    prc_str = f'{prc_wp:.0f}'
+
+    cmb_str = cmb_str.zfill(3)
+    prc_str = prc_str.zfill(3)
+
+    name = f'{cmb_str}_{prc_str}'
+    name = name.replace('.', 'p')
+
+    return name
+# ---------------------------------
+def _get_fitting_model(sample : str) -> tuple[list[str],list[str]]:
+    cfg = Data.fit_cfg[Data.q2_bin][sample]
+
+    return cfg['model'], cfg['shared']
 # ---------------------------------
 def _get_cfg() -> dict:
     cfg            = copy.deepcopy(Data.dt_cfg)
