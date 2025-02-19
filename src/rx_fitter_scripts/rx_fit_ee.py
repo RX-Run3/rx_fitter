@@ -175,15 +175,11 @@ def _get_mc(sample : str) -> FitComponent:
 
     return obj
 # ---------------------------------
-def _get_fitting_model(sample : str) -> tuple[list[str],list[str]]:
-    cfg = Data.fit_cfg[Data.q2_bin][sample]
-
-    return cfg['model'], cfg['shared']
-# ---------------------------------
 def _get_combinatorial() -> FitComponent:
+    wp_name        = _get_wp_name()
     cfg            = copy.deepcopy(Data.mc_cfg)
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/combinatorial'
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/combinatorial_{wp_name}'
 
     del cfg['fitting']
     cfg['name'] = 'comb'
