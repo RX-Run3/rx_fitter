@@ -51,7 +51,7 @@ class Data:
             'mva'  : '/home/acampove/external_ssd/Data/samples/mva.yaml',
             'jps'  : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml',
             'cas'  : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
-            'hop'  : '/home/acampove/external_ssd/Data/samples/hop.yaml'} 
+            'hop'  : '/home/acampove/external_ssd/Data/samples/hop.yaml'}
 
     cache_dir = '/home/acampove/external_ssd/Data/cache/rx_fit/ee'
 
