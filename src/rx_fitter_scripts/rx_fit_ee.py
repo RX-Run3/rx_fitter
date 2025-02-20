@@ -233,16 +233,16 @@ def main():
     cmp_cmb = _get_combinatorial()
     cmp_cmb.run()
 
-    cmp_res = _get_mc(sample = res_sample)
+    cmp_res = _get_mc(sample = res_sample, name = r'$B^+\to K^+J/\psi(\to e^+e^-)$')
     cmp_res.run()
 
-    cmp_buk = _get_mc(sample = buk_sample)
+    cmp_buk = _get_mc(sample = buk_sample, name = r'$B^+\to K^{*+}(\to K^+\pi^0)e^+e^-$')
     cmp_buk.run()
 
-    cmp_bdk = _get_mc(sample = bdk_sample)
+    cmp_bdk = _get_mc(sample = bdk_sample, name = r'$B_d\to K^{*}(\to K^+\pi^-)e^+e^-$')
     cmp_bdk.run()
 
-    cmp_sig = _get_mc(sample = sig_sample)
+    cmp_sig = _get_mc(sample = sig_sample, name = r'$B^+\to K^+e^+e^-$')
     cmp_sig.run()
 
     rdf     = _get_rdf(sample=dat_sample)
