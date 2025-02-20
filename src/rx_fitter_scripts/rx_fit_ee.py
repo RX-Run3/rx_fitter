@@ -81,7 +81,7 @@ class Data:
 
     dt_cfg = {
             'error_method' : 'minuit_hesse',
-            'out_dir'      : 'plots/fit/data',
+            'out_dir'      : 'plots/fit',
             'plotting'     :
             {
                 'nbins'   : 50,
@@ -211,9 +211,10 @@ def _get_fitting_model(sample : str) -> tuple[list[str],list[str]]:
     return cfg['model'], cfg['shared']
 # ---------------------------------
 def _get_cfg() -> dict:
+    wp_name        = _get_wp_name()
     cfg            = copy.deepcopy(Data.dt_cfg)
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}'
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/data/{wp_name}'
 
     return cfg
 # ---------------------------------
