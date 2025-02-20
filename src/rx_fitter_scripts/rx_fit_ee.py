@@ -159,7 +159,7 @@ def _get_mc(sample : str, name : str) -> FitComponent:
     cfg            = copy.deepcopy(Data.mc_cfg)
     cfg['name']    = name
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/{sample}_{wp_name}'
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/{sample}/{wp_name}'
 
     rdf   = _get_rdf(sample)
     rdf   = rdf.Define('weights', '1')
@@ -179,7 +179,7 @@ def _get_combinatorial() -> FitComponent:
     wp_name        = _get_wp_name()
     cfg            = copy.deepcopy(Data.mc_cfg)
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/combinatorial_{wp_name}'
+    cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/combinatorial/{wp_name}'
 
     del cfg['fitting']
     cfg['name'] = 'Combinatorial'
