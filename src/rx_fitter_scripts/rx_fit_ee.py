@@ -154,10 +154,10 @@ def _initialize() -> None:
     with open(cfg_path, encoding='utf-8') as ifile:
         Data.fit_cfg = yaml.safe_load(ifile)
 # ---------------------------------
-def _get_mc(sample : str) -> FitComponent:
+def _get_mc(sample : str, name : str) -> FitComponent:
     wp_name        = _get_wp_name()
     cfg            = copy.deepcopy(Data.mc_cfg)
-    cfg['name']    = sample
+    cfg['name']    = name
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/{sample}_{wp_name}'
 
@@ -182,7 +182,7 @@ def _get_combinatorial() -> FitComponent:
     cfg['out_dir'] = f'{out_dir}/{Data.q2_bin}/combinatorial_{wp_name}'
 
     del cfg['fitting']
-    cfg['name'] = 'comb'
+    cfg['name'] = 'Combinatorial'
 
     mod   = ModelFactory(preffix='combinatorial', obs = Data.obs, l_pdf = ['exp'], l_shared=[])
     pdf   = mod.get_pdf()
