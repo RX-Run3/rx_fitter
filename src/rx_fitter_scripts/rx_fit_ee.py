@@ -42,8 +42,8 @@ class Data:
             'swp_jpsi_misid_mass_swp']
 
     trigger  = 'Hlt2RD_BuToKpEE_MVA'
-    cmb_wp   = 0.00
-    prc_wp   = 0.00
+    cmb_wp   = 0.85
+    prc_wp   = 0.85
     obs      = zfit.Space('mass', limits=(min_mass, max_mass))
 
     RDFGetter.samples= {
