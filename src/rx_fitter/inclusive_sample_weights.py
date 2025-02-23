@@ -28,8 +28,6 @@ class Reader:
         if self._initialized:
             return
 
-        self._cache_stats()
-
         self._initialized = True
     #---------------------------
     def _get_br_wgt(self, proc : str) -> float:
@@ -76,19 +74,6 @@ class Reader:
         df   = pnd.read_json(path)
 
         return proc, df
-    #---------------------------
-    def _cache_stats(self):
-        if self._d_tp_st is not None:
-            return
-
-        stats_wc = files('tools_data').joinpath('inclusive_mc_stats/*.json')
-        stats_wc = str(stats_wc)
-        l_stats  = glob.glob(stats_wc)
-        if len(l_stats) == 0:
-            raise ValueError(f'No file found in: {stats_wc}')
-
-        l_tp_st = [ self._get_stats(path) for path in l_stats ]
-        self._d_tp_st = dict(l_tp_st)
     #---------------------------
     def _good_rows(self, r1 : pnd.Series, r2 : pnd.Series) -> bool:
         if {r1.Polarity, r2.Polarity} != {'MagUp', 'MagDown'}:
