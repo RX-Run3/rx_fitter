@@ -99,8 +99,6 @@ class Reader:
 
         Pandas series with sample weights
         '''
-        self._initialize()
-
         sr_wgt = self._df.apply(self._get_weight, axis=1)
 
         return sr_wgt
