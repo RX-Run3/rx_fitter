@@ -45,6 +45,7 @@ def _get_df(sample : str, trigger : str) -> pnd.DataFrame:
 
     l_path = d_data[sample][trigger]
     rdf = RDataFrame('DecayTree', l_path)
+    rdf = rdf.Range(10_000)
     df  = _rdf_to_idf(rdf)
 
     return df
@@ -57,7 +58,7 @@ def _plot_mass(df : pnd.DataFrame, sample : str, test : str):
     nevs=df.weight.size
     area=df.weight.sum()
 
-    title = f'{sample}; evs: {nevs}; sum: {area}'
+    title = f'{sample}; evs: {nevs}; sum: {area:.0f}'
 
     ax1.set_title(title)
     ax1.legend()
