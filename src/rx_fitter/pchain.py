@@ -1,6 +1,8 @@
 '''
 Module holding PChain class
 '''
+# pylint: disable=invalid-name
+
 #----------------------------------
 class PChain:
     '''
@@ -33,7 +35,7 @@ class PChain:
         if len(l_dec_id) == 3:
             return  self._TID == abs(l_dec_id[0]) and self._MOTHER_TID == abs(l_dec_id[1]) and self._GMOTHER_TID == abs(l_dec_id[2])
         if len(l_dec_id) == 4:
-            return  self._TID == abs(l_dec_id[0]) and self._MOTHER_TID == abs(l_dec_id[1]) and self._GMOTHER_TID == abs(l_dec_id[2]) and self._GGMOTHER_TID == abs(l_dec_id[3]);
+            return  self._TID == abs(l_dec_id[0]) and self._MOTHER_TID == abs(l_dec_id[1]) and self._GMOTHER_TID == abs(l_dec_id[2]) and self._GGMOTHER_TID == abs(l_dec_id[3])
 
         return False
     #----------------------------------------------------
