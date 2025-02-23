@@ -5,6 +5,7 @@ readme      = 'README.md'
 dependencies= [
 'rx_data',
 'asdf',
+'pdg',
 'data-manipulation-utilities',
 'rx_calibration',
 ]
