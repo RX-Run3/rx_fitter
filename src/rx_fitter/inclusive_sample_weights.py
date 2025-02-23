@@ -81,10 +81,7 @@ class Reader:
         return True
     #---------------------------
     def _get_st_wgt(self, proc : str) -> float:
-        wgt = 1.
-        log.warning('Assuming that all inclusive samples have same statistics')
-
-        return wgt
+        return 1 
     #---------------------------
     def _get_weight(self, row : pnd.Series) -> float:
         w1 = self._get_st_wgt(row.proc)
