@@ -2,6 +2,7 @@
 Module holding PChain class
 '''
 # pylint: disable=invalid-name
+# pylint: disable=missing-function-docstring
 
 #----------------------------------
 class PChain:
@@ -42,22 +43,22 @@ class PChain:
     def HasInChain(self, ID):
         _return = False
 
-        if( self._MOTHER_TID   == ID):
+        if self._MOTHER_TID   == ID:
             _return = True
-        if( self._GMOTHER_TID  == ID):
+        if self._GMOTHER_TID  == ID:
             _return = True
-        if( self._GGMOTHER_TID == ID):
+        if self._GGMOTHER_TID == ID:
             _return = True
 
         return _return
     #----------------------------------------------------
     def MatchUpstream(self, IDFirstDau, HeadPart):
         _return = False
-        if(  self._MOTHER_TID   == IDFirstDau and self._GMOTHER_TID  == HeadPart):
+        if  self._MOTHER_TID   == IDFirstDau and self._GMOTHER_TID  == HeadPart:
             _return = True
-        if(  self._GMOTHER_TID  == IDFirstDau and self._GGMOTHER_TID == HeadPart):
+        if  self._GMOTHER_TID  == IDFirstDau and self._GGMOTHER_TID == HeadPart:
             _return = True
-        if(  self._GGMOTHER_TID == IDFirstDau):
+        if  self._GGMOTHER_TID == IDFirstDau:
             _return = True
 
         return _return
