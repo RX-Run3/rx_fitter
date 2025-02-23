@@ -4,7 +4,7 @@ Module with Reader class
 # pylint: disable=too-many-instance-attributes, invalid-name
 
 import pandas as pnd
-from rk_fitter.pchain import PChain
+from rx_fitter.pchain import PChain
 
 #---------------------------
 class Reader:
