@@ -107,7 +107,7 @@ class PRec:
 
         if   sam == 1:
             log.debug('Adding sample weights')
-            obj           = inclusive_sample_weights(df, year=self._dset)
+            obj           = inclusive_sample_weights(df)
             df['wgt_sam'] = obj.get_weights()
         elif sam == 0:
             log.warning('Not using sample weights')
