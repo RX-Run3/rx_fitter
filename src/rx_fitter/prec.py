@@ -189,7 +189,12 @@ class PRec:
 
         return d_cut
     #-----------------------------------------------------------
-    def _get_match_str_psi2_large(self):
+    def _get_match_str_psi2_large(self) -> dict[str,str]:
+        '''
+        Returns dictionary needed to split mix of MC inclusive samples
+        '''
+        # pylint: disable=too-many-locals
+
         bp_psjp     = '(abs(Jpsi_MC_MOTHER_ID) == 100443) & (abs(Jpsi_MC_GD_MOTHER_ID) == 521) & (abs(H_MC_MOTHER_ID) == 521)'
         bd_psks     = '(abs(Jpsi_MC_MOTHER_ID) ==    511) & (abs(H_MC_MOTHER_ID) == 313) & (abs(H_MC_GD_MOTHER_ID) == 511) & (abs(Jpsi_TRUEID) == 100443)'
         bp_psks     = '(abs(Jpsi_MC_MOTHER_ID) ==    521) & (abs(H_MC_MOTHER_ID) == 323) & (abs(H_MC_GD_MOTHER_ID) == 521) & (abs(Jpsi_TRUEID) == 100443)'
@@ -198,8 +203,8 @@ class PRec:
         neg_bd_psks = bd_psks.replace('==', '!=').replace('&' , '|')
         neg_bp_psks = bp_psks.replace('==', '!=').replace('&' , '|')
 
-        bp_jpkp     = f'(abs(B_TRUEID) == 521) & (abs(H_TRUEID) == 321) & (abs(Jpsi_TRUEID) == 443)'
-        bd_jpkp     = f'(abs(B_TRUEID) == 511) & (abs(H_TRUEID) == 321) & (abs(Jpsi_TRUEID) == 443)'
+        bp_jpkp     = '(abs(B_TRUEID) == 521) & (abs(H_TRUEID) == 321) & (abs(Jpsi_TRUEID) == 443)'
+        bd_jpkp     = '(abs(B_TRUEID) == 511) & (abs(H_TRUEID) == 321) & (abs(Jpsi_TRUEID) == 443)'
 
         bp_jpkp_ex  = f'({bp_jpkp}) & ({neg_bp_psjp}) & ({neg_bd_psks}) & ({neg_bp_psks})'
         bd_jpkp_ex  = f'({bd_jpkp}) & ({neg_bp_psjp}) & ({neg_bd_psks}) & ({neg_bp_psks})'
@@ -227,31 +232,12 @@ class PRec:
 
         return d_cut
     #-----------------------------------------------------------
-    def _get_match_str_psi2_all(self):
+    def _get_match_str_psi2_all(self) -> dict[str,str]:
         d_cut           = {}
         d_cut['jpsi']   = '(Jpsi_TRUEID == 443)'
         d_cut['nojpsi'] = '(Jpsi_TRUEID != 443)'
 
         return d_cut
-    #-----------------------------------------------------------
-    def _get_proc(self, path):
-        l_part = path.split('/')
-        part   = l_part[-2]
-        l_part = part.split('_')
-        proc   = l_part[0]
-        if proc not in self._l_proc:
-            log.error(f'Invalid process {proc} not found in {self._l_proc}')
-            raise
-
-        return proc
-    #-----------------------------------------------------------
-    def _df_from_path(self, path):
-        log.debug(f'Reading data from: {path}')
-
-        df         = pnd.read_json(path)
-        df['proc'] = self._get_proc(path)
-
-        return df
     #-----------------------------------------------------------
     def _filter_by_brem(self, df):
         if self._nbrem is None:
@@ -324,30 +310,6 @@ class PRec:
 
         return df
     #-----------------------------------------------------------
-    def _plot_data(self, arr_mass, arr_wgt, name=''):
-        if self._val_dir is None:
-            return
-
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-
-        ax1.hist(arr_mass, weights=arr_wgt, bins=30, range=(4500, 6000), alpha=0.5,       label='Weighted'  , color='r')
-        ax1.hist(arr_mass, weights=None   , bins=30, range=(4500, 6000), histtype='step', label='Unweighted', color='b')
-
-        nbrem = 'all' if self._nbrem is None else self._nbrem
-        nent  = arr_wgt.shape[0]
-        swgt  = arr_wgt.sum()
-        title = f'entries: {nent}; sum wgt: {swgt:.3f}; nbrem: {nbrem}'
-
-        plot_path = f'{self._val_dir}/distribution_{nbrem}_{name}.png'
-        log.debug(f'Saving to: {plot_path}')
-        ax1.legend()
-        ax1.set_title(title)
-
-        ax2.hist(arr_wgt, bins=50, edgecolor='black')
-
-        plt.savefig(plot_path)
-        plt.close('all')
-    #-----------------------------------------------------------
     def _get_pdf(self, mass=None, cut=None, **kwargs):
         '''
         Will take the mass, with values in:
@@ -371,11 +333,6 @@ class PRec:
         log.info(f'Using mass: {mass} for component {kwargs["name"]}')
         arr_mass = df[mass].to_numpy()
         arr_wgt  = df.wgt_br.to_numpy()
-
-        name     = kwargs['name']
-        iden     = self._d_ident[name]
-        self._plot_data(arr_mass, arr_wgt, name = f'{iden}_{self._name}')
-
         df_id    = self._get_df_id(df)
 
         self._print_cutflow()
@@ -410,7 +367,7 @@ class PRec:
         self._initialize()
 
         d_pdf     = { name : self._get_pdf(mass, cut, name=name, **kwargs) for name, cut in self._d_match.items()}
-        l_pdf     = [pdf for pdf in d_pdf.values()]
+        l_pdf     = list(d_pdf.values())
         l_wgt_yld = [ sum(pdf.arr_wgt) for pdf in l_pdf ]
         l_frc     = [ wgt_yld / sum(l_wgt_yld) for wgt_yld in l_wgt_yld ]
         l_yld     = [ zfit.param.Parameter(f'f_{pdf.name}', frc, 0, 1) for pdf, frc in zip(l_pdf, l_frc)]
