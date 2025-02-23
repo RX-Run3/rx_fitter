@@ -3,8 +3,6 @@ Module with Reader class used to read weights to normalize between inclusive sam
 '''
 
 import os
-import glob
-from importlib.resources import files
 
 import pandas    as pnd
 from dmu.logging.log_store import LogStore
@@ -71,7 +69,7 @@ class Reader:
         if proc == 'bs':
             return self._fs
 
-        raise ValueError(f'Invalid process: {row.proc}')
+        raise ValueError(f'Invalid process: {proc}')
     #---------------------------
     def _get_stats(self, path):
         proc = os.path.basename(path).replace('.json', '')
