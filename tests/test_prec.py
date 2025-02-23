@@ -9,11 +9,11 @@ import mplhep
 import pytest
 import matplotlib.pyplot as plt
 
-from zutils    import utils     as zut
-from rk.pr_shapes import pr_loader as prld
-
+from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
+from rx_data.rdf_getter     import RDFGetter
+from rx_fitter.prec         import PRec as prld
 
 log=LogStore.add_logger('rx_fitter:test_prec')
 #-----------------------------------------------
@@ -48,6 +48,10 @@ def _initialize():
     os.makedirs(Data.out_dir, exist_ok=True)
 
     plt.style.use(mplhep.style.LHCb2)
+
+    RDFGetter.samples = {
+        'main' : '/home/acampove/external_ssd/Data/samples/main.yaml',
+        }
 #-----------------------------------------------
 def _plot_pdf(pdf, name : str, maxy : str):
     arr_mass = pdf.arr_mass
@@ -66,7 +70,7 @@ def _plot_pdf(pdf, name : str, maxy : str):
     plt.close('all')
 
     text_path = plot_path.replace('png', 'txt')
-    zut.print_pdf(pdf, txt_path=text_path)
+    print_pdf(pdf, txt_path=text_path)
 #-----------------------------------------------
 def test_bdt():
     obs=zfit.Space('mass', limits=(4500, 6000))
