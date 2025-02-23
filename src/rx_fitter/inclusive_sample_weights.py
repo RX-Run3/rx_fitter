@@ -16,19 +16,13 @@ class Reader:
     '''
     #---------------------------
     def __init__(self, df : pnd.DataFrame):
-        self._df   = df
-        self._fu   = 0.408
-        self._fs   = 0.100
+        self._df      = df
+        self._fu      = 0.408
+        self._fs      = 0.100
 
-        self._d_fev       = {}
-        self._d_tp_st     = None
-        self._initialized = False
-    #---------------------------
-    def _initialize(self):
-        if self._initialized:
-            return
-
-        self._initialized = True
+        self._bu_proc = 'Bu_JpsiX_ee_eq_JpsiInAcc'
+        self._bd_proc = 'Bd_JpsiX_ee_eq_JpsiInAcc'
+        self._bs_proc = 'Bs_JpsiX_ee_eq_JpsiInAcc'
     #---------------------------
     def _get_br_wgt(self, proc : str) -> float:
         '''
@@ -46,13 +40,13 @@ class Reader:
         #Decay B_s0sig
         #0.1077  MyJ/psi    Myphi        PVV_CPLH 0.02 1 Hp pHp Hz pHz Hm pHm;
         #--------------------------------------------
-        if proc == 'bp':
+        if proc == self._bu_proc:
             return pu.get_bf('B+ --> J/psi(1S) K+') / 0.1596
 
-        if proc == 'bd':
+        if proc == self._bd_proc:
             return pu.get_bf('B0 --> J/psi(1S) K0') / 0.1920
 
-        if proc == 'bs':
+        if proc == self._bs_proc:
             return pu.get_bf('B_s()0 --> J/psi(1S) phi') / 0.1077
 
         raise ValueError(f'Invalid process {proc}')
@@ -61,10 +55,10 @@ class Reader:
         '''
         Will return hadronization fractions used as weights
         '''
-        if proc in ['bp', 'bd']:
+        if proc in [self._bu_proc, self._bd_proc]:
             return self._fu
 
-        if proc == 'bs':
+        if proc == self._bs_proc:
             return self._fs
 
         raise ValueError(f'Invalid process: {proc}')
