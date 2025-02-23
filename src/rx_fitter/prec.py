@@ -5,11 +5,11 @@ import zfit
 import numpy
 import pandas as pnd
 
-from rk_fitter.inclusive_decays_weights import reader as inclusive_decays_weights
-from rk_fitter.inclusive_sample_weights import reader as inclusive_sample_weights
-
 from rx_data.rdf_getter    import RDFGetter
 from dmu.logging.log_store import LogStore
+
+from rx_fitter.inclusive_decays_weights import Reader as inclusive_decays_weights
+from rx_fitter.inclusive_sample_weights import Reader as inclusive_sample_weights
 
 log=LogStore.add_logger('rx_fitter:prec')
 #-----------------------------------------------------------
