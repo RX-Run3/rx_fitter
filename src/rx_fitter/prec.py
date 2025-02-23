@@ -80,11 +80,12 @@ class PRec:
         '''
         d_df = {}
         for sample in self._l_sample:
-            gtr = RDFGetter(sample=sample, trigger=self._trig)
-            rdf = gtr.get_rdf(columns={'mva_cmb', 'mva_prc', 'B_M', 'Jpsi_M', 'B_const_mass_M'})
-            data= rdf.AsNumpy()
-            df  = pnd.DataFrame(data)
-            df  = self._filter_by_brem(df)
+            gtr        = RDFGetter(sample=sample, trigger=self._trig)
+            rdf        = gtr.get_rdf(columns=self._l_columns, regex='.*ID')
+            data       = rdf.AsNumpy()
+            df         = pnd.DataFrame(data)
+            df         = self._filter_by_brem(df)
+            df['proc'] = sample
 
             d_df[sample] = df
 
