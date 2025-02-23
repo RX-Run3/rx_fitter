@@ -1,6 +1,8 @@
 '''
 Module containing PRec
 '''
+import zfit
+import numpy
 import pandas as pnd
 
 from rk_fitter.inclusive_decays_weights import reader as inclusive_decays_weights
@@ -15,28 +17,29 @@ class PRec:
     '''
     Class used to calculate the PDF associated to the partially reconstructed background
     '''
+    # pylint: disable=too-many-instance-attributes
     #-----------------------------------------------------------
     def __init__(self, samples : list[str], trig : str, q2bin : str, d_weight : dict[str,int]):
         '''
         Parameters:
         -------------------------
-        samples (str): MC samples 
+        samples (str): MC samples
         trig (str): HLT2 trigger.
         q2bin(str): q2 bin
         d_weight (dict): Dictionary specifying which weights to use, e.g. {'dec' : 1, 'sam' : 1}
         '''
 
-        self._l_sample = samples 
+        self._l_sample = samples
         self._trig     = trig
         self._q2bin    = q2bin
         self._d_wg     = d_weight
 
         self._nbrem    : int
         self._name     : str
+        self._df       : pnd.DataFrame
         self._d_fstat  = {}
 
         self._d_match   = None
-        self._d_ident   = None
 
         self._initialized=False
     #-----------------------------------------------------------
@@ -44,12 +47,10 @@ class PRec:
         if self._initialized:
             return
 
-        self._check_valid(self._proc ,                   ['bs', 'bd', 'bp', 'b*'],  'proc')
         self._check_valid(self._q2bin, ['low', 'central', 'jpsi', 'psi2', 'high'], 'q2bin')
         self._check_weights()
 
         self._d_match = self._get_match_str()
-        self._d_ident = self._get_ident_str()
         self._df      = self._get_df()
 
         self._initialized = True
@@ -119,6 +120,9 @@ class PRec:
     #-----------------------------------------------------------
     @property
     def nbrem(self):
+        '''
+        Number of brem photons
+        '''
         return self._nbrem
 
     @nbrem.setter
@@ -137,31 +141,15 @@ class PRec:
             raise
 
         if ([k1, k2] != ['dec', 'sam'])  and ([k1, k2] != ['sam', 'dec']):
-            log.error(f'Invalid weight keys: {k1}, {k2}')
-            raise
+            raise ValueError(f'Invalid weight keys: {k1}, {k2}')
 
         if (v1 not in [0, 1]) or (v2 not in [0, 1]):
-            log.error(f'Invalid weight values: {v1}, {v2}')
-            raise
+            raise ValueError(f'Invalid weight values: {v1}, {v2}')
     #-----------------------------------------------------------
     def _check_valid(self, var, l_var, name):
         if var not in l_var:
             log.error(f'Value for {name}, {var}, is not valid')
             raise ValueError
-    #-----------------------------------------------------------
-    def _get_version(self):
-        vers = get_last_version(self._prc_dir)
-
-        if self._vers is None:
-            log.info(f'Using version: {self._vers}')
-            return vers
-
-        if self._vers != vers:
-            log.warning(f'Not using last version {vers} but {self._vers}')
-
-        log.info(f'Using version: {self._vers}')
-
-        return self._vers
     #-----------------------------------------------------------
     def _get_match_str(self):
         if   self._q2bin == 'jpsi':
@@ -169,19 +157,9 @@ class PRec:
         elif self._q2bin == 'psi2':
             d_match = self._get_match_str_psi2()
         else:
-            log.error(f'Invalid q2bin: {self._q2bin}')
-            raise
+            raise ValueError(f'Invalid q2bin: {self._q2bin}')
 
         return d_match
-    #-----------------------------------------------------------
-    def _get_ident_str(self):
-        d_ident                                          = {}
-        d_ident[r'$B^+\to \psi(2S)(\to J/\psi X)H_{s}$'] = 'bp_psjp'
-        d_ident[r'$B_d\to c\bar{c}(\to ee)H_s$'] = 'bd'
-        d_ident[r'$B^+\to c\bar{c}(\to ee)H_s$'] = 'bp'
-        d_ident[r'$B_s\to c\bar{c}(\to ee)H_s$'] = 'bs'
-
-        return d_ident
     #-----------------------------------------------------------
     def _get_match_str_jpsi(self):
         bd          = '(abs(B_TRUEID) == 511)'
