@@ -34,12 +34,17 @@ class PRec:
         self._q2bin    = q2bin
         self._d_wg     = d_weight
 
-        self._nbrem    : int
         self._name     : str
         self._df       : pnd.DataFrame
         self._d_fstat  = {}
 
-        self._d_match   = None
+        self._nbrem : int = None
+        self._d_match     = None
+        self._l_columns   ={'mva_cmb',
+                            'mva_prc',
+                            'B_M',
+                            'Jpsi_M',
+                            'B_const_mass_M'}
 
         self._initialized=False
     #-----------------------------------------------------------
