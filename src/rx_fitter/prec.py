@@ -272,7 +272,7 @@ class PRec:
 
         return arr_wgt
     #-----------------------------------------------------------
-    def _get_df_id(self, df):
+    def _get_df_id(self, df : pnd.DataFrame) -> pnd.DataFrame:
         l_col = [
                 'L1_TRUEID',
                 'L2_TRUEID',
@@ -289,7 +289,7 @@ class PRec:
 
         return df.reset_index(drop=True)
     #-----------------------------------------------------------
-    def _filter_mass(self, df, mass, obs):
+    def _filter_mass(self, df : pnd.DataFrame, mass : str, obs):
         ([[minx]], [[maxx]]) = obs.limits
 
         cut   = f'({minx} < {mass}) & ({mass} < {maxx})'
@@ -302,7 +302,7 @@ class PRec:
 
         return df
     #-----------------------------------------------------------
-    def _filter_cut(self, cut):
+    def _filter_cut(self, cut : str) -> pnd.DataFrame:
         if cut is None:
             return self._df
 
@@ -381,7 +381,7 @@ class PRec:
         l_df_id   = [ pdf.df_id for pdf in l_pdf ]
 
         pdf          = zfit.pdf.SumPDF(l_pdf, fracs=l_yld)
-        nor          = zfit.param.Parameter('nprc', sum(l_wgt_yld), 0, 1000000)
+        nor          = zfit.param.Parameter('nprc', sum(l_wgt_yld), 0, 1000_000)
         pdf          = pdf.create_extended(nor, name=self._name)
 
         l_arr_mass   = [ pdf.arr_mass for pdf in l_pdf ]
