@@ -9,6 +9,7 @@ import mplhep
 import pytest
 import matplotlib.pyplot as plt
 
+from ROOT                   import EnableImplicitMT
 from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
@@ -44,13 +45,21 @@ class Data:
 #-----------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _initialize():
-    LogStore.set_level('rx_fitter:prec', 10)
+    LogStore.set_level('rx_fitter:inclusive_decay_weights' , 10)
+    LogStore.set_level('rx_fitter:inclusive_sample_weights', 10)
+    LogStore.set_level('rx_fitter:prec'                    , 10)
+
     os.makedirs(Data.out_dir, exist_ok=True)
+    EnableImplicitMT(5)
 
     plt.style.use(mplhep.style.LHCb2)
 
     RDFGetter.samples = {
-        'main' : '/home/acampove/external_ssd/Data/samples/main.yaml',
+        'main'       : '/home/acampove/external_ssd/Data/samples/main.yaml',
+        'mva'        : '/home/acampove/external_ssd/Data/samples/mva.yaml',
+        'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
+        'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml',
+        'hop'        : '/home/acampove/external_ssd/Data/samples/hop.yaml',
         }
 #-----------------------------------------------
 def _plot_pdf(pdf, name : str, maxy : str):
@@ -78,18 +87,18 @@ def test_bdt():
     bdt_cut = "(BDT_cmb > 0.977000) & (BDT_prc > 0.480751)"
     #bdt_cut = None
 
-    obp=prld(proc='bdXcHs', trig='ETOS', q2bin='psi2', dset='2018')
+    obp=prld(samples='bdXcHs', trig='ETOS', q2bin='psi2', dset='2018')
     pdf=obp.get_pdf(mass='mass_psi2', cut=bdt_cut, name='PRec', obs=obs, use_weights=True, bandwidth=20)
     _plot_pdf(pdf, 'bdt_bpXcHs_psi2_mass_psi2')
 
-    obp=prld(proc='bpXcHs', trig='ETOS', q2bin='psi2', dset='2018')
+    obp=prld(samples='bpXcHs', trig='ETOS', q2bin='psi2', dset='2018')
     pdf=obp.get_pdf(mass='mass_psi2', cut=bdt_cut, name='PRec', obs=obs, use_weights=True, bandwidth=20)
     _plot_pdf(pdf, 'bdt_bdXcHs_psi2_mass_psi2')
 #-----------------------------------------------
 def test_bd():
     obs=zfit.Space('mass', limits=(4000, 6000))
 
-    obj=prld(proc='bdXcHs', trig='ETOS', q2bin='jpsi', dset='2018')
+    obj=prld(samples='bdXcHs', trig='ETOS', q2bin='jpsi', dset='2018')
     pdf_0=obj.get_pdf(mass='mass', cut='0.0 < BDT_cmb < 0.2', obs=obs, bandwidth=20)
     pdf_1=obj.get_pdf(mass='mass', cut='0.2 < BDT_cmb < 0.4', obs=obs, bandwidth=20)
     pdf_2=obj.get_pdf(mass='mass', cut='0.4 < BDT_cmb < 0.6', obs=obs, bandwidth=20)
@@ -107,7 +116,7 @@ def test_bd():
 def test_bp():
     obs=zfit.Space('mass', limits=(4000, 6000))
 
-    obj=prld(proc='bpXcHs', trig='ETOS', q2bin='jpsi', dset='2018')
+    obj=prld(samples='bpXcHs', trig='ETOS', q2bin='jpsi', dset='2018')
     pdf_0=obj.get_pdf(mass='mass', cut='0.0 < BDT_cmb < 0.2', obs=obs, bandwidth=20)
     pdf_1=obj.get_pdf(mass='mass', cut='0.2 < BDT_cmb < 0.4', obs=obs, bandwidth=20)
     pdf_2=obj.get_pdf(mass='mass', cut='0.4 < BDT_cmb < 0.6', obs=obs, bandwidth=20)
@@ -122,10 +131,10 @@ def test_bp():
     _plot_pdf(pdf_4, 'bp_bdt_04')
     _plot_pdf(pdf_5, 'bp_bdt_05')
 #-----------------------------------------------
-def test_wt(q2bin='psi2', proc='bpXcHs', mass='mass'):
+def test_wt(q2bin='psi2', samples='bpXcHs', mass='mass'):
     obs=zfit.Space('mass', limits=(5100, 5680))
 
-    obp=prld(proc=proc, trig='ETOS', q2bin=q2bin, dset='2018')
+    obp=prld(samples=samples, trig='ETOS', q2bin=q2bin, dset='2018')
 
     bandwidth=15
     if   q2bin == 'jpsi' and mass == 'mass_psi2':
@@ -141,17 +150,17 @@ def test_wt(q2bin='psi2', proc='bpXcHs', mass='mass'):
     pdf_u=obp.get_pdf(mass=mass, use_weights=False, obs=obs, bandwidth=bandwidth, padding=padding)
     pdf_w=obp.get_pdf(mass=mass, use_weights=True , obs=obs, bandwidth=bandwidth, padding=padding)
 
-    proc = proc.replace('*', 'x')
+    samples = samples.replace('*', 'x')
 
-    _plot_pdf(pdf_u, f'{proc}_{q2bin}_{mass}_nwgt')
-    _plot_pdf(pdf_w, f'{proc}_{q2bin}_{mass}_ywgt')
+    _plot_pdf(pdf_u, f'{samples}_{q2bin}_{mass}_nwgt')
+    _plot_pdf(pdf_w, f'{samples}_{q2bin}_{mass}_ywgt')
 #-----------------------------------------------
-def do_test_match(q2bin, proc, mass, weights, match):
+def do_test_match(q2bin, samples, mass, weights, match):
     obs=zfit.Space('mass', limits=(5100, 5680))
 
-    obp=prld(proc=proc, trig='ETOS', q2bin=q2bin, dset='2018')
+    obp=prld(samples=samples, trig='ETOS', q2bin=q2bin, dset='2018')
     pdf=obp.get_pdf(mass=mass, obs=obs, use_weights=weights, padding=0.1, cut=Data.d_cut[match])
-    _plot_pdf(pdf, f'{match}_{proc}_{q2bin}_{mass}', maxy=300)
+    _plot_pdf(pdf, f'{match}_{samples}_{q2bin}_{mass}', maxy=300)
 #-----------------------------------------------
 def test_match(weight):
     do_test_match('psi2', 'bpXcHs', 'mass_psi2', weight, 'bp_psjp')
@@ -166,7 +175,7 @@ def test_match(weight):
 def test_split():
     obs=zfit.Space('mass', limits=(5100, 5680))
 
-    obp  =prld(proc='bpXcHs', trig='ETOS', q2bin='psi2', dset='2018')
+    obp  =prld(samples='bpXcHs', trig='ETOS', q2bin='psi2', dset='2018')
     d_pdf=obp.get_components(mass='mass_psi2', obs=obs, use_weights=True, padding=0.1)
 
     for name, pdf in d_pdf.items():
@@ -179,7 +188,7 @@ def test_sum():
         maxy = 2000 if ccbar == 'psi2' else 8000
         for dec in [0, 1]:
             for sam in [0, 1]:
-                obp=prld(proc='b*XcHs', trig='ETOS', q2bin=ccbar, dset='2018', d_weight={'dec': dec, 'sam' : sam})
+                obp=prld(samples='b*XcHs', trig='ETOS', q2bin=ccbar, dset='2018', d_weight={'dec': dec, 'sam' : sam})
                 pdf=obp.get_sum(mass=f'mass_{ccbar}', name='PRec', obs=obs, padding=0.1, bandwidth=10)
 
                 _plot_pdf(pdf, f'sum_bxXcHs_{ccbar}_mass_{ccbar}_dec{dec}_sam{sam}', maxy=maxy)
@@ -189,7 +198,7 @@ def test_sum_allon():
 
     for ccbar in ['jpsi', 'psi2']:
         maxy = 3000 if ccbar == 'psi2' else 9000
-        obp=prld(proc='b*XcHs', trig='ETOS', q2bin=ccbar, dset='2018', d_weight={'dec': 1, 'sam' : 1})
+        obp=prld(samples='b*XcHs', trig='ETOS', q2bin=ccbar, dset='2018', d_weight={'dec': 1, 'sam' : 1})
         pdf=obp.get_sum(mass=f'mass_{ccbar}', name='PRec', obs=obs, padding=0.1, bandwidth=10)
 
         _plot_pdf(pdf, f'sum_bxXcHs_{ccbar}_mass_{ccbar}', maxy=maxy)
@@ -198,7 +207,7 @@ def test_brem():
     obs=zfit.Space('mass', limits=(4000, 5680))
 
     for nbrem in [0, 1, 2]:
-        obp=prld(proc='b*XcHs', trig='ETOS', q2bin='jpsi', dset='2018')
+        obp=prld(samples='b*XcHs', trig='ETOS', q2bin='jpsi', dset='2018')
         obp.val_dir = f'{Data.out_dir}/validation'
         obp.nbrem   = nbrem
         pdf=obp.get_sum(mass='mass_jpsi', name='PRec', obs=obs, use_weights=True, padding=0.1)
@@ -209,60 +218,66 @@ def test_dset():
     obs=zfit.Space('mass', limits=(4000, 5680))
 
     for dset in ['r1', 'r2p1', '2017', '2018']:
-        obp=prld(proc='b*XcHs', trig='ETOS', q2bin='psi2', dset=dset)
+        obp=prld(samples='b*XcHs', trig='ETOS', q2bin='psi2', dset=dset)
         pdf=obp.get_sum(mass='mass_psi2', name='PRec', obs=obs, use_weights=True, padding=0.1)
         _plot_pdf(pdf, f'sum_bxXcHs_psi2_mass_psi2_{dset}', maxy=3000)
 #-----------------------------------------------
 def test_simple_jpsi():
-    obs=zfit.Space('mass', limits=(4000, 6000))
-
-    d_wgt= {'dec' : 1, 'sam' : 1}
-    obp_1=prld(proc='b*', trig='ETOS', q2bin='jpsi', dset='2018', d_weight=d_wgt)
-    obp_1.val_dir = Data.out_dir
-    pdf_1=obp_1.get_sum(mass='mass_jpsi', name='PRec_1', obs=obs, bandwidth=10)
-    _plot_pdf(pdf_1, 'Fully corrected', maxy=2500)
-
-    d_wgt= {'dec' : 1, 'sam' : 0}
-    obp_2=prld(proc='b*', trig='ETOS', q2bin='jpsi', dset='2018', d_weight=d_wgt)
-    obp_2.val_dir = Data.out_dir
-    pdf_2=obp_2.get_sum(mass='mass_jpsi', name='PRec_2', obs=obs, bandwidth=10)
-    _plot_pdf(pdf_2, 'No sample weights', maxy=3000)
-
-    d_wgt= {'dec' : 0, 'sam' : 1}
-    obp_3=prld(proc='b*', trig='ETOS', q2bin='jpsi', dset='2018', d_weight=d_wgt)
-    obp_3.val_dir = Data.out_dir
-    pdf_3=obp_3.get_sum(mass='mass_jpsi', name='PRec_3', obs=obs, bandwidth=10)
-    _plot_pdf(pdf_3, 'No decay weights', maxy=3000)
+    '''
+    Simplest test with inclusive around jpsi bin
+    '''
+    obs=zfit.Space('mass', limits=(4500, 6000))
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    mass   = 'B_const_mass_M'
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
 
     d_wgt= {'dec' : 0, 'sam' : 0}
-    obp_4=prld(proc='b*', trig='ETOS', q2bin='jpsi', dset='2018', d_weight=d_wgt)
-    obp_4.val_dir = Data.out_dir
-    pdf_4=obp_4.get_sum(mass='mass_jpsi', name='PRec_4', obs=obs, bandwidth=10)
-    _plot_pdf(pdf_4, 'Uncorrected', maxy=3000)
+    obp_4=prld(samples=l_samp, trig=trig, q2bin='jpsi', d_weight=d_wgt)
+    pdf_4=obp_4.get_sum(mass=mass, name='PRec_4', obs=obs, bandwidth=10)
+    _plot_pdf(pdf_4, 'Uncorrected', maxy=10_000)
+
+    d_wgt= {'dec' : 0, 'sam' : 1}
+    obp_3=prld(samples=l_samp, trig=trig, q2bin='jpsi', d_weight=d_wgt)
+    pdf_3=obp_3.get_sum(mass=mass, name='PRec_3', obs=obs, bandwidth=10)
+    _plot_pdf(pdf_3, 'No decay weights', maxy=10_000)
+
+    d_wgt= {'dec' : 1, 'sam' : 0}
+    obp_2=prld(samples=l_samp, trig=trig, q2bin='jpsi', d_weight=d_wgt)
+    pdf_2=obp_2.get_sum(mass=mass, name='PRec_2', obs=obs, bandwidth=10)
+    _plot_pdf(pdf_2, 'No sample weights', maxy=10_000)
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    obp_1=prld(samples=l_samp, trig=trig, q2bin='jpsi', d_weight=d_wgt)
+    pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=10)
+    _plot_pdf(pdf_1, 'Fully corrected', maxy=10_000)
 #-----------------------------------------------
 def test_simple_psi2():
     obs=zfit.Space('mass', limits=(4500, 6000))
 
     d_wgt= {'dec' : 1, 'sam' : 1}
-    obp_1=prld(proc='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
+    obp_1=prld(samples='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
     obp_1.val_dir = Data.out_dir
     pdf_1=obp_1.get_sum(mass='mass_psi2', name='PRec_1', obs=obs, bandwidth=10)
     _plot_pdf(pdf_1, 'Fully corrected', maxy=400)
 
     d_wgt= {'dec' : 1, 'sam' : 0}
-    obp_2=prld(proc='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
+    obp_2=prld(samples='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
     obp_2.val_dir = Data.out_dir
     pdf_2=obp_2.get_sum(mass='mass_psi2', name='PRec_2', obs=obs, bandwidth=10)
     _plot_pdf(pdf_2, 'No sample weights', maxy=400)
 
     d_wgt= {'dec' : 0, 'sam' : 1}
-    obp_3=prld(proc='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
+    obp_3=prld(samples='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
     obp_3.val_dir = Data.out_dir
     pdf_3=obp_3.get_sum(mass='mass_psi2', name='PRec_3', obs=obs, bandwidth=10)
     _plot_pdf(pdf_3, 'No decay weights', maxy=400)
 
     d_wgt= {'dec' : 0, 'sam' : 0}
-    obp_4=prld(proc='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
+    obp_4=prld(samples='b*', trig='ETOS', q2bin='psi2', dset='2018', d_weight=d_wgt)
     obp_4.val_dir = Data.out_dir
     pdf_4=obp_4.get_sum(mass='mass_psi2', name='PRec_4', obs=obs, bandwidth=10)
     _plot_pdf(pdf_4, 'Uncorrected', maxy=400)
@@ -272,7 +287,7 @@ def test_split_type():
 
     d_wgt   = {'dec' : 1, 'sam' : 1}
     for qsq, spl in [('jpsi', 'sam'), ('psi2', 'phy')]:
-        obp=prld(proc='b*XcHs', trig='ETOS', q2bin='jpsi', dset='2018', d_weight=d_wgt, split=spl)
+        obp=prld(samples='b*XcHs', trig='ETOS', q2bin='jpsi', dset='2018', d_weight=d_wgt, split=spl)
         pdf=obp.get_sum(mass='mass_jpsi', name='PRec', obs=obs, bandwidth=10)
         _plot_pdf(pdf, 'bdt_bxXcHs_jpsi_mass_jpsi')
 #-----------------------------------------------
