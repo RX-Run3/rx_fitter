@@ -1,10 +1,13 @@
 '''
 Module containing PRec
 '''
+
+from ROOT     import RDataFrame
 import zfit
 import numpy
 import pandas as pnd
 
+from rx_selection          import selection as sel
 from rx_data.rdf_getter    import RDFGetter
 from dmu.logging.log_store import LogStore
 
@@ -40,13 +43,7 @@ class PRec:
 
         self._nbrem : int = None
         self._d_match     = None
-        self._l_columns   ={'mva_cmb',
-                            'mva_prc',
-                            'B_M',
-                            'Jpsi_M',
-                            'B_const_mass_M'}
-
-        self._initialized=False
+        self._initialized = False
     #-----------------------------------------------------------
     def _initialize(self):
         if self._initialized:
@@ -74,6 +71,31 @@ class PRec:
 
         return df
     #-----------------------------------------------------------
+    def _need_var(self, name : str) -> bool:
+        if name.endswith('ID'):
+            return True
+
+        if name.startswith('B_const_mass'):
+            return True
+
+        if name in ['B_M']:
+            return True
+
+        return False
+    #-----------------------------------------------------------
+    def _filter_rdf(self, rdf : RDataFrame, sample : str) -> RDataFrame:
+        d_sel = sel.selection(project='RK', analysis='EE', q2bin=self._q2bin, process=sample)
+        for name, expr in d_sel.items():
+            if name == 'mass':
+                continue
+
+            rdf = rdf.Filter(expr, name)
+
+        rep = rdf.Report()
+        rep.Print()
+
+        return rdf
+    #-----------------------------------------------------------
     def _get_samples_df(self) -> dict[str,pnd.DataFrame]:
         '''
         Returns dataframes for each sample
@@ -81,8 +103,10 @@ class PRec:
         d_df = {}
         for sample in self._l_sample:
             gtr        = RDFGetter(sample=sample, trigger=self._trig)
-            rdf        = gtr.get_rdf(columns=self._l_columns, regex='.*ID')
-            data       = rdf.AsNumpy()
+            rdf        = gtr.get_rdf()
+            rdf        = self._filter_rdf(rdf, sample)
+            l_var      = [ name.c_str() for name in rdf.GetColumnNames() if self._need_var( name.c_str() )]
+            data       = rdf.AsNumpy(l_var)
             df         = pnd.DataFrame(data)
             df         = self._filter_by_brem(df)
             df['proc'] = sample
