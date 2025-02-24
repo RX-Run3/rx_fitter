@@ -3,6 +3,7 @@ Module with Reader class used to read weights to normalize between inclusive sam
 '''
 
 import os
+from functools import lru_cache 
 
 import pandas    as pnd
 from dmu.logging.log_store import LogStore
@@ -24,12 +25,14 @@ class Reader:
         self._bd_proc = 'Bd_JpsiX_ee_eq_JpsiInAcc'
         self._bs_proc = 'Bs_JpsiX_ee_eq_JpsiInAcc'
     #---------------------------
+    @lru_cache(maxsize=10)
     def _get_br_wgt(self, proc : str) -> float:
         '''
         Will return ratio: 
 
         decay file br / pdg_br 
         '''
+
         #--------------------------------------------
         #Decay B+sig
         #0.1596  MyJ/psi    K+           SVS ;
@@ -40,6 +43,7 @@ class Reader:
         #Decay B_s0sig
         #0.1077  MyJ/psi    Myphi        PVV_CPLH 0.02 1 Hp pHp Hz pHz Hm pHm;
         #--------------------------------------------
+
         if proc == self._bu_proc:
             return pu.get_bf('B+ --> J/psi(1S) K+') / 0.1596
 
@@ -51,10 +55,13 @@ class Reader:
 
         raise ValueError(f'Invalid process {proc}')
     #---------------------------
+    @lru_cache(maxsize=10)
     def _get_hd_wgt(self, proc : str) -> float:
         '''
         Will return hadronization fractions used as weights
         '''
+        log.info(f'Getting hadronization weights for sample {proc}')
+
         if proc in [self._bu_proc, self._bd_proc]:
             return self._fu
 
@@ -80,6 +87,7 @@ class Reader:
 
         return True
     #---------------------------
+    @lru_cache(maxsize=10)
     def _get_st_wgt(self, proc : str) -> float:
         return 1 
     #---------------------------
