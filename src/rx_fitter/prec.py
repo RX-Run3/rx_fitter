@@ -422,15 +422,25 @@ class PRec:
 
         and it will return a KDE1DimFFT PDF.
         '''
-        df = self._filter_cut(cut)
-        df = self._filter_mass(df, mass, kwargs['obs'])
+        identifier = self._get_identifier(mass, cut, **kwargs)
+        cache_path = self._path_from_identifier(identifier)
 
-        log.info(f'Using mass: {mass} for component {kwargs["name"]}')
+        if os.path.isfile(cache_path):
+            log.info(f'Cached PDF found, loading: {cache_path}')
+            df = pnd.read_json(cache_path)
+        else:
+            self._initialize()
+            log.info('Cached PDF not found, calculating it')
+            df = self._filter_cut(cut)
+            df = self._filter_mass(df, mass, kwargs['obs'])
+            log.info(f'Using mass: {mass} for component {kwargs["name"]}')
+            self._print_cutflow()
+            df = self._drop_columns(df)
+            df.to_json(cache_path, indent=4)
+
         arr_mass = df[mass].to_numpy()
         arr_wgt  = df.wgt_br.to_numpy()
         df_id    = self._get_df_id(df)
-
-        self._print_cutflow()
 
         pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=arr_wgt, **kwargs)
         pdf.arr_mass = arr_mass
