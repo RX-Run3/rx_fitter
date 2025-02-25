@@ -1,7 +1,7 @@
 '''
 Module with functions needed to provide fit components
 '''
-# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-positional-arguments, too-many-function-args
 
 import os
 import copy
@@ -62,15 +62,16 @@ def get_mc(obs, sample : str, q2bin : str, trigger : str, model : list[str]) -> 
     '''
     Will return FitComponent object for given MC sample
     '''
+    mass           = obs.obs[0]
     cfg            = copy.deepcopy(Data.cfg)
     cfg['name']    = sample
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}'
+    cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}'
 
     rdf   = _get_rdf(sample, q2bin, trigger)
     rdf   = rdf.Define('weights', '1')
 
-    mod   = ModelFactory(preffix=sample, obs = obs, l_pdf = model, l_shared=['mu', 'sg'])
+    mod   = ModelFactory(sample, obs, model, ['mu', 'sg'])
     pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=obs)
