@@ -1,6 +1,7 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
+import zfit
 from rx_fitter import components as cmp
 
 # ------------------------------
@@ -8,10 +9,14 @@ def main():
     '''
     Start here
     '''
-    cmp_sig = cmp.get_mc(name = 'Bu_JpsiK_ee_eq_DPC', q2bin='jpsi', model=['cbl', 'cbl', 'cbr'])
-    cmp_prc = cmp.get_mc(name = 'Bu_JpsiPi_ee_eq_DPC', q2bin='jpsi', model=['cbl', 'cbl', 'cbr'])
+
+    obs=zfit.Space('B_const_mass_M', limits=(4500, 6000))
+    trigger = 'Hlt2RD_BuToKpEE_MVA'
+
+    cmp_sig = cmp.get_mc(obs = obs, sample = 'Bu_JpsiK_ee_eq_DPC' , trigger, q2bin='jpsi', model=['cbl', 'cbl', 'cbr'])
+    cmp_csp = cmp.get_mc(obs = obs, sample = 'Bu_JpsiPi_ee_eq_DPC', trigger, q2bin='jpsi', model=['cbl', 'cbl', 'cbr'])
+    cmb_prc = cmp.get_prc(obs = obs, trigger=trigger, q2bin='jpsi')
     cmb_cmb = cmp.get_cb(kind='expo')
-    cmb_prc = cmp.get_prc()
 # ------------------------------
 if __name__ == '__main__':
     main()
