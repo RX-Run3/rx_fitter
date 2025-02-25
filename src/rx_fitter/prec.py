@@ -392,12 +392,7 @@ class PRec:
 
         hval  = value.hexdigest()
 
-        log.info('Hashing')
-        log.debug(20 * '-')
-        log.debug(inval)
-        log.debug('--->')
-        log.debug(hval)
-        log.debug(20 * '-')
+        log.debug('Hashing')
 
         return hval
     #-----------------------------------------------------------
