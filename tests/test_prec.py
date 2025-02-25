@@ -131,12 +131,30 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
     _plot_pdf(pdf, test, f'bdt_{name}', maxy=maxy)
 #-----------------------------------------------
-def test_split_type():
-    obs=zfit.Space('mass', limits=(4500, 6000))
+def test_cache():
+    '''
+    Testing caching of PDF
+    '''
+    q2bin  = 'jpsi'
+    bdt_cut= 'mva.mva_prc > 0.5'
 
-    d_wgt   = {'dec' : 1, 'sam' : 1}
-    for qsq, spl in [('jpsi', 'sam'), ('psi2', 'phy')]:
-        obp=prld(samples='b*XcHs', trig='ETOS', q2bin='jpsi', dset='2018', d_weight=d_wgt, split=spl)
-        pdf=obp.get_sum(mass='mass_jpsi', name='PRec', obs=obs, bandwidth=10)
-        _plot_pdf(pdf, 'bdt_bxXcHs_jpsi_mass_jpsi')
+    obs=zfit.Space('mass', limits=(4500, 6000))
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
+    maxy   = {'jpsi' : 20_000          , 'psi2' :                  4_000}[q2bin]
+    bw     = {'jpsi' :  5              , 'psi2' :                     10}[q2bin]
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
+
+    test = f'cache/{q2bin}'
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    obp=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp.cuts = {'bdt' : bdt_cut}
+
+    pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
+    _plot_pdf(pdf, test, 'cache', maxy=maxy)
 #-----------------------------------------------
