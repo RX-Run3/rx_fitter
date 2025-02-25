@@ -360,7 +360,7 @@ class PRec:
 
         return df
     #-----------------------------------------------------------
-    def _get_pdf(self, mass=None, cut=None, **kwargs):
+    def _get_pdf(self, mass : str, cut : str, **kwargs) -> zpdf:
         '''
         Will take the mass, with values in:
 
@@ -394,7 +394,7 @@ class PRec:
 
         return pdf
     #-----------------------------------------------------------
-    def _print_cutflow(self):
+    def _print_cutflow(self) -> None:
         log.debug('-' * 50)
         log.debug(f'{"Cut":<30}{"Total":<20}{"Passed":<20}')
         log.debug('-' * 50)
@@ -402,11 +402,11 @@ class PRec:
             log.debug(f'{cut:<30}{inum:<20}{fnum:<20}')
         log.debug('-' * 50)
     #-----------------------------------------------------------
-    def get_sum(self, mass=None, name='unnamed', **kwargs):
+    def get_sum(self, mass : str, name='unnamed', **kwargs) -> zpdf:
         '''Provides extended PDF that is the sum of multiple KDEs representing PRec background
 
         Parameters:
-        mass (str) : Defines which mass constrain to use, choose between "mass", "mass_jpsi", "mass_psi2"
+        mass (str) : Defines which mass constrain to use, choose between "B_M", "B_const_mass_M", "B_const_mass_psi2S_M"
         name (str) : PDF name
         **kwargs: Arguments meant to be taken by zfit KDE1DimFFT
 
