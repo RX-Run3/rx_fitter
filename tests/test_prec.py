@@ -233,6 +233,7 @@ def test_reso(q2bin : str):
     trig   = 'Hlt2RD_BuToKpEE_MVA'
     mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
     maxy   = {'jpsi' : 10_000          , 'psi2' :                  2_000}[q2bin]
+    bw     = {'jpsi' :  5              , 'psi2' :                     10}[q2bin]
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
             'Bd_JpsiX_ee_eq_JpsiInAcc',
@@ -243,22 +244,22 @@ def test_reso(q2bin : str):
 
     d_wgt= {'dec' : 0, 'sam' : 0}
     obp_4=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-    pdf_4=obp_4.get_sum(mass=mass, name='PRec_4', obs=obs, bandwidth=10)
+    pdf_4=obp_4.get_sum(mass=mass, name='PRec_4', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_4, test,'Uncorrected', maxy=maxy)
 
     d_wgt= {'dec' : 0, 'sam' : 1}
     obp_3=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-    pdf_3=obp_3.get_sum(mass=mass, name='PRec_3', obs=obs, bandwidth=10)
+    pdf_3=obp_3.get_sum(mass=mass, name='PRec_3', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_3, test,'No decay weights', maxy=maxy)
 
     d_wgt= {'dec' : 1, 'sam' : 0}
     obp_2=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-    pdf_2=obp_2.get_sum(mass=mass, name='PRec_2', obs=obs, bandwidth=10)
+    pdf_2=obp_2.get_sum(mass=mass, name='PRec_2', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_2, test,'No sample weights', maxy=maxy)
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp_1=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-    pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=10)
+    pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_1, test,'Fully corrected', maxy=maxy)
 #-----------------------------------------------
 def test_split_type():
