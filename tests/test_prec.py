@@ -248,16 +248,19 @@ def test_reso(q2bin : str):
     pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_1, test,'Fully corrected', maxy=maxy)
 #-----------------------------------------------
-@pytest.mark.parametrize('bdt_cut', ['mva.mva_cmb > 0.5', 'mva.mva_cmb > 0.8', 'mva.mva_cmb > 0.9'])
+@pytest.mark.parametrize('bdt_cut, name', [
+    ('mva.mva_prc > 0.5', '0p5'),
+    ('mva.mva_prc > 0.8', '0p8'),
+    ('mva.mva_prc > 0.9', '0p9')])
 @pytest.mark.parametrize('q2bin'  , ['jpsi', 'psi2'])
-def test_bdt(q2bin : str, bdt_cut : str):
+def test_bdt(q2bin : str, bdt_cut : str, name : str):
     '''
     Testing application of BDT cuts
     '''
     obs=zfit.Space('mass', limits=(4500, 6000))
     trig   = 'Hlt2RD_BuToKpEE_MVA'
     mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
-    maxy   = {'jpsi' : 10_000          , 'psi2' :                  2_000}[q2bin]
+    maxy   = {'jpsi' : 20_000          , 'psi2' :                  4_000}[q2bin]
     bw     = {'jpsi' :  5              , 'psi2' :                     10}[q2bin]
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
@@ -272,7 +275,7 @@ def test_bdt(q2bin : str, bdt_cut : str):
     obp.cuts = {'bdt' : bdt_cut}
 
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
-    _plot_pdf(pdf, test,'bdt', maxy=maxy)
+    _plot_pdf(pdf, test, f'bdt_{name}', maxy=maxy)
 #-----------------------------------------------
 def test_split_type():
     obs=zfit.Space('mass', limits=(4500, 6000))
