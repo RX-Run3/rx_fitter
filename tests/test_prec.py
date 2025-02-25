@@ -103,6 +103,8 @@ def test_reso(q2bin : str):
     _plot_pdf(pdf_1, test,'Fully corrected', maxy=maxy)
 #-----------------------------------------------
 @pytest.mark.parametrize('bdt_cut, name', [
+    ('mva.mva_prc > 0.0', '0p0'),
+    ('mva.mva_prc > 0.2', '0p2'),
     ('mva.mva_prc > 0.5', '0p5'),
     ('mva.mva_prc > 0.8', '0p8'),
     ('mva.mva_prc > 0.9', '0p9')])
