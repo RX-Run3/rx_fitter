@@ -2,7 +2,7 @@
 disable=logging-fstring-interpolation, too-few-public-methods, line-too-long, no-name-in-module, import-error
 
 [MASTER]
-init-hook='import sys; sys.path.append("/home/acampove/micromamba/envs/rk/lib/python3.10/site-packages")'
+init-hook='import sys; sys.path.append("/home/acampove/micromamba/envs/rx_run3/lib/python3.11/site-packages")'
 
 [TYPECHECK]
 ignored-modules = numpy
