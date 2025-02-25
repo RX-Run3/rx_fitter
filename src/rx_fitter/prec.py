@@ -1,6 +1,7 @@
 '''
 Module containing PRec
 '''
+import os
 
 from ROOT     import RDataFrame
 import zfit
@@ -359,6 +360,19 @@ class PRec:
         self._d_fstat[cut] = inum, fnum
 
         return df
+    #-----------------------------------------------------------
+    def _get_identifier(self, mass : str, cut : str, **kwargs) -> str:
+        fset = frozenset(kwargs.items())
+        hsh1 = hash(fset)
+        hsh2 = hash(mass + cut)
+
+        return f'{hsh1}_{hsh2}'
+    #-----------------------------------------------------------
+    def _path_from_identifier(self, identifier : str) -> str:
+        dir_path = '/tmp/cache/prec'
+        os.makedirs(dir_path, exist_ok=True)
+
+        return f'{dir_path}/pdf_{identifier}.json'
     #-----------------------------------------------------------
     def _get_pdf(self, mass : str, cut : str, **kwargs) -> zpdf:
         '''
