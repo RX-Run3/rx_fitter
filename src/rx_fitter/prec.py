@@ -378,10 +378,26 @@ class PRec:
     #-----------------------------------------------------------
     def _get_identifier(self, mass : str, cut : str, **kwargs) -> str:
         fset = frozenset(kwargs.items())
-        hsh1 = hash(fset)
-        hsh2 = hash(mass + cut)
+        fset = str(fset)
+        fset = ''.join(sorted(fset))
+        val  = mass + cut + fset
 
-        return f'{hsh1}_{hsh2}'
+        return self._stable_hash(val)
+    #-----------------------------------------------------------
+    def _stable_hash(self, inval : str) -> str:
+        value = inval.encode()
+        value = hashlib.sha256(value)
+
+        hval  = value.hexdigest()
+
+        log.info('Hashing')
+        log.debug(20 * '-')
+        log.debug(inval)
+        log.debug('--->')
+        log.debug(hval)
+        log.debug(20 * '-')
+
+        return hval
     #-----------------------------------------------------------
     def _path_from_identifier(self, identifier : str) -> str:
         dir_path = '/tmp/cache/prec'
