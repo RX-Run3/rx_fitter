@@ -7,6 +7,7 @@ import zfit
 import numpy
 import pandas as pnd
 
+from zfit.core.basepdf     import BasePDF   as zpdf
 from rx_selection          import selection as sel
 from rx_data.rdf_getter    import RDFGetter
 from dmu.logging.log_store import LogStore
@@ -42,6 +43,7 @@ class PRec:
         self._d_fstat  = {}
 
         self._nbrem : int = None
+        self._d_cut       = None
         self._d_match     = None
         self._initialized = False
     #-----------------------------------------------------------
@@ -56,6 +58,20 @@ class PRec:
         self._df      = self._get_df()
 
         self._initialized = True
+    #-----------------------------------------------------------
+    @property
+    def cuts(self) -> dict[str,str]:
+        '''
+        Getter for cuts
+        '''
+        return self._d_cut
+
+    @cuts.setter
+    def cuts(self, value : dict[str,str]):
+        '''
+        These cuts will override whatever is taken from the selection module
+        '''
+        self._d_cut = value
     #-----------------------------------------------------------
     def _get_df(self) -> pnd.DataFrame:
         '''
@@ -85,6 +101,10 @@ class PRec:
     #-----------------------------------------------------------
     def _filter_rdf(self, rdf : RDataFrame, sample : str) -> RDataFrame:
         d_sel = sel.selection(project='RK', analysis='EE', q2bin=self._q2bin, process=sample)
+        if self._d_cut is not None:
+            log.warning('Overriding default selection')
+            d_sel.update(self._d_cut)
+
         for name, expr in d_sel.items():
             if name == 'mass':
                 continue
