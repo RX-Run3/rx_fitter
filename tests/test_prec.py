@@ -83,20 +83,6 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str):
     text_path = plot_path.replace('png', 'txt')
     print_pdf(pdf, txt_path=text_path)
 #-----------------------------------------------
-def test_bdt():
-    obs=zfit.Space('mass', limits=(4500, 6000))
-
-    bdt_cut = "(BDT_cmb > 0.977000) & (BDT_prc > 0.480751)"
-    #bdt_cut = None
-
-    obp=prld(samples='bdXcHs', trig='ETOS', q2bin='psi2', dset='2018')
-    pdf=obp.get_pdf(mass='mass_psi2', cut=bdt_cut, name='PRec', obs=obs, use_weights=True, bandwidth=20)
-    _plot_pdf(pdf, 'bdt_bpXcHs_psi2_mass_psi2')
-
-    obp=prld(samples='bpXcHs', trig='ETOS', q2bin='psi2', dset='2018')
-    pdf=obp.get_pdf(mass='mass_psi2', cut=bdt_cut, name='PRec', obs=obs, use_weights=True, bandwidth=20)
-    _plot_pdf(pdf, 'bdt_bdXcHs_psi2_mass_psi2')
-#-----------------------------------------------
 def test_bd():
     obs=zfit.Space('mass', limits=(4000, 6000))
 
@@ -261,6 +247,32 @@ def test_reso(q2bin : str):
     obp_1=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_1, test,'Fully corrected', maxy=maxy)
+#-----------------------------------------------
+@pytest.mark.parametrize('bdt_cut', ['mva.mva_cmb > 0.5', 'mva.mva_cmb > 0.8', 'mva.mva_cmb > 0.9'])
+@pytest.mark.parametrize('q2bin'  , ['jpsi', 'psi2'])
+def test_bdt(q2bin : str, bdt_cut : str):
+    '''
+    Testing application of BDT cuts
+    '''
+    obs=zfit.Space('mass', limits=(4500, 6000))
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
+    maxy   = {'jpsi' : 10_000          , 'psi2' :                  2_000}[q2bin]
+    bw     = {'jpsi' :  5              , 'psi2' :                     10}[q2bin]
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
+
+    test = f'bdt/{q2bin}'
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    obp=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp.cuts = {'bdt' : bdt_cut}
+
+    pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
+    _plot_pdf(pdf, test,'bdt', maxy=maxy)
 #-----------------------------------------------
 def test_split_type():
     obs=zfit.Space('mass', limits=(4500, 6000))
