@@ -2,6 +2,7 @@
 Module containing PRec
 '''
 import os
+import hashlib
 
 from ROOT     import RDataFrame
 import zfit
@@ -45,7 +46,7 @@ class PRec:
 
         self._nbrem : int = None
         self._d_cut       = None
-        self._d_match     = None
+        self._d_match     = self._get_match_str()
         self._initialized = False
     #-----------------------------------------------------------
     def _initialize(self):
@@ -55,7 +56,6 @@ class PRec:
         self._check_valid(self._q2bin, ['low', 'central', 'jpsi', 'psi2', 'high'], 'q2bin')
         self._check_weights()
 
-        self._d_match = self._get_match_str()
         self._df      = self._get_df()
 
         self._initialized = True
@@ -428,7 +428,6 @@ class PRec:
         zfit.pdf.SumPDF instance
         '''
         self._name = name
-        self._initialize()
 
         d_pdf     = { name : self._get_pdf(mass, cut, name=name, **kwargs) for name, cut in self._d_match.items()}
         l_pdf     = list(d_pdf.values())
