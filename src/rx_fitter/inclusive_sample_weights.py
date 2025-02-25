@@ -3,7 +3,7 @@ Module with Reader class used to read weights to normalize between inclusive sam
 '''
 
 import os
-from functools import lru_cache 
+from functools import lru_cache
 
 import pandas    as pnd
 from dmu.logging.log_store import LogStore
@@ -28,9 +28,9 @@ class Reader:
     @lru_cache(maxsize=10)
     def _get_br_wgt(self, proc : str) -> float:
         '''
-        Will return ratio: 
+        Will return ratio:
 
-        decay file br / pdg_br 
+        decay file br / pdg_br
         '''
 
         #--------------------------------------------
@@ -89,7 +89,7 @@ class Reader:
     #---------------------------
     @lru_cache(maxsize=10)
     def _get_st_wgt(self, proc : str) -> float:
-        return 1 
+        return 1
     #---------------------------
     def _get_weight(self, row : pnd.Series) -> float:
         w1 = self._get_st_wgt(row.proc)
