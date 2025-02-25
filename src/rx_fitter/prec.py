@@ -377,10 +377,12 @@ class PRec:
         return df
     #-----------------------------------------------------------
     def _get_identifier(self, mass : str, cut : str, **kwargs) -> str:
+        fwgt = frozenset(self._d_wg.items())
         fset = frozenset(kwargs.items())
-        fset = str(fset)
-        fset = ''.join(sorted(fset))
-        val  = mass + cut + fset
+
+        lstr = str(fset) + str(fwgt) + str(self._l_sample) + self._trig + self._q2bin
+        lstr = ''.join(sorted(lstr))
+        val  = mass + cut + lstr
 
         return self._stable_hash(val)
     #-----------------------------------------------------------
