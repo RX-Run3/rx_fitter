@@ -92,10 +92,7 @@ class PRec:
         if name.endswith('ID'):
             return True
 
-        if name.startswith('B_const_mass'):
-            return True
-
-        if name in ['B_M']:
+        if name in ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M']:
             return True
 
         return False
