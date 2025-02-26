@@ -17,6 +17,7 @@ dev  = ['pytest']
 where   = ['src']
 
 [project.scripts]
+model_tester='rx_fitter_scripts.model_tester:main'
 rx_fit_mm='rx_fitter_scripts.rx_fit_mm:main'
 rx_fit_ee='rx_fitter_scripts.rx_fit_ee:main'
 
