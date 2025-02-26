@@ -14,7 +14,7 @@ from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
 from rx_data.rdf_getter     import RDFGetter
-from rx_fitter.prec         import PRec as prld
+from rx_fitter.prec         import PRec
 
 log=LogStore.add_logger('rx_fitter:test_prec')
 #-----------------------------------------------
@@ -83,22 +83,22 @@ def test_reso(q2bin : str):
     test = f'reso/{q2bin}'
 
     d_wgt= {'dec' : 0, 'sam' : 0}
-    obp_4=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp_4=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_4=obp_4.get_sum(mass=mass, name='PRec_4', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_4, test,'Uncorrected', maxy=maxy)
 
     d_wgt= {'dec' : 0, 'sam' : 1}
-    obp_3=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp_3=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_3=obp_3.get_sum(mass=mass, name='PRec_3', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_3, test,'No decay weights', maxy=maxy)
 
     d_wgt= {'dec' : 1, 'sam' : 0}
-    obp_2=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp_2=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_2=obp_2.get_sum(mass=mass, name='PRec_2', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_2, test,'No sample weights', maxy=maxy)
 
     d_wgt= {'dec' : 1, 'sam' : 1}
-    obp_1=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp_1=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
     _plot_pdf(pdf_1, test,'Fully corrected', maxy=maxy)
 #-----------------------------------------------
@@ -128,7 +128,7 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     test = f'bdt/{q2bin}'
 
     d_wgt= {'dec' : 1, 'sam' : 1}
-    obp=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     obp.cuts = {'bdt' : bdt_cut}
 
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
@@ -155,7 +155,7 @@ def test_cache():
     test = f'cache/{q2bin}'
 
     d_wgt= {'dec' : 1, 'sam' : 1}
-    obp=prld(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     obp.cuts = {'bdt' : bdt_cut}
 
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
