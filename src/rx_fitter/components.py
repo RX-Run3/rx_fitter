@@ -20,7 +20,7 @@ class Data:
     '''
     Data class
     '''
-    cache_dir = '/home/acampove/Data/RX_run3/cache/rx_fits'
+    cache_dir = '/tmp/cache/rx_fits'
     cfg       = {
             'out_dir': 'plots/fit',
             'fitting':
