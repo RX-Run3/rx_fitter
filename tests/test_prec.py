@@ -90,17 +90,17 @@ def test_reso(q2bin : str):
     d_wgt= {'dec' : 0, 'sam' : 1}
     obp_3=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_3=obp_3.get_sum(mass=mass, name='PRec_3', obs=obs, bandwidth=bw)
-    _plot_pdf(pdf_3, test,'No decay weights', maxy=maxy)
+    _plot_pdf(pdf_3, test,'Sample weights', maxy=maxy)
 
     d_wgt= {'dec' : 1, 'sam' : 0}
     obp_2=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_2=obp_2.get_sum(mass=mass, name='PRec_2', obs=obs, bandwidth=bw)
-    _plot_pdf(pdf_2, test,'No sample weights', maxy=maxy)
+    _plot_pdf(pdf_2, test,'Decay weights', maxy=maxy)
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp_1=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
-    _plot_pdf(pdf_1, test,'Fully corrected', maxy=maxy)
+    _plot_pdf(pdf_1, test,'Both weights', maxy=maxy)
 #-----------------------------------------------
 @pytest.mark.parametrize('bdt_cut, name', [
     ('mva.mva_prc > 0.0', '0p0'),
