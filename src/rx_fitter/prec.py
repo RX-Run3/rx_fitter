@@ -78,7 +78,7 @@ class PRec:
         Returns dataframe with masses and weights
         '''
         d_df         = self._get_samples_df()
-        d_df         = { sample : self._add_dec_weights(df) for sample, df in d_df.items() }
+        d_df         = { sample : self._add_dec_weights(sample, df) for sample, df in d_df.items() }
         df           = pnd.concat(d_df.values(), axis=0)
         df           = self._add_sam_weights(df)
 
@@ -137,14 +137,14 @@ class PRec:
 
         return d_df
     #-----------------------------------------------------------
-    def _add_dec_weights(self, df : pnd.DataFrame) -> pnd.DataFrame:
+    def _add_dec_weights(self, sample : str, df : pnd.DataFrame) -> pnd.DataFrame:
         dec = self._d_wg['dec']
 
         if   dec == 1:
-            log.debug('Adding decay weights')
+            log.debug(f'Adding decay weights to: {sample}')
             df['wgt_dec'] = df.apply(inclusive_decays_weights.read_weight, args=('L1', 'L2', 'H'), axis=1)
         elif dec == 0:
-            log.warning('Not using decay weights')
+            log.warning(f'Not using decay weights in: {sample}')
             df['wgt_dec'] = 1.
         else:
             raise ValueError(f'Invalid value of wgt_dec: {dec}')
