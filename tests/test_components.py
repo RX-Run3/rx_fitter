@@ -18,7 +18,8 @@ def _intiailize():
         'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
         'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
 # --------------------------------------------------------------
-def test_mc():
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+def test_signal(nbrem : int):
     '''
     Testing creation of PDF from MC sample
     '''
@@ -30,27 +31,6 @@ def test_mc():
                          sample = 'Bu_JpsiK_ee_eq_DPC',
                          trigger= trigger,
                          q2bin  = 'jpsi',
-
-                         #model  = ['cbl'])
-                         model  = ['cbl', 'cbr'])
-                         #model  =['dscb'])
-                         #model  = ['suj'])
-
-                         #model  =['dscb']) # works with brem == 2
-                         #model  = ['cbl', 'cbr', 'dscb'])
-                         #model  = ['cbl', 'cbr'])
-                         #model  = ['dscb', 'cbl'])
-                         #model  =['cbl', 'cbl', 'cbr'])
-                         #model  =['dscb', 'dscb'])
-
-                         # DTF mass
-                         #model  =['cbl', 'dscb', 'cbl'])
-
-                         #model  =['cbl', 'cbl', 'cbr'])
-                         #model  =['dscb', 'dscb'])
-                         #model  =['dscb', 'dscb', 'dscb'])
-                         #model  =['dscb']) # works with brem == 2
-                         #model  =['dscb']) # works with brem == 1
-                         #model  =['dscb']) # works with brem == 0
+                         nbrem  = nbrem)
     cmp_sig.run()
 # --------------------------------------------------------------
