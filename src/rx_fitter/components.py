@@ -142,8 +142,7 @@ def get_prc(obs, q2bin : str, trigger : str, nbrem : int) -> FitComponent:
             'Bs_JpsiX_ee_eq_JpsiInAcc']
 
     d_wgt= {'dec' : 1, 'sam' : 1}
-    obj=PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
-    pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, bandwidth=bw)
+    obj  = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
 
     if   nbrem == -1:
         pass
@@ -154,6 +153,7 @@ def get_prc(obs, q2bin : str, trigger : str, nbrem : int) -> FitComponent:
     else:
         raise ValueError(f'Invalid brem argument: {nbrem}')
 
+    pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, bandwidth=bw)
     fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
 
     return fcm
