@@ -6,7 +6,6 @@ Module with functions needed to provide fit components
 import os
 import copy
 
-import pytest
 from ROOT                                        import RDataFrame
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
