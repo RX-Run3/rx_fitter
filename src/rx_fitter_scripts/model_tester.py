@@ -2,7 +2,10 @@
 Script meant to test models to fit MC samples
 '''
 import argparse
+from importlib.resources import files
 
+import ROOT
+import yaml
 import zfit
 from rx_fitter import components as cmp
 
@@ -21,6 +24,11 @@ class Data:
     nbrem   : int
     model   : str
 # --------------------------------
+def _load_config():
+    cfg_path = files('rx_fitter_data').joinpath('model_tester/reso_ee.yaml')
+    with open(cfg_path, encoding='utf-8') as ifile:
+        Data.cfg = yaml.safe_load(ifile)
+# --------------------------------
 def _get_obs():
     varname      = Data.obs_name
     [minx, maxx] = Data.cfg['binning'][varname]
@@ -32,12 +40,12 @@ def _get_obs():
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to test fitting models')
     parser.add_argument('-m', '--model'  , type=str, help='Nickname of model' , required=True)
-    parser.add_argument('-b', '--nbrem'  , type=int, help='Bremstrahlung category' , required=True, chioces=[-1, 0, 1, 2])
+    parser.add_argument('-b', '--nbrem'  , type=int, help='Bremstrahlung category' , required=True, choices=[-1, 0, 1, 2])
     parser.add_argument('-o', '--obsname', type=str, help='Name of observable' , required=True, choices=['B_M', 'B_const_mass_M'])
     args = parser.parse_args()
 
-    Data.q2bin    = args.q2bin
     Data.model    = args.model
+    Data.nbrem    = args.nbrem
     Data.obs_name = args.obsname
 # --------------------------------
 def main():
@@ -46,6 +54,7 @@ def main():
     '''
 
     _parse_args()
+    _load_config()
 
     obs   = _get_obs()
     l_mod = Data.cfg['models'][Data.model]
