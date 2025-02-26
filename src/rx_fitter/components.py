@@ -1,7 +1,7 @@
 '''
 Module with functions needed to provide fit components
 '''
-# pylint: disable=too-many-positional-arguments, too-many-function-args
+# pylint: disable=too-many-positional-arguments, too-many-function-args, too-many-arguments
 
 import os
 import copy
@@ -61,7 +61,7 @@ def _get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFram
 
     rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
 
-    if nbrem == -1:
+    if   nbrem == -1:
         pass
     elif nbrem in [0, 1]:
         rdf = rdf.Filter(f'nbrem == {nbrem}', 'nbrem')
