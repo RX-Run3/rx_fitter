@@ -5,12 +5,15 @@ import ROOT
 import zfit
 import pytest
 
-from rx_data.rdf_getter import RDFGetter
-from rx_fitter          import components as cmp
+from dmu.logging.log_store  import LogStore
+from rx_data.rdf_getter     import RDFGetter
+from rx_fitter              import components as cmp
 
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _intiailize():
+    LogStore.set_level('rx_fitter:prec', 10)
+
     RDFGetter.samples = {
         'main'       : '/home/acampove/external_ssd/Data/samples/main.yaml',
         'mva'        : '/home/acampove/external_ssd/Data/samples/mva.yaml',
