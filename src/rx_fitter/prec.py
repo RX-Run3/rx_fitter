@@ -351,6 +351,13 @@ class PRec:
 
         return f'{dir_path}/pdf_{identifier}.json'
     #-----------------------------------------------------------
+    def _drop_before_saving(self, df : pnd.DataFrame) -> pnd.DataFrame:
+        l_needed = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'wgt_br', 'wgt_dec', 'wgt_sam']
+        l_drop   = [ name for name in df.columns if  name not in l_needed ]
+        df       = df.drop(l_drop, axis=1)
+
+        return df
+    #-----------------------------------------------------------
     def _get_pdf(self, mass : str, cut : str, **kwargs) -> zpdf:
         '''
         Will take the mass, with values in:
@@ -381,14 +388,16 @@ class PRec:
             df = self._filter_mass(df, mass, kwargs['obs'])
             log.info(f'Using mass: {mass} for component {kwargs["name"]}')
             self._print_cutflow()
+            df=self._drop_before_saving(df)
             df.to_json(cache_path, indent=4)
 
         arr_mass = df[mass].to_numpy()
-        arr_wgt  = df.wgt_br.to_numpy()
 
-        pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=arr_wgt, **kwargs)
+        pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         pdf.arr_mass = arr_mass
-        pdf.arr_wgt  = arr_wgt
+        pdf.arr_wgt  = df.wgt_br.to_numpy()
+        pdf.arr_sam  = df.wgt_sam.to_numpy()
+        pdf.arr_dec  = df.wgt_dec.to_numpy()
 
         return pdf
     #-----------------------------------------------------------
