@@ -37,7 +37,7 @@ class Data:
                 },
             }
 # ---------------------------------
-def _get_rdf(sample : str, q2bin : str, trigger : str) -> RDataFrame:
+def _get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFrame:
     out_path = f'{Data.cache_dir}/{sample}_{q2bin}.root'
     if os.path.isfile(out_path):
         log.info('DataFrame already cached, reloading')
@@ -53,12 +53,29 @@ def _get_rdf(sample : str, q2bin : str, trigger : str) -> RDataFrame:
 
     d_sel = sel.selection(project='RK', analysis=analysis, q2bin=q2bin, process=sample)
     for cut_name, cut_value in d_sel.items():
+        if cut_name == 'mass':
+            cut_value = '(1)'
+
         log.info(f'{cut_name:<20}{cut_value}')
         rdf = rdf.Filter(cut_value, cut_name)
 
+    rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
+
+    if nbrem == -1:
+        pass
+    elif nbrem in [0, 1]:
+        rdf = rdf.Filter(f'nbrem == {nbrem}', 'nbrem')
+    elif nbrem == 2:
+        rdf = rdf.Filter(f'nbrem >= {nbrem}', 'nbrem')
+    else:
+        raise ValueError(f'Invalid brem argument: {nbrem}')
+
+    rep = rdf.Report()
+    rep.Print()
+
     return rdf
 # ------------------------------------
-def get_mc(obs, sample : str, q2bin : str, trigger : str, model : list[str]) -> FitComponent:
+def get_mc(obs, sample : str, q2bin : str, trigger : str, model : list[str], nbrem : int) -> FitComponent:
     '''
     Will return FitComponent object for given MC sample
     '''
@@ -68,7 +85,7 @@ def get_mc(obs, sample : str, q2bin : str, trigger : str, model : list[str]) -> 
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}'
 
-    rdf   = _get_rdf(sample, q2bin, trigger)
+    rdf   = _get_rdf(sample, q2bin, trigger, nbrem)
     rdf   = rdf.Define('weights', '1')
 
     mod   = ModelFactory(sample, obs, model, ['mu', 'sg'])
