@@ -44,7 +44,6 @@ class PRec:
         self._df       : pnd.DataFrame
         self._d_fstat  = {}
 
-        self._nbrem : int = None
         self._d_cut       = {}
         self._d_match     = self._get_match_str()
         self._initialized = False
@@ -166,21 +165,6 @@ class PRec:
 
         return df
     #-----------------------------------------------------------
-    @property
-    def nbrem(self):
-        '''
-        Number of brem photons
-        '''
-        return self._nbrem
-
-    @nbrem.setter
-    def nbrem(self, value):
-        if value not in [0, 1, 2]:
-            log.error(f'Invalid nbrem value of: {value}')
-            raise ValueError
-
-        self._nbrem = value
-    #-----------------------------------------------------------
     def _check_weights(self):
         try:
             [(k1, v1), (k2, v2)] = self._d_wg.items()
@@ -286,16 +270,6 @@ class PRec:
         d_cut['nojpsi'] = '(Jpsi_TRUEID != 443)'
 
         return d_cut
-    #-----------------------------------------------------------
-    def _filter_by_brem(self, df):
-        if self._nbrem is None:
-            return df
-
-        log.debug(f'Applying nbrem = {self._nbrem} requirement')
-        df = df[df.nbrem == self._nbrem] if self._nbrem < 2 else df[df.nbrem >= 2]
-        df = df.reset_index(drop=True)
-
-        return df
     #-----------------------------------------------------------
     def _print_wgt_stat(self, arr_wgt):
         l_wgt = arr_wgt.tolist()
