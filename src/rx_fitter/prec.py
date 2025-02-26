@@ -168,6 +168,10 @@ class PRec:
         else:
             raise ValueError(f'Invalid value of wgt_sam: {sam}')
 
+        arr_wgt      = df.wgt_sam.to_numpy()
+        arr_wgt      = self._normalize_weights(arr_wgt)
+        df['wgt_sam']= arr_wgt
+
         return df
     #-----------------------------------------------------------
     def _check_weights(self):
