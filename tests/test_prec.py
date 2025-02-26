@@ -108,6 +108,7 @@ def test_reso(q2bin : str):
     ('mva.mva_prc > 0.5', '0p5'),
     ('mva.mva_prc > 0.8', '0p8'),
     ('mva.mva_prc > 0.9', '0p9')])
+#-----------------------------------------------
 @pytest.mark.parametrize('q2bin'  , ['jpsi', 'psi2'])
 def test_bdt(q2bin : str, bdt_cut : str, name : str):
     '''
