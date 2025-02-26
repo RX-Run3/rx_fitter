@@ -50,6 +50,5 @@ def test_prec(nbrem : int):
                          q2bin  = 'jpsi',
                          trigger= trigger,
                          nbrem  = nbrem)
-
     cmp_prc.run()
 # --------------------------------------------------------------
