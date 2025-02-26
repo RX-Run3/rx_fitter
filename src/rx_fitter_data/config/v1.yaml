@@ -1,19 +1,37 @@
 central:
-  Bu_Kee_eq_btosllball05_DPC :
-    model:
-      - dscb
+  Hlt2RD_BuToKpEE_MVA:
+    Bu_Kee_eq_btosllball05_DPC :
+      model:
+        - dscb
+      shared:
+        - mu
+        - sg
+    Bu_JpsiK_ee_eq_DPC:
+      model:
+        - kde 
+      shared: []
+    Bd_Kstee_eq_btosllball05_DPC:
+      model:
+        - dscb
+      shared: []
+    Bu_Kstee_Kpi0_eq_btosllball05_DPC:
+      model:
+        - dscb
+      shared: []
+jpsi:
+  Hlt2RD_BuToKpMuMu_MVA:
+    Bu_JpsiK_mm_eq_DPC:
+      - cbl
+      - cbl
+      - cbr
     shared:
       - mu
       - sg
-  Bu_JpsiK_ee_eq_DPC:
-    model:
-      - kde 
-    shared: []
-  Bd_Kstee_eq_btosllball05_DPC:
-    model:
-      - dscb
-    shared: []
-  Bu_Kstee_Kpi0_eq_btosllball05_DPC:
-    model:
-      - dscb
-    shared: []
+    Bu_JpsiPi_mm_eq_DPC:
+      - cbl
+      - cbl
+      - cbr
+    shared:
+      - mu
+      - sg
+
