@@ -45,7 +45,7 @@ class PRec:
         self._d_fstat  = {}
 
         self._nbrem : int = None
-        self._d_cut       = None
+        self._d_cut       = {}
         self._d_match     = self._get_match_str()
         self._initialized = False
     #-----------------------------------------------------------
