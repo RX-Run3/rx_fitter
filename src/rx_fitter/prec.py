@@ -429,7 +429,6 @@ class PRec:
         l_yld     = [ zfit.param.Parameter(f'f_{pdf.name}', frc, 0, 1) for pdf, frc in zip(l_pdf, l_frc)]
         for yld in l_yld:
             yld.floating = False
-        l_df_id   = [ pdf.df_id for pdf in l_pdf ]
 
         pdf          = zfit.pdf.SumPDF(l_pdf, fracs=l_yld)
         nor          = zfit.param.Parameter('nprc', sum(l_wgt_yld), 0, 1000_000)
@@ -437,10 +436,13 @@ class PRec:
 
         l_arr_mass   = [ pdf.arr_mass for pdf in l_pdf ]
         l_arr_wgt    = [ pdf.arr_wgt  for pdf in l_pdf ]
+        l_arr_sam    = [ pdf.arr_sam  for pdf in l_pdf ]
+        l_arr_dec    = [ pdf.arr_dec  for pdf in l_pdf ]
 
         pdf.arr_mass = numpy.concatenate(l_arr_mass)
         pdf.arr_wgt  = numpy.concatenate(l_arr_wgt )
-        pdf.df_id    = pnd.concat(l_df_id, ignore_index=True)
+        pdf.arr_dec  = numpy.concatenate(l_arr_dec )
+        pdf.arr_sam  = numpy.concatenate(l_arr_sam )
 
         return pdf
 #-----------------------------------------------------------
