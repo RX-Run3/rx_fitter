@@ -113,6 +113,11 @@ class PRec:
 
         return rdf
     #-----------------------------------------------------------
+    def _add_columns(self, rdf : RDataFrame) -> RDataFrame:
+        rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
+
+        return rdf
+    #-----------------------------------------------------------
     def _get_samples_df(self) -> dict[str,pnd.DataFrame]:
         '''
         Returns dataframes for each sample
@@ -121,11 +126,11 @@ class PRec:
         for sample in self._l_sample:
             gtr        = RDFGetter(sample=sample, trigger=self._trig)
             rdf        = gtr.get_rdf()
+            rdf        = self._add_columns(rdf)
             rdf        = self._filter_rdf(rdf, sample)
             l_var      = [ name.c_str() for name in rdf.GetColumnNames() if self._need_var( name.c_str() )]
             data       = rdf.AsNumpy(l_var)
             df         = pnd.DataFrame(data)
-            df         = self._filter_by_brem(df)
             df['proc'] = sample
 
             d_df[sample] = df
