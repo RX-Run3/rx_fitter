@@ -2,6 +2,7 @@
 Module containing PRec
 '''
 import os
+import copy
 import hashlib
 
 from ROOT     import RDataFrame
@@ -38,7 +39,7 @@ class PRec:
         self._l_sample = samples
         self._trig     = trig
         self._q2bin    = q2bin
-        self._d_wg     = d_weight
+        self._d_wg     = copy.deepcopy(d_weight)
 
         self._name     : str
         self._df       : pnd.DataFrame
