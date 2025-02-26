@@ -7,7 +7,8 @@ from importlib.resources import files
 import ROOT
 import yaml
 import zfit
-from rx_fitter import components as cmp
+from rx_data.rdf_getter import RDFGetter
+from rx_fitter          import components as cmp
 
 # --------------------------------
 class Data:
@@ -56,8 +57,9 @@ def main():
     _parse_args()
     _load_config()
 
-    obs   = _get_obs()
-    l_mod = Data.cfg['models'][Data.model]
+    obs               = _get_obs()
+    l_mod             = Data.cfg['models'][Data.model]
+    RDFGetter.samples = Data.cfg['samples']
 
     cmp_sig = cmp.get_mc(obs    = obs,
                          sample = Data.sample,
