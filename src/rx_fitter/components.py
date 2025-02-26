@@ -6,6 +6,7 @@ Module with functions needed to provide fit components
 import os
 import copy
 
+import pytest
 from ROOT                                        import RDataFrame
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
@@ -15,6 +16,7 @@ from rx_calibration.hltcalibration.fit_component import FitComponent
 from rx_fitter.prec                              import PRec
 
 log = LogStore.add_logger('rx_fitter:components')
+
 # ------------------------------------
 class Data:
     '''
@@ -126,12 +128,14 @@ def get_mc(obs, sample : str, q2bin : str, trigger : str, nbrem : int, model : l
 
     return obj
 # ------------------------------------
-def get_prc(obs, q2bin : str, trigger : str) -> FitComponent:
+def get_prc(obs, q2bin : str, trigger : str, nbrem : int) -> FitComponent:
     '''
     Function returning FitComponent object for Partially reconstructed background
     '''
-    mass   = obs.obs[0]
-    cfg    = copy.deepcopy(Data.cfg)
+    mass        = obs.obs[0]
+    cfg         = copy.deepcopy(Data.cfg)
+    cfg['name'] = 'PRec'
+
     bw     = {'jpsi' :  5, 'psi2' : 10}[q2bin]
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
@@ -141,6 +145,16 @@ def get_prc(obs, q2bin : str, trigger : str) -> FitComponent:
     d_wgt= {'dec' : 1, 'sam' : 1}
     obj=PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
     pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, bandwidth=bw)
+
+    if   nbrem == -1:
+        pass
+    elif nbrem in [0, 1]:
+        obj.cuts = {'nbrem' : f'nbrem == {nbrem}'}
+    elif nbrem == 2:
+        obj.cuts = {'nbrem' : f'nbrem >= {nbrem}'}
+    else:
+        raise ValueError(f'Invalid brem argument: {nbrem}')
+
     fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
 
     return fcm
