@@ -42,9 +42,14 @@ def _initialize():
         'hop'        : '/home/acampove/external_ssd/Data/samples/hop.yaml',
         }
 #-----------------------------------------------
+def _plot_weight(arr_wgt, label : str, linestyle : str):
+    plt.hist(arr_wgt, bins=30, label=label, histtype='step', linestyle=linestyle)
+#-----------------------------------------------
 def _plot_pdf(pdf, test : str, name : str, maxy : str):
     arr_mass = pdf.arr_mass
     arr_wgt  = pdf.arr_wgt
+    arr_sam  = pdf.arr_sam
+    arr_dec  = pdf.arr_dec
 
     obj = ZFitPlotter(data=arr_mass, model=pdf, weights=arr_wgt)
     obj.plot(stacked=True, ext_text=f'{name}\n#Entries: {arr_mass.size}')
@@ -59,6 +64,14 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str):
     plot_path = f'{out_dir}/{name}.png'
     log.info(f'Saving to: {plot_path}')
     plt.savefig(plot_path)
+    plt.close('all')
+
+    _plot_weight(arr_sam, 'sample', '-' )
+    _plot_weight(arr_dec, 'decay' , '--')
+    _plot_weight(arr_wgt, 'Total' , ':' )
+
+    plt.legend()
+    plt.savefig(f'{out_dir}/{name}_wgt.png')
     plt.close('all')
 
     text_path = plot_path.replace('png', 'txt')
