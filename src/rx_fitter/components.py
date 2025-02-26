@@ -84,10 +84,30 @@ def _get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFram
 
     return rdf
 # ------------------------------------
-def get_mc(obs, sample : str, q2bin : str, trigger : str, model : list[str], nbrem : int) -> FitComponent:
+def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : list[str]) -> list[str]:
+    if model is not None:
+        return model
+
+    log.info('Model not passed, will pick default')
+
+    is_sig = sample  == 'Bu_JpsiK_ee_eq_DPC'
+    is_trg = trigger == 'Hlt2RD_BuToKpEE_MVA'
+    is_jps = q2bin   == 'jpsi'
+    is_brm = nbrem   in [0, 1, 2]
+
+    if is_sig and is_jps and is_brm and is_trg:
+        return {
+                0 : ['suj', 'suj'],
+                1 : ['suj', 'cbr'],
+                2 : ['suj', 'suj']}[nbrem]
+
+    raise ValueError(f'Cannot assign default model for: {sample}/{q2bin}/{trigger}/{nbrem}')
+# ------------------------------------
+def get_mc(obs, sample : str, q2bin : str, trigger : str, nbrem : int, model : list[str] = None) -> FitComponent:
     '''
     Will return FitComponent object for given MC sample
     '''
+    model          = _get_model(sample, q2bin, trigger, nbrem, model)
     brem_name      = 'all' if nbrem not in [0, 1, 2] else nbrem
     model_name     = '_'.join(model)
     mass           = obs.obs[0]
