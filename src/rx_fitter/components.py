@@ -80,11 +80,12 @@ def get_mc(obs, sample : str, q2bin : str, trigger : str, model : list[str], nbr
     Will return FitComponent object for given MC sample
     '''
     brem_name      = 'all' if nbrem not in [0, 1, 2] else nbrem
+    model_name     = '_'.join(model)
     mass           = obs.obs[0]
     cfg            = copy.deepcopy(Data.cfg)
     cfg['name']    = sample
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}_{brem_name}/{model}'
+    cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}_{brem_name}/{model_name}'
 
     rdf   = _get_rdf(sample, q2bin, trigger, nbrem)
     rdf   = rdf.Define('weights', '1')
