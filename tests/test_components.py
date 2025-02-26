@@ -34,3 +34,17 @@ def test_signal(nbrem : int):
                          nbrem  = nbrem)
     cmp_sig.run()
 # --------------------------------------------------------------
+@pytest.mark.parametrize('nbrem', [-1])
+def test_prec(nbrem : int):
+    '''
+    Testing creation of PDF from MC sample
+    '''
+    obs     = zfit.Space('B_M', limits=(4500, 6000))
+    trigger = 'Hlt2RD_BuToKpEE_MVA'
+    cmp_prc = cmp.get_prc(obs    = obs,
+                         q2bin  = 'jpsi',
+                         trigger= trigger,
+                         nbrem  = nbrem)
+
+    cmp_prc.run()
+# --------------------------------------------------------------
