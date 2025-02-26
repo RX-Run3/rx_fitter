@@ -42,6 +42,8 @@ def test_prec(nbrem : int):
     '''
     Testing creation of PDF from MC sample
     '''
+    cmp.Data.cfg['out_dir'] = '/tmp/tests/rx_fitter/components/prec'
+
     obs     = zfit.Space('B_M', limits=(4500, 6000))
     trigger = 'Hlt2RD_BuToKpEE_MVA'
     cmp_prc = cmp.get_prc(obs    = obs,
