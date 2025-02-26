@@ -36,16 +36,16 @@ models:
     - cbr
     - cbl
   mod_008:
-    - suj 
+    - suj
   mod_009:
-    - suj 
+    - suj
     - dscb
   mod_010:
-    - suj 
-    - cbl 
+    - suj
+    - cbl
   mod_011:
-    - suj 
-    - suj 
+    - suj
+    - suj
   mod_012:
     - suj
     - cbr
