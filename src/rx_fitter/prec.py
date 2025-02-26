@@ -294,23 +294,6 @@ class PRec:
 
         return arr_wgt
     #-----------------------------------------------------------
-    def _get_df_id(self, df : pnd.DataFrame) -> pnd.DataFrame:
-        l_col = [
-                'L1_TRUEID',
-                'L2_TRUEID',
-                'Jpsi_TRUEID',
-                'Jpsi_MC_MOTHER_ID',
-                'Jpsi_MC_GD_MOTHER_ID',
-                'H_TRUEID',
-                'H_MC_MOTHER_ID',
-                'H_MC_GD_MOTHER_ID',
-                'B_TRUEID'
-                ]
-
-        df = df[l_col]
-
-        return df.reset_index(drop=True)
-    #-----------------------------------------------------------
     def _filter_mass(self, df : pnd.DataFrame, mass : str, obs):
         ([[minx]], [[maxx]]) = obs.limits
 
@@ -398,12 +381,10 @@ class PRec:
 
         arr_mass = df[mass].to_numpy()
         arr_wgt  = df.wgt_br.to_numpy()
-        df_id    = self._get_df_id(df)
 
         pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=arr_wgt, **kwargs)
         pdf.arr_mass = arr_mass
         pdf.arr_wgt  = arr_wgt
-        pdf.df_id    = df_id
 
         return pdf
     #-----------------------------------------------------------
