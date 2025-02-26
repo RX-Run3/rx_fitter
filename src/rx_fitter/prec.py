@@ -325,7 +325,7 @@ class PRec:
         fwgt = frozenset(self._d_wg.items())
         fset = frozenset(kwargs.items())
 
-        lstr = str(fcut) + str(fset) + str(fwgt) + str(self._l_sample) + self._trig + self._q2bin
+        lstr = str(fcut) + str(fwgt) + str(fset) + str(self._l_sample) + self._trig + self._q2bin
         lstr = ''.join(sorted(lstr))
         val  = mass + cut + lstr
 
