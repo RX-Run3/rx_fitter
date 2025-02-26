@@ -57,10 +57,10 @@ def main():
     _parse_args()
     _load_config()
 
-    obs                 = _get_obs()
-    l_mod               = Data.cfg['models'][Data.model]
-    RDFGetter.samples   = Data.cfg['samples']
-    cmp.Data.cfg.out_dir= Data.cfg['out_dir']
+    obs                     = _get_obs()
+    l_mod                   = Data.cfg['models'][Data.model]
+    RDFGetter.samples       = Data.cfg['samples']
+    cmp.Data.cfg['out_dir'] = Data.cfg['out_dir']
 
     cmp_sig = cmp.get_mc(obs    = obs,
                          sample = Data.sample,
