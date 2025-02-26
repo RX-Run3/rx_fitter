@@ -318,21 +318,6 @@ class PRec:
 
         return arr_wgt
     #-----------------------------------------------------------
-    def _drop_columns(self, df : pnd.DataFrame) -> pnd.DataFrame:
-        df    = df.reset_index(drop=True)
-        sr_wgt_br = df.wgt_br
-
-        df_id = self._get_df_id(df)
-        df_ms = df.loc[:, df.columns.str.contains('mass', case=False)]
-        df    = pnd.concat([df_id, df_ms], axis=1)
-        df['wgt_br'] = sr_wgt_br
-
-        log.info('Dropping columns')
-        for column in df.columns:
-            log.debug(f'    {column}')
-
-        return df
-    #-----------------------------------------------------------
     def _get_df_id(self, df : pnd.DataFrame) -> pnd.DataFrame:
         l_col = [
                 'L1_TRUEID',
@@ -433,7 +418,6 @@ class PRec:
             df = self._filter_mass(df, mass, kwargs['obs'])
             log.info(f'Using mass: {mass} for component {kwargs["name"]}')
             self._print_cutflow()
-            df = self._drop_columns(df)
             df.to_json(cache_path, indent=4)
 
         arr_mass = df[mass].to_numpy()
