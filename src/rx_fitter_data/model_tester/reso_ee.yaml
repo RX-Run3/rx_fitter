@@ -53,5 +53,4 @@ models:
     - suj
     - cbl
     - cbr
-
-
+out_dir: /home/acampove/Packages/rx_fitter/plots/fit_new
