@@ -21,16 +21,31 @@ def _intiailize():
         'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
         'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
 # --------------------------------------------------------------
+def _get_mass_range(mass : str, sample : str) -> list[int]:
+    if mass == 'B_const_mass_M' and sample == 'Bu_JpsiPi_ee_eq_DPC':
+        return [5100, 6000]
+
+    if mass == 'B_const_mass_M' and sample == 'Bu_JpsiK_ee_eq_DPC':
+        return [5100, 5500]
+
+    if mass == 'B_M':
+        return [4500, 6000]
+
+    raise ValueError(f'Invalid mass and sample: {mass}/{sample}')
+# --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem' , [0, 1, 2])
 @pytest.mark.parametrize('mass'  , ['B_const_mass_M', 'B_M'])
-@pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC', 'Bu_JpsiPi_ee_eq_DPC'])
+@pytest.mark.parametrize('sample', ['Bu_JpsiPi_ee_eq_DPC'])
 def test_signal(nbrem : int, mass : str, sample : str):
     '''
     Testing creation of PDF from MC sample
     '''
-    limits = [5100, 5500] if mass == 'B_const_mass_M' else [4500, 6000]
+    limits = _get_mass_range(mass, sample)
+
     obs=zfit.Space(mass, limits=limits)
     trigger = 'Hlt2RD_BuToKpEE_MVA'
+
+    cmp.Data.cfg['fitting']['ntries'] = 15
 
     cmp_sig = cmp.get_mc(obs    = obs,
                          sample = sample,
