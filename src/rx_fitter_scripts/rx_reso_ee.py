@@ -1,6 +1,8 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
+import argparse
+
 import ROOT
 import zfit
 from dmu.logging.log_store                   import LogStore
@@ -14,8 +16,9 @@ class Data:
     '''
     Data class
     '''
-
-    cfg = {
+    nbrem : int
+    mass  : str
+    cfg   = {
             'error_method' : 'minuit_hesse',
             'out_dir'      : 'plots/fit/data',
             'plotting'     :
