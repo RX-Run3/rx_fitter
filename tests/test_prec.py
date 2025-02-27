@@ -134,8 +134,7 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
             'Bd_JpsiX_ee_eq_JpsiInAcc',
-            'Bs_JpsiX_ee_eq_JpsiInAcc',
-            ]
+            'Bs_JpsiX_ee_eq_JpsiInAcc']
 
     test = f'bdt/{q2bin}'
 
