@@ -48,7 +48,7 @@ class Data:
 # ------------------------------
 def _get_constraints() -> dict[str,str]:
     if Data.cpath is None:
-        return {}
+        return
 
     with open(Data.cpath, encoding='utf-8') as ifile:
         d_const = json.load(ifile)
