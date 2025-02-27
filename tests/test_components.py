@@ -72,6 +72,7 @@ def test_prec_brem(mass : str, cut : str, name : str):
             obs    = obs,
             q2bin  = 'jpsi',
             trigger= trigger,
+            bw     = 20,
             cuts   = {'nbrem' : cut, 'core' : 'B_const_mass_M > 5150'})
 
     cmp_prc.run()
