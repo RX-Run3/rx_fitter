@@ -141,7 +141,7 @@ def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, mo
 
     return obj
 # ------------------------------------
-def get_prc(name : str, obs : zobs, q2bin : str, trigger : str, cuts : dict[str,str] = None) -> FitComponent:
+def get_prc(name : str, obs : zobs, q2bin : str, trigger : str, cuts : dict[str,str] = None, bw : int = None) -> FitComponent:
     '''
     Function returning FitComponent object for Partially reconstructed background
     '''
@@ -151,7 +151,8 @@ def get_prc(name : str, obs : zobs, q2bin : str, trigger : str, cuts : dict[str,
     out_dir     = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{trigger}_{q2bin}_{name}'
 
-    bw     = {'jpsi' :  5, 'psi2' : 10}[q2bin]
+    bw     = {'jpsi' :  5, 'psi2' : 10}[q2bin] if bw is None else bw
+
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
             'Bd_JpsiX_ee_eq_JpsiInAcc',
