@@ -70,3 +70,12 @@ def test_prec(nbrem : int, mass : str):
                          nbrem  = nbrem)
     cmp_prc.run()
 # --------------------------------------------------------------
+def test_combinatorial():
+    '''
+    Testing creation of PDF used for combinatorial
+    '''
+
+    obs=zfit.Space('B_M', limits=[4500, 6000])
+    cmp_sig = cmp.get_cb(obs=obs, kind='exp')
+    cmp_sig.run()
+# --------------------------------------------------------------
