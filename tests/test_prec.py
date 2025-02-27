@@ -174,3 +174,21 @@ def test_cache():
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
     _plot_pdf(pdf, test, 'cache', maxy=maxy)
 #-----------------------------------------------
+def test_extended():
+    '''
+    Testing that PDFs are not extended
+    '''
+    obs=zfit.Space('mass', limits=(4500, 6000))
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    obp=PRec(samples=l_samp, trig=trig, q2bin='jpsi', d_weight=d_wgt)
+    pdf=obp.get_sum(mass='B_M', name='PRec_1', obs=obs, bandwidth=10)
+
+    assert pdf.is_extended is False
+#-----------------------------------------------
