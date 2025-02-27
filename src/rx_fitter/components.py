@@ -91,7 +91,7 @@ def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : li
 
     log.info('Model not passed, will pick default')
 
-    is_sig = sample  == 'Bu_JpsiK_ee_eq_DPC'
+    is_sig = sample  in ['Bu_JpsiK_ee_eq_DPC', 'Bu_JpsiPi_ee_eq_DPC']
     is_trg = trigger == 'Hlt2RD_BuToKpEE_MVA'
     is_jps = q2bin   == 'jpsi'
     is_brm = nbrem   in [0, 1, 2]
