@@ -18,6 +18,8 @@ class Data:
     '''
     nbrem : int
     mass  : str
+    rng   : str
+
     cfg   = {
             'error_method' : 'minuit_hesse',
             'out_dir'      : 'plots/fit/data',
@@ -40,25 +42,50 @@ class Data:
         'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
         'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
 # ------------------------------
+def _get_limits() -> tuple[int,int]:
+    if Data.rng == 'bcn':
+        return 5050, 5600
+
+    if Data.rng == 'wide':
+        return 4800, 5600
+
+    if Data.rng == 'largest':
+        return 4500, 6000
+
+    raise ValueError(f'Invalid range: {Data.rng}')
+# ------------------------------
+def _parse_args() -> None:
+    parser = argparse.ArgumentParser(description='Script used to fit resonant electron mode')
+    parser.add_argument('-b', '--nbrem' , type=int, help='Brem category'   , required=True, choices=[0,1,2])
+    parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=['B_M', 'B_const_mass_M'])
+    parser.add_argument('-r', '--range' , type=str, help='Name of range'   , required=True, choices=['bcn', 'wide', 'largest'])
+    args = parser.parse_args()
+
+    Data.nbrem = args.nbrem
+    Data.mass  = args.mass
+    Data.rng   = args.range
+# ------------------------------
 def main():
     '''
     Start here
     '''
+    _parse_args()
 
     trigger = 'Hlt2RD_BuToKpEE_MVA'
     q2bin   = 'jpsi'
-    nbrem   = 2
-    obs     = zfit.Space('B_const_mass_M', limits=(5050, 5600))
 
-    cmp_sig = cmp.get_mc(obs = obs, sample = 'Bu_JpsiK_ee_eq_DPC' , trigger=trigger, q2bin=q2bin, nbrem=nbrem)
-    cmp_csp = cmp.get_mc(obs = obs, sample = 'Bu_JpsiPi_ee_eq_DPC', trigger=trigger, q2bin=q2bin, nbrem=nbrem)
-    cmp_prc = cmp.get_prc(obs= obs, trigger=trigger, q2bin=q2bin, nbrem=nbrem)
+    t_lim   = _get_limits()
+    obs     = zfit.Space(Data.mass, limits=t_lim)
+
+    cmp_sig = cmp.get_mc(obs = obs, sample = 'Bu_JpsiK_ee_eq_DPC' , trigger=trigger, q2bin=q2bin, nbrem=Data.nbrem)
+    cmp_csp = cmp.get_mc(obs = obs, sample = 'Bu_JpsiPi_ee_eq_DPC', trigger=trigger, q2bin=q2bin, nbrem=Data.nbrem)
+    cmp_prc = cmp.get_prc(obs= obs, trigger=trigger, q2bin=q2bin, nbrem=Data.nbrem)
     cmp_cmb = cmp.get_cb(obs = obs, kind='exp')
 
-    rdf = cmp.get_rdf(sample='DATA*', q2bin=q2bin, trigger=trigger, nbrem=nbrem)
+    rdf = cmp.get_rdf(sample='DATA*', q2bin=q2bin, trigger=trigger, nbrem=Data.nbrem)
 
     out_dir = Data.cfg['out_dir']
-    Data.cfg['out_dir']= f'{out_dir}/nbrem_{nbrem:03}'
+    Data.cfg['out_dir']= f'{out_dir}/nbrem_{Data.nbrem:03}'
 
     obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_prc, cmp_csp, cmp_sig], cfg=Data.cfg)
     obj.fit()
