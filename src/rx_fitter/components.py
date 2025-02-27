@@ -49,7 +49,7 @@ def _update_selection(d_sel : dict[str,str]) -> dict[str,str]:
 
     return d_sel
 # ---------------------------------
-def _get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFrame:
+def get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFrame:
     out_path = f'{Data.cache_dir}/{sample}_{q2bin}.root'
     if os.path.isfile(out_path):
         log.info('DataFrame already cached, reloading')
@@ -127,7 +127,7 @@ def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, mo
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}_{brem_name}/{model_name}'
 
-    rdf   = _get_rdf(sample, q2bin, trigger, nbrem)
+    rdf   = get_rdf(sample, q2bin, trigger, nbrem)
     rdf   = rdf.Define('weights', '1')
 
     mod   = ModelFactory(sample, obs, model, ['mu', 'sg'])
