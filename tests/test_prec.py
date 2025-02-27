@@ -157,7 +157,6 @@ def test_brem(brem_cut : str, name : str):
     obs=zfit.Space('mass', limits=(4500, 6000))
     trig   = 'Hlt2RD_BuToKpEE_MVA'
     mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
-    maxy   = {'jpsi' : 20_000          , 'psi2' :                  4_000}[q2bin]
     bw     = {'jpsi' :  5              , 'psi2' :                     10}[q2bin]
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
