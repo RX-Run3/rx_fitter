@@ -132,8 +132,9 @@ def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, mo
 
     rdf   = get_rdf(sample, q2bin, trigger, nbrem)
     rdf   = rdf.Define('weights', '1')
+    l_flt = [] if sample != 'Bu_JpsiK_ee_eq_DPC' else ['mu', 'sg']
 
-    mod   = ModelFactory(sample, obs, model, ['mu', 'sg'])
+    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=['mu', 'sg'], l_float=l_flt)
     pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=obs)
@@ -182,7 +183,7 @@ def get_cb(obs : zobs, kind : str) -> FitComponent:
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{kind}'
 
-    mod   = ModelFactory(preffix='', obs=obs, l_pdf = [kind], l_shared = [])
+    mod   = ModelFactory(preffix='', obs=obs, l_pdf = [kind], l_shared = [], l_float= [])
     pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
