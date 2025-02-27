@@ -47,7 +47,7 @@ def _get_limits() -> tuple[int,int]:
         return 5050, 5600
 
     if Data.rng == 'wide':
-        return 4800, 5600
+        return 4500, 5600
 
     if Data.rng == 'largest':
         return 4500, 6000
