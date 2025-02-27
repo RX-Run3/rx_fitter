@@ -1,10 +1,11 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
+import ROOT
 import zfit
 from dmu.logging.log_store                   import LogStore
-from rx_data.rdf_getter                      import RDFGetter
 from rx_calibration.hltcalibration.dt_fitter import DTFitter
+from rx_data.rdf_getter                      import RDFGetter
 from rx_fitter                               import components as cmp
 
 log = LogStore.add_logger('rx_fitter:rx_reso_ee')
@@ -16,7 +17,7 @@ class Data:
 
     cfg = {
             'error_method' : 'minuit_hesse',
-            'out_dir'      : 'plots/fit',
+            'out_dir'      : 'plots/fit/data',
             'plotting'     :
             {
                 'nbins'   : 50,
@@ -27,6 +28,13 @@ class Data:
                     }
                 },
             }
+
+    RDFGetter.samples = {
+        'main'       : '/home/acampove/external_ssd/Data/samples/main.yaml',
+        'mva'        : '/home/acampove/external_ssd/Data/samples/mva.yaml',
+        'hop'        : '/home/acampove/external_ssd/Data/samples/hop.yaml',
+        'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
+        'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
 # ------------------------------
 def main():
     '''
@@ -43,8 +51,7 @@ def main():
     cmp_prc = cmp.get_prc(obs= obs, trigger=trigger, q2bin=q2bin, nbrem=nbrem)
     cmp_cmb = cmp.get_cb(obs = obs, kind='exp')
 
-    gtr = RDFGetter(sample='DATA*', trigger=trigger)
-    rdf = gtr.get_rdf()
+    rdf = cmp.get_rdf(sample='DATA*', q2bin=q2bin, trigger=trigger, nbrem=nbrem)
 
     obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_prc, cmp_csp, cmp_sig], cfg=Data.cfg)
     obj.fit()
