@@ -23,8 +23,9 @@ class Data:
                 'nbins'   : 50,
                 'stacked' : True,
                 'd_leg'   : {
-                    'SumPDF_ext'     : r'$B^+\to K^+\mu^+\mu^-$',
-                    'Exponential_ext': 'Combinatorial',
+                    'Bu_JpsiK_ee_eq_DPC' : r'$B^+\to K^+J/\psi(\to e^+e^-)$',
+                    'Bu_JpsiPi_ee_eq_DPC': r'$B^+\to \pi^+J/\psi(\to e^+e^-)$',
+                    'combinatorial'      : 'Combinatorial',
                     }
                 },
             }
