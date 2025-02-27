@@ -21,31 +21,33 @@ def _intiailize():
         'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
         'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [0, 1, 2])
-def test_signal(nbrem : int):
+@pytest.mark.parametrize('nbrem' , [0, 1, 2])
+@pytest.mark.parametrize('mass'  , ['B_const_mass_M', 'B_M'])
+@pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC', 'Bu_JpsiPi_ee_eq_DPC'])
+def test_signal(nbrem : int, mass : str, sample : str):
     '''
     Testing creation of PDF from MC sample
     '''
-    #obs=zfit.Space('B_const_mass_M', limits=(5100, 5500))
-    obs=zfit.Space('B_M', limits=(4500, 6000))
+    limits = [5100, 5500] if mass == 'B_const_mass_M' else [4500, 6000]
+    obs=zfit.Space(mass, limits=limits)
     trigger = 'Hlt2RD_BuToKpEE_MVA'
 
     cmp_sig = cmp.get_mc(obs    = obs,
-                         sample = 'Bu_JpsiK_ee_eq_DPC',
+                         sample = sample,
                          trigger= trigger,
                          q2bin  = 'jpsi',
                          nbrem  = nbrem)
     cmp_sig.run()
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [-1, 0, 1, 2])
-@pytest.mark.parametrize('obs'  , ['B_const_mass_M'])
-def test_prec(nbrem : int, obs : str):
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+@pytest.mark.parametrize('mass' , ['B_const_mass_M'])
+def test_prec(nbrem : int, mass : str):
     '''
     Testing creation of PDF from MC sample
     '''
-    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/prec/{obs}'
+    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/prec/{mass}'
 
-    obs     = zfit.Space(obs, limits=(4500, 6000))
+    obs     = zfit.Space(mass, limits=(4500, 6000))
     trigger = 'Hlt2RD_BuToKpEE_MVA'
     cmp_prc = cmp.get_prc(obs    = obs,
                          q2bin  = 'jpsi',
