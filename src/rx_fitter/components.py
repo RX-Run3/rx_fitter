@@ -6,6 +6,7 @@ Module with functions needed to provide fit components
 import os
 import copy
 
+from zfit.core.interfaces                        import ZfitSpace as zobs
 from ROOT                                        import RDataFrame
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
@@ -15,7 +16,6 @@ from rx_calibration.hltcalibration.fit_component import FitComponent
 from rx_fitter.prec                              import PRec
 
 log = LogStore.add_logger('rx_fitter:components')
-
 # ------------------------------------
 class Data:
     '''
@@ -114,7 +114,7 @@ def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : li
 
     raise ValueError(f'Cannot assign default model for: {sample}/{q2bin}/{trigger}/{nbrem}')
 # ------------------------------------
-def get_mc(obs, sample : str, q2bin : str, trigger : str, nbrem : int, model : list[str] = None) -> FitComponent:
+def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, model : list[str] = None) -> FitComponent:
     '''
     Will return FitComponent object for given MC sample
     '''
@@ -137,7 +137,7 @@ def get_mc(obs, sample : str, q2bin : str, trigger : str, nbrem : int, model : l
 
     return obj
 # ------------------------------------
-def get_prc(obs, q2bin : str, trigger : str, nbrem : int) -> FitComponent:
+def get_prc(obs : zobs, q2bin : str, trigger : str, nbrem : int) -> FitComponent:
     '''
     Function returning FitComponent object for Partially reconstructed background
     '''
