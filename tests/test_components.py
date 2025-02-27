@@ -37,14 +37,15 @@ def test_signal(nbrem : int):
                          nbrem  = nbrem)
     cmp_sig.run()
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [-1])
-def test_prec(nbrem : int):
+@pytest.mark.parametrize('nbrem', [-1, 0, 1, 2])
+@pytest.mark.parametrize('obs'  , ['B_const_mass_M'])
+def test_prec(nbrem : int, obs : str):
     '''
     Testing creation of PDF from MC sample
     '''
-    cmp.Data.cfg['out_dir'] = '/tmp/tests/rx_fitter/components/prec'
+    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/prec/{obs}'
 
-    obs     = zfit.Space('B_M', limits=(4500, 6000))
+    obs     = zfit.Space(obs, limits=(4500, 6000))
     trigger = 'Hlt2RD_BuToKpEE_MVA'
     cmp_prc = cmp.get_prc(obs    = obs,
                          q2bin  = 'jpsi',

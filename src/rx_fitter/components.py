@@ -134,6 +134,8 @@ def get_prc(obs, q2bin : str, trigger : str, nbrem : int) -> FitComponent:
     mass        = obs.obs[0]
     cfg         = copy.deepcopy(Data.cfg)
     cfg['name'] = 'PRec'
+    out_dir     = cfg['out_dir']
+    cfg['out_dir'] = f'{out_dir}/{trigger}_{q2bin}_{nbrem:03}'
 
     bw     = {'jpsi' :  5, 'psi2' : 10}[q2bin]
     l_samp = [
