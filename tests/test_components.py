@@ -54,20 +54,26 @@ def test_signal(nbrem : int, mass : str, sample : str):
                          nbrem  = nbrem)
     cmp_sig.run()
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_const_mass_M'])
-def test_prec(nbrem : int, mass : str):
+@pytest.mark.parametrize('mass'     , ['B_const_mass_M', 'B_M'])
+@pytest.mark.parametrize('cut, name', [
+    ('nbrem == 0', 'bz'),
+    ('nbrem == 1', 'bo'),
+    ('nbrem >= 2', 'bt')])
+def test_prec_brem(mass : str, cut : str, name : str):
     '''
-    Testing creation of PDF from MC sample
+    Testing creation of PDF from MC sample with brem cut
     '''
-    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/prec/{mass}'
+    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/prec/{mass}_{name}'
 
     obs     = zfit.Space(mass, limits=(4500, 6000))
     trigger = 'Hlt2RD_BuToKpEE_MVA'
-    cmp_prc = cmp.get_prc(obs    = obs,
-                         q2bin  = 'jpsi',
-                         trigger= trigger,
-                         nbrem  = nbrem)
+    cmp_prc = cmp.get_prc(
+            name   = name,
+            obs    = obs,
+            q2bin  = 'jpsi',
+            trigger= trigger,
+            cuts   = {'nbrem' : cut, 'core' : 'B_const_mass_M > 5150'})
+
     cmp_prc.run()
 # --------------------------------------------------------------
 def test_combinatorial():
