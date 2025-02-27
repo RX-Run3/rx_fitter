@@ -94,7 +94,7 @@ def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : li
 
     log.info('Model not passed, will pick default')
 
-    is_sig = sample  in ['Bu_JpsiK_ee_eq_DPC', 'Bu_JpsiPi_ee_eq_DPC']
+    is_sig = sample  == 'Bu_JpsiK_ee_eq_DPC'
     is_trg = trigger == 'Hlt2RD_BuToKpEE_MVA'
     is_jps = q2bin   == 'jpsi'
     is_brm = nbrem   in [0, 1, 2]
@@ -104,6 +104,13 @@ def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : li
                 0 : ['suj', 'suj'],
                 1 : ['suj', 'cbr'],
                 2 : ['suj', 'suj']}[nbrem]
+
+
+    if sample == 'Bu_JpsiPi_ee_eq_DPC':
+        return {
+                0 : ['suj'],
+                1 : ['suj'],
+                2 : ['suj']}[nbrem]
 
     raise ValueError(f'Cannot assign default model for: {sample}/{q2bin}/{trigger}/{nbrem}')
 # ------------------------------------
