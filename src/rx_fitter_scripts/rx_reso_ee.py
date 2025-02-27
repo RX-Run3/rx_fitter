@@ -43,8 +43,8 @@ def main():
 
     trigger = 'Hlt2RD_BuToKpEE_MVA'
     q2bin   = 'jpsi'
-    nbrem   = 1
-    obs     = zfit.Space('B_const_mass_M', limits=(5000, 6000))
+    nbrem   = 2
+    obs     = zfit.Space('B_const_mass_M', limits=(5050, 5600))
 
     cmp_sig = cmp.get_mc(obs = obs, sample = 'Bu_JpsiK_ee_eq_DPC' , trigger=trigger, q2bin=q2bin, nbrem=nbrem)
     cmp_csp = cmp.get_mc(obs = obs, sample = 'Bu_JpsiPi_ee_eq_DPC', trigger=trigger, q2bin=q2bin, nbrem=nbrem)
@@ -52,6 +52,9 @@ def main():
     cmp_cmb = cmp.get_cb(obs = obs, kind='exp')
 
     rdf = cmp.get_rdf(sample='DATA*', q2bin=q2bin, trigger=trigger, nbrem=nbrem)
+
+    out_dir = Data.cfg['out_dir']
+    Data.cfg['out_dir']= f'{out_dir}/nbrem_{nbrem:03}'
 
     obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_prc, cmp_csp, cmp_sig], cfg=Data.cfg)
     obj.fit()
