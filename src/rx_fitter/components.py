@@ -50,6 +50,9 @@ def _update_selection(d_sel : dict[str,str]) -> dict[str,str]:
     return d_sel
 # ---------------------------------
 def get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFrame:
+    '''
+    Function that returns a ROOT dataframe for a given dataset, MC or real data
+    '''
     out_path = f'{Data.cache_dir}/{sample}_{q2bin}.root'
     if os.path.isfile(out_path):
         log.info('DataFrame already cached, reloading')
