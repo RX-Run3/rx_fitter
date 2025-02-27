@@ -100,7 +100,10 @@ class PRec:
     def _filter_rdf(self, rdf : RDataFrame, sample : str) -> RDataFrame:
         d_sel = sel.selection(project='RK', analysis='EE', q2bin=self._q2bin, process=sample)
         if self._d_cut is not None:
-            log.warning('Overriding default selection')
+            log.warning('Overriding default selection with:')
+            for name, expr in self._d_cut.items():
+                log.info(f'{name:<20}{expr}')
+
             d_sel.update(self._d_cut)
 
         for name, expr in d_sel.items():
