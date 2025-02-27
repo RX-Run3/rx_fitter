@@ -1,6 +1,7 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
+import json
 import argparse
 
 import ROOT
@@ -19,6 +20,7 @@ class Data:
     nbrem : int
     mass  : str
     kind  : str
+    cpath : str
 
     dtf_tail = 5150
 
@@ -43,6 +45,17 @@ class Data:
         'hop'        : '/home/acampove/external_ssd/Data/samples/hop.yaml',
         'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
         'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
+# ------------------------------
+def _get_constraints() -> dict[str,str]:
+    if Data.cpath is None:
+        return {}
+
+    with open(Data.cpath, encoding='utf-8') as ifile:
+        d_const = json.load(ifile)
+
+    d_const_yield = { name : value for name, value in d_const.items() if name.startswith('n') }
+
+    return d_const_yield
 # ------------------------------
 def _get_limits() -> tuple[int,int]:
     if Data.kind == 'bcn':
@@ -76,11 +89,13 @@ def _parse_args() -> None:
     parser.add_argument('-b', '--nbrem' , type=int, help='Brem category'   , required=True, choices=[0,1,2])
     parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=['B_M', 'B_const_mass_M'])
     parser.add_argument('-k', '--kind'  , type=str, help='Type of fit'     , required=True, choices=['bcn', 'wide', 'largest', 'no_dtf_tail'])
+    parser.add_argument('-c', '--cpath' , type=str, help='Path to JSON file with parameters to constraint')
     args = parser.parse_args()
 
     Data.nbrem = args.nbrem
     Data.mass  = args.mass
     Data.kind  = args.kind
+    Data.cpath = args.cpath
 # ------------------------------
 def main():
     '''
@@ -105,8 +120,10 @@ def main():
     out_dir = Data.cfg['out_dir']
     Data.cfg['out_dir']= f'{out_dir}/nbrem_{Data.nbrem:03}'
 
+    d_const = _get_constraints()
+
     obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_prc, cmp_csp, cmp_sig], cfg=Data.cfg)
-    obj.fit()
+    obj.fit(constraints = d_const)
 # ------------------------------
 if __name__ == '__main__':
     main()
