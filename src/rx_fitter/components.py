@@ -49,7 +49,7 @@ def _update_selection(d_sel : dict[str,str]) -> dict[str,str]:
 
     return d_sel
 # ---------------------------------
-def get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFrame:
+def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = None) -> RDataFrame:
     '''
     Function that returns a ROOT dataframe for a given dataset, MC or real data
     '''
@@ -77,14 +77,11 @@ def get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFrame
 
     rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
 
-    if   nbrem == -1:
-        pass
-    elif nbrem in [0, 1]:
-        rdf = rdf.Filter(f'nbrem == {nbrem}', 'nbrem')
-    elif nbrem == 2:
-        rdf = rdf.Filter(f'nbrem >= {nbrem}', 'nbrem')
-    else:
-        raise ValueError(f'Invalid brem argument: {nbrem}')
+    if cuts is not None:
+        log.warning('Overriding default selection')
+        for name, expr in cuts.items():
+            log.info(f'   {name:<20}{expr}')
+            rdf = rdf.Filter(expr, name)
 
     rep = rdf.Report()
     rep.Print()
