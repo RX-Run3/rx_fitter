@@ -146,6 +146,36 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
     _plot_pdf(pdf, test, f'bdt_{name}', maxy=maxy)
 #-----------------------------------------------
+@pytest.mark.parametrize('brem_cut, name', [
+    ('nbrem == 0', 'z'),
+    ('nbrem == 1', 'o'),
+    ('nbrem >= 2', 't')])
+def test_brem(brem_cut : str, name : str):
+    '''
+    Testing by brem category 
+    '''
+    q2bin  = 'jpsi'
+    obs=zfit.Space('mass', limits=(4500, 6000))
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
+    maxy   = {'jpsi' : 20_000          , 'psi2' :                  4_000}[q2bin]
+    bw     = {'jpsi' :  5              , 'psi2' :                     10}[q2bin]
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc']
+
+    test = f'brem/{q2bin}'
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    obp.cuts = {
+            'bdt' : 'mva.mva_prc > 0.5 && mva.mva_cmb > 0.5',
+            'brm' : brem_cut}
+
+    pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs, bandwidth=bw)
+    _plot_pdf(pdf, test, f'bdt_{name}', maxy=3_000)
+#-----------------------------------------------
 def test_cache():
     '''
     Testing caching of PDF
