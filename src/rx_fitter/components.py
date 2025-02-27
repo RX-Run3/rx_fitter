@@ -1,7 +1,7 @@
 '''
 Module with functions needed to provide fit components
 '''
-# pylint: disable=too-many-positional-arguments, too-many-function-args, too-many-arguments
+# pylint: disable=too-many-positional-arguments, too-many-function-args, too-many-arguments, too-many-locals
 
 import os
 import copy
@@ -127,7 +127,9 @@ def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, mo
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}_{brem_name}/{model_name}'
 
-    rdf   = get_rdf(sample, q2bin, trigger, nbrem)
+    bcut  = f'nbrem == {nbrem}' if nbrem in [0, 1] else f'nbrem >= {nbrem}'
+    d_cut = {'nbrem' : bcut}
+    rdf   = get_rdf(sample, q2bin, trigger, d_cut)
     rdf   = rdf.Define('weights', '1')
     l_flt = [] if sample != 'Bu_JpsiK_ee_eq_DPC' else ['mu', 'sg']
 
