@@ -170,3 +170,19 @@ def get_prc(obs : zobs, q2bin : str, trigger : str, nbrem : int) -> FitComponent
 
     return fcm
 # ------------------------------------
+def get_cb(obs : zobs, kind : str) -> FitComponent:
+    '''
+    Returns fit component for combinatorial fit
+    '''
+    cfg            = copy.deepcopy(Data.cfg)
+    cfg['name']    = 'combinatorial'
+    out_dir        = cfg['out_dir']
+    cfg['out_dir'] = f'{out_dir}/{kind}'
+
+    mod   = ModelFactory(preffix='', obs=obs, l_pdf = [kind], l_shared = [])
+    pdf   = mod.get_pdf()
+
+    obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
+
+    return obj
+# ------------------------------------
