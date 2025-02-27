@@ -67,6 +67,9 @@ def _get_rdf(sample : str, q2bin : str, trigger : str, nbrem : int) -> RDataFram
     d_sel = _update_selection(d_sel)
     for cut_name, cut_value in d_sel.items():
         log.info(f'{cut_name:<20}{cut_value}')
+        if cut_name == 'mass':
+            cut_value = '(1)'
+
         rdf = rdf.Filter(cut_value, cut_name)
 
     rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
