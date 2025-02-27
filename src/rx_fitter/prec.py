@@ -432,8 +432,6 @@ class PRec:
             yld.floating = False
 
         pdf          = zfit.pdf.SumPDF(l_pdf, fracs=l_yld)
-        nor          = zfit.param.Parameter('nprc', sum(l_wgt_yld), 0, 1000_000)
-        pdf          = pdf.create_extended(nor, name=self._name)
 
         l_arr_mass   = [ pdf.arr_mass for pdf in l_pdf ]
         l_arr_wgt    = [ pdf.arr_wgt  for pdf in l_pdf ]
