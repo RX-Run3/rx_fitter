@@ -141,7 +141,7 @@ def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, mo
 
     return obj
 # ------------------------------------
-def get_prc(obs : zobs, q2bin : str, trigger : str, nbrem : int) -> FitComponent:
+def get_prc(name : str, obs : zobs, q2bin : str, trigger : str, cuts : dict[str,str] = None) -> FitComponent:
     '''
     Function returning FitComponent object for Partially reconstructed background
     '''
@@ -149,7 +149,7 @@ def get_prc(obs : zobs, q2bin : str, trigger : str, nbrem : int) -> FitComponent
     cfg         = copy.deepcopy(Data.cfg)
     cfg['name'] = 'PRec'
     out_dir     = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{trigger}_{q2bin}_{nbrem:03}'
+    cfg['out_dir'] = f'{out_dir}/{trigger}_{q2bin}_{name}'
 
     bw     = {'jpsi' :  5, 'psi2' : 10}[q2bin]
     l_samp = [
@@ -159,15 +159,8 @@ def get_prc(obs : zobs, q2bin : str, trigger : str, nbrem : int) -> FitComponent
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obj  = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
-
-    if   nbrem == -1:
-        pass
-    elif nbrem in [0, 1]:
-        obj.cuts = {'nbrem' : f'nbrem == {nbrem}'}
-    elif nbrem == 2:
-        obj.cuts = {'nbrem' : f'nbrem >= {nbrem}'}
-    else:
-        raise ValueError(f'Invalid brem argument: {nbrem}')
+    if cuts is not None:
+        obj.cuts = cuts
 
     pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, bandwidth=bw)
     fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
