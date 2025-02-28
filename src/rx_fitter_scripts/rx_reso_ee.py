@@ -120,6 +120,10 @@ def main():
     out_dir = Data.cfg['out_dir']
     Data.cfg['out_dir']= f'{out_dir}/nbrem_{Data.nbrem:03}'
     d_const = _get_constraints()
+    d_const = {
+            'nPRec'                : [0, 10],
+            'nBu_JpsiPi_ee_eq_DPC' : [0,  1],
+            }
 
     obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_prc, cmp_csp, cmp_sig], cfg=Data.cfg)
     obj.fit(constraints = d_const)
