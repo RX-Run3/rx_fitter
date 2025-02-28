@@ -102,7 +102,7 @@ def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : li
     if is_sig and is_jps and is_brm and is_trg:
         return {
                 0 : ['suj', 'suj'],
-                1 : ['suj', 'cbr'],
+                1 : ['suj', 'suj'],
                 2 : ['suj', 'suj']}[nbrem]
 
 
@@ -132,8 +132,9 @@ def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, mo
     rdf   = get_rdf(sample, q2bin, trigger, d_cut)
     rdf   = rdf.Define('weights', '1')
     l_flt = [] if sample != 'Bu_JpsiK_ee_eq_DPC' else ['mu', 'sg']
+    l_shr = ['mu'] if sample == 'Bu_JpsiK_ee_eq_DPC' else ['mu', 'sg']
 
-    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=['mu', 'sg'], l_float=l_flt)
+    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=l_shr, l_float=l_flt)
     pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=obs)
