@@ -22,7 +22,7 @@ class Data:
     kind  : str
     cpath : str
 
-    dtf_tail = 5150
+    dtf_tail = 5160
 
     cfg   = {
             'error_method' : 'minuit_hesse',
