@@ -29,7 +29,7 @@ class Data:
             'out_dir'      : 'plots/fit/data',
             'plotting'     :
             {
-                'nbins'   : 50,
+                'nbins'   : 30,
                 'stacked' : True,
                 'd_leg'   : {
                     'Bu_JpsiK_ee_eq_DPC' : r'$B^+\to K^+J/\psi(\to e^+e^-)$',
