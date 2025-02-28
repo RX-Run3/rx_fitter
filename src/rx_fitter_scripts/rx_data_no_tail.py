@@ -1,6 +1,7 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
+import os
 import argparse
 
 import ROOT
@@ -37,12 +38,13 @@ class Data:
                 },
             }
 
+    data_dir = os.environ['DATADIR']
     RDFGetter.samples = {
-            'main'       : '/home/acampove/external_ssd/Data/samples/main.yaml',
-            'mva'        : '/home/acampove/external_ssd/Data/samples/mva.yaml',
-            'hop'        : '/home/acampove/external_ssd/Data/samples/hop.yaml',
-            'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
-            'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
+            'main'       : f'{data_dir}/samples/main.yaml',
+            'mva'        : f'{data_dir}/samples/mva.yaml',
+            'hop'        : f'{data_dir}/samples/hop.yaml',
+            'cascade'    : f'{data_dir}/samples/cascade.yaml',
+            'jpsi_misid' : f'{data_dir}/samples/jpsi_misid.yaml'}
 # ------------------------------
 def _get_cuts() -> dict[str,str]:
     d_cut = {}
