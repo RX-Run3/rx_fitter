@@ -48,12 +48,12 @@ class Data:
 # ------------------------------
 def _get_constraints() -> dict[str,str]:
     if Data.cpath is None:
-        return
+        return None
 
     with open(Data.cpath, encoding='utf-8') as ifile:
         d_const = json.load(ifile)
 
-    d_const_yield = { name : value for name, value in d_const.items() if name.startswith('n') }
+    d_const_yield = { name : value for name, value in d_const.items() if name.startswith('n') and name not in ['nPRec', 'ncombinatorial'] }
 
     return d_const_yield
 # ------------------------------
@@ -119,7 +119,6 @@ def main():
 
     out_dir = Data.cfg['out_dir']
     Data.cfg['out_dir']= f'{out_dir}/nbrem_{Data.nbrem:03}'
-
     d_const = _get_constraints()
 
     obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_prc, cmp_csp, cmp_sig], cfg=Data.cfg)
