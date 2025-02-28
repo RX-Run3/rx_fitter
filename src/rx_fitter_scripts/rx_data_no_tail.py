@@ -12,7 +12,7 @@ from rx_calibration.hltcalibration.fit_component import FitComponent
 from rx_data.rdf_getter                          import RDFGetter
 from rx_fitter                                   import components as cmp
 
-log = LogStore.add_logger('rx_fitter:rx_reso_ee')
+log = LogStore.add_logger('rx_fitter:rx_data_no_tail')
 # ------------------------------
 class Data:
     '''
