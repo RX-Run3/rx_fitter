@@ -2,6 +2,7 @@
 Module containing PRec
 '''
 import os
+import copy
 import hashlib
 
 from ROOT     import RDataFrame
@@ -38,14 +39,13 @@ class PRec:
         self._l_sample = samples
         self._trig     = trig
         self._q2bin    = q2bin
-        self._d_wg     = d_weight
+        self._d_wg     = copy.deepcopy(d_weight)
 
         self._name     : str
         self._df       : pnd.DataFrame
         self._d_fstat  = {}
 
-        self._nbrem : int = None
-        self._d_cut       = None
+        self._d_cut       = {}
         self._d_match     = self._get_match_str()
         self._initialized = False
     #-----------------------------------------------------------
@@ -79,7 +79,7 @@ class PRec:
         Returns dataframe with masses and weights
         '''
         d_df         = self._get_samples_df()
-        d_df         = { sample : self._add_dec_weights(df) for sample, df in d_df.items() }
+        d_df         = { sample : self._add_dec_weights(sample, df) for sample, df in d_df.items() }
         df           = pnd.concat(d_df.values(), axis=0)
         df           = self._add_sam_weights(df)
 
@@ -92,10 +92,7 @@ class PRec:
         if name.endswith('ID'):
             return True
 
-        if name.startswith('B_const_mass'):
-            return True
-
-        if name in ['B_M']:
+        if name in ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M']:
             return True
 
         return False
@@ -103,7 +100,10 @@ class PRec:
     def _filter_rdf(self, rdf : RDataFrame, sample : str) -> RDataFrame:
         d_sel = sel.selection(project='RK', analysis='EE', q2bin=self._q2bin, process=sample)
         if self._d_cut is not None:
-            log.warning('Overriding default selection')
+            log.warning('Overriding default selection with:')
+            for name, expr in self._d_cut.items():
+                log.info(f'{name:<20}{expr}')
+
             d_sel.update(self._d_cut)
 
         for name, expr in d_sel.items():
@@ -117,6 +117,11 @@ class PRec:
 
         return rdf
     #-----------------------------------------------------------
+    def _add_columns(self, rdf : RDataFrame) -> RDataFrame:
+        rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
+
+        return rdf
+    #-----------------------------------------------------------
     def _get_samples_df(self) -> dict[str,pnd.DataFrame]:
         '''
         Returns dataframes for each sample
@@ -125,25 +130,25 @@ class PRec:
         for sample in self._l_sample:
             gtr        = RDFGetter(sample=sample, trigger=self._trig)
             rdf        = gtr.get_rdf()
+            rdf        = self._add_columns(rdf)
             rdf        = self._filter_rdf(rdf, sample)
             l_var      = [ name.c_str() for name in rdf.GetColumnNames() if self._need_var( name.c_str() )]
             data       = rdf.AsNumpy(l_var)
             df         = pnd.DataFrame(data)
-            df         = self._filter_by_brem(df)
             df['proc'] = sample
 
             d_df[sample] = df
 
         return d_df
     #-----------------------------------------------------------
-    def _add_dec_weights(self, df : pnd.DataFrame) -> pnd.DataFrame:
+    def _add_dec_weights(self, sample : str, df : pnd.DataFrame) -> pnd.DataFrame:
         dec = self._d_wg['dec']
 
         if   dec == 1:
-            log.debug('Adding decay weights')
+            log.debug(f'Adding decay weights to: {sample}')
             df['wgt_dec'] = df.apply(inclusive_decays_weights.read_weight, args=('L1', 'L2', 'H'), axis=1)
         elif dec == 0:
-            log.warning('Not using decay weights')
+            log.warning(f'Not using decay weights in: {sample}')
             df['wgt_dec'] = 1.
         else:
             raise ValueError(f'Invalid value of wgt_dec: {dec}')
@@ -167,22 +172,11 @@ class PRec:
         else:
             raise ValueError(f'Invalid value of wgt_sam: {sam}')
 
+        arr_wgt      = df.wgt_sam.to_numpy()
+        arr_wgt      = self._normalize_weights(arr_wgt)
+        df['wgt_sam']= arr_wgt
+
         return df
-    #-----------------------------------------------------------
-    @property
-    def nbrem(self):
-        '''
-        Number of brem photons
-        '''
-        return self._nbrem
-
-    @nbrem.setter
-    def nbrem(self, value):
-        if value not in [0, 1, 2]:
-            log.error(f'Invalid nbrem value of: {value}')
-            raise ValueError
-
-        self._nbrem = value
     #-----------------------------------------------------------
     def _check_weights(self):
         try:
@@ -290,16 +284,6 @@ class PRec:
 
         return d_cut
     #-----------------------------------------------------------
-    def _filter_by_brem(self, df):
-        if self._nbrem is None:
-            return df
-
-        log.debug(f'Applying nbrem = {self._nbrem} requirement')
-        df = df[df.nbrem == self._nbrem] if self._nbrem < 2 else df[df.nbrem >= 2]
-        df = df.reset_index(drop=True)
-
-        return df
-    #-----------------------------------------------------------
     def _print_wgt_stat(self, arr_wgt):
         l_wgt = arr_wgt.tolist()
         s_wgt = set(l_wgt)
@@ -317,38 +301,6 @@ class PRec:
         arr_wgt = fact * arr_wgt
 
         return arr_wgt
-    #-----------------------------------------------------------
-    def _drop_columns(self, df : pnd.DataFrame) -> pnd.DataFrame:
-        df    = df.reset_index(drop=True)
-        sr_wgt_br = df.wgt_br
-
-        df_id = self._get_df_id(df)
-        df_ms = df.loc[:, df.columns.str.contains('mass', case=False)]
-        df    = pnd.concat([df_id, df_ms], axis=1)
-        df['wgt_br'] = sr_wgt_br
-
-        log.info('Dropping columns')
-        for column in df.columns:
-            log.debug(f'    {column}')
-
-        return df
-    #-----------------------------------------------------------
-    def _get_df_id(self, df : pnd.DataFrame) -> pnd.DataFrame:
-        l_col = [
-                'L1_TRUEID',
-                'L2_TRUEID',
-                'Jpsi_TRUEID',
-                'Jpsi_MC_MOTHER_ID',
-                'Jpsi_MC_GD_MOTHER_ID',
-                'H_TRUEID',
-                'H_MC_MOTHER_ID',
-                'H_MC_GD_MOTHER_ID',
-                'B_TRUEID'
-                ]
-
-        df = df[l_col]
-
-        return df.reset_index(drop=True)
     #-----------------------------------------------------------
     def _filter_mass(self, df : pnd.DataFrame, mass : str, obs):
         ([[minx]], [[maxx]]) = obs.limits
@@ -381,8 +333,8 @@ class PRec:
         fwgt = frozenset(self._d_wg.items())
         fset = frozenset(kwargs.items())
 
-        lstr = str(fcut) + str(fset) + str(fwgt) + str(self._l_sample) + self._trig + self._q2bin
-        lstr = ''.join(sorted(lstr))
+        lstr = str(fcut) + str(fwgt) + str(fset) + str(self._l_sample) + self._trig + self._q2bin
+        lstr = ''.join(lstr)
         val  = mass + cut + lstr
 
         return self._stable_hash(val)
@@ -402,6 +354,13 @@ class PRec:
         os.makedirs(dir_path, exist_ok=True)
 
         return f'{dir_path}/pdf_{identifier}.json'
+    #-----------------------------------------------------------
+    def _drop_before_saving(self, df : pnd.DataFrame) -> pnd.DataFrame:
+        l_needed = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'wgt_br', 'wgt_dec', 'wgt_sam']
+        l_drop   = [ name for name in df.columns if  name not in l_needed ]
+        df       = df.drop(l_drop, axis=1)
+
+        return df
     #-----------------------------------------------------------
     def _get_pdf(self, mass : str, cut : str, **kwargs) -> zpdf:
         '''
@@ -433,17 +392,16 @@ class PRec:
             df = self._filter_mass(df, mass, kwargs['obs'])
             log.info(f'Using mass: {mass} for component {kwargs["name"]}')
             self._print_cutflow()
-            df = self._drop_columns(df)
+            df=self._drop_before_saving(df)
             df.to_json(cache_path, indent=4)
 
         arr_mass = df[mass].to_numpy()
-        arr_wgt  = df.wgt_br.to_numpy()
-        df_id    = self._get_df_id(df)
 
-        pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=arr_wgt, **kwargs)
+        pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         pdf.arr_mass = arr_mass
-        pdf.arr_wgt  = arr_wgt
-        pdf.df_id    = df_id
+        pdf.arr_wgt  = df.wgt_br.to_numpy()
+        pdf.arr_sam  = df.wgt_sam.to_numpy()
+        pdf.arr_dec  = df.wgt_dec.to_numpy()
 
         return pdf
     #-----------------------------------------------------------
@@ -475,18 +433,18 @@ class PRec:
         l_yld     = [ zfit.param.Parameter(f'f_{pdf.name}', frc, 0, 1) for pdf, frc in zip(l_pdf, l_frc)]
         for yld in l_yld:
             yld.floating = False
-        l_df_id   = [ pdf.df_id for pdf in l_pdf ]
 
         pdf          = zfit.pdf.SumPDF(l_pdf, fracs=l_yld)
-        nor          = zfit.param.Parameter('nprc', sum(l_wgt_yld), 0, 1000_000)
-        pdf          = pdf.create_extended(nor, name=self._name)
 
         l_arr_mass   = [ pdf.arr_mass for pdf in l_pdf ]
         l_arr_wgt    = [ pdf.arr_wgt  for pdf in l_pdf ]
+        l_arr_sam    = [ pdf.arr_sam  for pdf in l_pdf ]
+        l_arr_dec    = [ pdf.arr_dec  for pdf in l_pdf ]
 
         pdf.arr_mass = numpy.concatenate(l_arr_mass)
         pdf.arr_wgt  = numpy.concatenate(l_arr_wgt )
-        pdf.df_id    = pnd.concat(l_df_id, ignore_index=True)
+        pdf.arr_dec  = numpy.concatenate(l_arr_dec )
+        pdf.arr_sam  = numpy.concatenate(l_arr_sam )
 
         return pdf
 #-----------------------------------------------------------
