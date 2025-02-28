@@ -84,7 +84,8 @@ def main():
                 l_float = ['mu', 'sg'])
     pdf= mod.get_pdf()
 
-    Data.cfg['out_dir']= f'{Data.out_dir}/nbrem_{Data.nbrem:03}'
+    models = '_'.join(Data.l_model)
+    Data.cfg['out_dir']= f'{Data.out_dir}/nbrem_{Data.nbrem:03}/{models}'
     obj= FitComponent(cfg=Data.cfg, rdf=rdf, pdf=pdf)
     obj.run()
 # ------------------------------
