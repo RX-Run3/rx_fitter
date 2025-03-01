@@ -12,7 +12,9 @@ from rx_fitter              import components as cmp
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _intiailize():
-    LogStore.set_level('rx_fitter:prec', 10)
+    LogStore.set_level('rx_fitter:prec'              , 10)
+    LogStore.set_level('rx_fitter:components'        , 10)
+    LogStore.set_level('rx_calibration:fit_component', 10)
 
     RDFGetter.samples = {
         'main'       : '/home/acampove/external_ssd/Data/samples/main.yaml',
@@ -47,7 +49,7 @@ def test_signal(nbrem : int, mass : str, sample : str):
 
     cmp.Data.cfg['fitting']['ntries'] = 15
 
-    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/signal/brem_{nbrem:03}/{sample}_{mass}'
+    cmp.Data.cfg['out_dir'] = '/tmp/tests/rx_fitter/components/signal'
     cmp_sig = cmp.get_mc(obs    = obs,
                          sample = sample,
                          trigger= trigger,
@@ -65,7 +67,7 @@ def test_prec_brem(mass : str, cut : str, name : str):
     '''
     Testing creation of PDF from MC sample with brem cut
     '''
-    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/prec/{mass}_{name}'
+    cmp.Data.cfg['out_dir'] = '/tmp/tests/rx_fitter/components/prec'
 
     obs     = zfit.Space(mass, limits=(4500, 6000))
     trigger = 'Hlt2RD_BuToKpEE_MVA'
