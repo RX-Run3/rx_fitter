@@ -18,3 +18,17 @@ For e.g. the central $q^2$ bin.
 Once good enough fits are obtained, the parameters should be saved in versioned
 directories in `rx_fitter_data/rare_fit`. Thus, other projects can pick up these
 fits.
+
+# Resonant mode fits
+
+
+
+## Mass resolutions and scales
+
+These can be obtained by running:
+
+```python
+reso_scale
+```
+
+which will pick the latest versions of the data and MC fits
