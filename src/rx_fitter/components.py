@@ -21,9 +21,10 @@ class Data:
     '''
     Data class
     '''
+    fit_dir   = os.environ['FITDIR']
     cache_dir = '/tmp/cache/rx_fits'
     cfg       = {
-            'out_dir': 'plots/fit',
+            'out_dir': f'{fit_dir}/fit',
             'fitting':
             {
                 'error_method'  : 'minuit_hesse',
