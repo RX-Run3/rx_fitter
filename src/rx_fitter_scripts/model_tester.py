@@ -64,7 +64,6 @@ def main():
     l_mod                     = Data.cfg['models'][Data.model]
     RDFGetter.samples         = Data.cfg['samples']
     cmp.Data.cfg['out_dir']   = Data.cfg['out_dir']
-    cmp.Data.cfg['selection'] = Data.cfg['selection']
 
     cmp_sig = cmp.get_mc(
             obs    = obs,
