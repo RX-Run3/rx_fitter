@@ -52,4 +52,10 @@ models:
     - suj
     - cbl
     - cbr
-out_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit
+out_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit/v2/
+parameters:
+  shared:
+    - mu
+  floating:
+    - mu
+    - sg
