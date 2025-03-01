@@ -9,6 +9,7 @@ import argparse
 import numpy
 import pandas            as pnd
 import matplotlib.pyplot as plt
+import dmu.pdataframe.utilities as put
 
 from dmu.logging.log_store import LogStore
 from dmu.generic           import version_management as vman
@@ -144,6 +145,51 @@ def _ylim_from_par(parameter: str) -> tuple[float,float]:
 
     return 0.5, 1.5
 #------------------------------------------
+def _format_float(val : float) -> str:
+    if val < 10:
+        return f'{val:.2f}'
+
+    if val < 100:
+        return f'{val:.1f}'
+
+    return f'{val:.0f}'
+#------------------------------------------
+def _value_from_df(row : pnd.Series) -> str:
+    val = row.Value
+    err = row.Error
+
+    val = _format_float(val)
+    err = _format_float(err)
+
+    return f'${val} \pm {err}$'
+#------------------------------------------
+def _split_kind(df : pnd.DataFrame, name : str) -> pnd.DataFrame:
+    df_dt = df[df.Sample == 'data']
+    df_mc = df[df.Sample ==   'mc']
+
+    df_dt = df_dt.reset_index(drop=True)
+    df_mc = df_mc.reset_index(drop=True)
+
+    df_dt = df_dt.drop(columns=['Sample'])
+    df_mc = df_mc.drop(columns=['Sample', 'Brem'])
+
+    df_mc = df_mc.rename(columns = {name : 'MC'})
+    df_dt = df_dt.rename(columns = {name : 'Data'})
+
+    df    = pnd.concat([df_dt, df_mc], axis=1)
+
+    return df
+#------------------------------------------
+def _tabulate(df : pnd.DataFrame, name : str) -> None:
+    sr_val = df.apply(_value_from_df,axis=1)
+    d_data = {'Sample' : df.kind, 'Brem' : df.brem, name : sr_val}
+    df     = pnd.DataFrame(d_data)
+    df     = _split_kind(df, name)
+
+    fname  = name.replace('$', '').replace('\\', '')
+
+    put.df_to_tex(df, f'./{fname}.tex', caption=name)
+#------------------------------------------
 def main():
     '''
     Starts here
@@ -152,6 +198,8 @@ def main():
     df = _get_df()
     for parameter, df_parameter in df.groupby('Parameter'):
         df_parameter = df_parameter.drop(columns=['Parameter'])
+        _tabulate(df_parameter, parameter)
+
         df_scale = _scale_from_df(df_parameter, parameter)
         df_scale.plot(x='brem', y='Value', yerr='Error')
 
