@@ -22,11 +22,12 @@ class Data:
     cfg     : dict
 
     obs_name: str
+    version : str
     nbrem   : int
     model   : str
 # --------------------------------
 def _load_config():
-    cfg_path = files('rx_fitter_data').joinpath('model_tester/reso_ee.yaml')
+    cfg_path = files('rx_fitter_data').joinpath(f'model_tester/{Data.version}/reso_ee.yaml')
     with open(cfg_path, encoding='utf-8') as ifile:
         Data.cfg = yaml.safe_load(ifile)
 # --------------------------------
@@ -40,12 +41,14 @@ def _get_obs():
 # --------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to test fitting models')
-    parser.add_argument('-m', '--model'  , type=str, help='Nickname of model' , required=True)
-    parser.add_argument('-b', '--nbrem'  , type=int, help='Bremstrahlung category' , required=True, choices=[-1, 0, 1, 2])
-    parser.add_argument('-o', '--obsname', type=str, help='Name of observable' , required=True, choices=['B_M', 'B_const_mass_M'])
+    parser.add_argument('-m', '--model'  , type=str, help='Nickname of model'        , required=True)
+    parser.add_argument('-v', '--vers'   , type=str, help='Version of configuration' , required=True)
+    parser.add_argument('-b', '--nbrem'  , type=int, help='Bremstrahlung category'   , required=True, choices=[-1, 0, 1, 2])
+    parser.add_argument('-o', '--obsname', type=str, help='Name of observable'       , required=True, choices=['B_M', 'B_const_mass_M'])
     args = parser.parse_args()
 
     Data.model    = args.model
+    Data.version  = args.vers
     Data.nbrem    = args.nbrem
     Data.obs_name = args.obsname
 # --------------------------------
@@ -63,12 +66,16 @@ def main():
     cmp.Data.cfg['out_dir']   = Data.cfg['out_dir']
     cmp.Data.cfg['selection'] = Data.cfg['selection']
 
-    cmp_sig = cmp.get_mc(obs    = obs,
-                         sample = Data.sample,
-                         trigger= Data.trigger,
-                         q2bin  = Data.q2bin,
-                         nbrem  = Data.nbrem,
-                         model  = l_mod)
+    cmp_sig = cmp.get_mc(
+            obs    = obs,
+            sample = Data.sample,
+            trigger= Data.trigger,
+            q2bin  = Data.q2bin,
+            nbrem  = Data.nbrem,
+            shared = Data.cfg['parameters']['shared'],
+            pfloat = Data.cfg['parameters']['floating'],
+            model  = l_mod)
+
     cmp_sig.run()
 # --------------------------------
 if __name__ == '__main__':
