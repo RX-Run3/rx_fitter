@@ -34,8 +34,8 @@ def _get_mass_range(mass : str, sample : str) -> list[int]:
     raise ValueError(f'Invalid mass and sample: {mass}/{sample}')
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem' , [0, 1, 2])
-@pytest.mark.parametrize('mass'  , ['B_const_mass_M', 'B_M'])
-@pytest.mark.parametrize('sample', ['Bu_JpsiPi_ee_eq_DPC'])
+@pytest.mark.parametrize('mass'  , ['B_M'])
+@pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC'])
 def test_signal(nbrem : int, mass : str, sample : str):
     '''
     Testing creation of PDF from MC sample
@@ -47,10 +47,12 @@ def test_signal(nbrem : int, mass : str, sample : str):
 
     cmp.Data.cfg['fitting']['ntries'] = 15
 
+    cmp.Data.cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/signal/brem_{nbrem:03}/{sample}_{mass}'
     cmp_sig = cmp.get_mc(obs    = obs,
                          sample = sample,
                          trigger= trigger,
                          q2bin  = 'jpsi',
+                         model  = ['cbl', 'cbr'],
                          nbrem  = nbrem)
     cmp_sig.run()
 # --------------------------------------------------------------
