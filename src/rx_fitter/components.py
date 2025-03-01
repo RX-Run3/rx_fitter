@@ -12,7 +12,7 @@ from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
 from rx_selection                                import selection as sel
 from rx_data.rdf_getter                          import RDFGetter
-from rx_calibration.hltcalibration.fit_component import FitComponent
+from rx_calibration.hltcalibration.fit_component import FitComponent, load_fit_component
 from rx_fitter.prec                              import PRec
 
 log = LogStore.add_logger('rx_fitter:components')
@@ -139,13 +139,21 @@ def get_mc(
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}_{brem_name}/{model_name}'
 
+    log.debug(f'Bulding model: {model}')
+    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=shared, l_float=pfloat)
+    pdf   = mod.get_pdf()
+
+    obj   = load_fit_component(cfg=cfg, pdf=pdf)
+    if obj is not None:
+        log.info('Will load PDF from cached parameters file')
+        return obj
+
+    log.info('Cached parameters file not found, fitting again')
+    log.debug(f'Output directory: {out_dir}')
     bcut  = f'nbrem == {nbrem}' if nbrem in [0, 1] else f'nbrem >= {nbrem}'
     d_cut = {'nbrem' : bcut}
     rdf   = get_rdf(sample, q2bin, trigger, d_cut)
     rdf   = rdf.Define('weights', '1')
-
-    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=shared, l_float=pfloat)
-    pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=obs)
 
