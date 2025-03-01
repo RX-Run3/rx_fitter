@@ -114,10 +114,21 @@ def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : li
 
     raise ValueError(f'Cannot assign default model for: {sample}/{q2bin}/{trigger}/{nbrem}')
 # ------------------------------------
-def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, model : list[str] = None) -> FitComponent:
+def get_mc(
+        obs    : zobs,
+        sample : str,
+        q2bin  : str,
+        trigger: str,
+        nbrem  : int,
+        shared : list[str] = None,
+        pfloat : list[str] = None,
+        model  : list[str] = None) -> FitComponent:
     '''
     Will return FitComponent object for given MC sample
     '''
+    shared = ['mu']       if shared is None else shared
+    pfloat = ['mu', 'sg'] if pfloat is None else pfloat
+
     model          = _get_model(sample, q2bin, trigger, nbrem, model)
     brem_name      = 'all' if nbrem not in [0, 1, 2] else nbrem
     model_name     = '_'.join(model)
@@ -131,10 +142,8 @@ def get_mc(obs : zobs, sample : str, q2bin : str, trigger : str, nbrem : int, mo
     d_cut = {'nbrem' : bcut}
     rdf   = get_rdf(sample, q2bin, trigger, d_cut)
     rdf   = rdf.Define('weights', '1')
-    l_flt = [] if sample != 'Bu_JpsiK_ee_eq_DPC' else ['mu', 'sg']
-    l_shr = ['mu'] if sample == 'Bu_JpsiK_ee_eq_DPC' else ['mu', 'sg']
 
-    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=l_shr, l_float=l_flt)
+    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=shared, l_float=pfloat)
     pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=obs)
