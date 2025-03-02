@@ -72,31 +72,6 @@ class MCParPdf:
             log.info(f'Using latest version of fit in: {init_dir}')
 
         return f'{init_dir}/{fnal_dir}'
-    # ---------------------------------------
-    def _get_model(self, model : list[str]) -> list[str]:
-        if model is not None:
-            return model
-
-        log.info('Model not passed, will pick default')
-
-        is_sig = self._sample  == 'Bu_JpsiK_ee_eq_DPC'
-        is_trg = self._trigger == 'Hlt2RD_BuToKpEE_MVA'
-        is_jps = self._q2bin   == 'jpsi'
-        is_brm = self._nbrem   in [0, 1, 2]
-
-        if is_sig and is_jps and is_brm and is_trg:
-            return {
-                    0 : ['suj', 'suj' ],
-                    1 : ['suj', 'dscb'],
-                    2 : ['suj', 'dscb']}[self._nbrem]
-
-        if self._sample == 'Bu_JpsiPi_ee_eq_DPC':
-            return {
-                    0 : ['suj'],
-                    1 : ['suj'],
-                    2 : ['suj']}[self._nbrem]
-
-        raise ValueError(f'Cannot assign default model for: {self._sample}/{self._q2bin}/{self._trigger}/{self._nbrem}')
     # ------------------------------------
     def _fix_tails(self, pdf : zpdf, fix_dir : str) -> zpdf:
         if self._cfg['fvers'] is None:
