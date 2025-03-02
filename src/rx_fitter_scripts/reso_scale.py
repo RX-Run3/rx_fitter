@@ -4,7 +4,7 @@ Script used to plot and tabulate mass scales and resolutions
 import os
 import re
 import json
-import argparse
+import glob
 
 import numpy
 import pandas            as pnd
@@ -24,7 +24,7 @@ class Data:
     mc_sample = 'Bu_JpsiK_ee_eq_DPC'
     trigger   = 'Hlt2RD_BuToKpEE_MVA'
     mass      = 'B_M'
-    sgregex   = r'sg_.*_(\d)_flt'
+    sgregex   = r'sg_(suj|dscb)_.*_flt'
 
     l_brem    = [0, 1, 2]
     l_kind    = ['data', 'mc']
@@ -37,9 +37,10 @@ def _name_from_parname(name : str) -> str:
     if not mtch:
         raise ValueError(f'Cannot match {name} as a width with: {Data.sgregex}')
 
-    nsg = mtch.group(1)
+    mod = mtch.group(1)
+    mod = mod.upper()
 
-    return f'$\sigma_{nsg}$'
+    return f'$\sigma_{{{mod}}}$'
 #------------------------------------------
 def _df_from_pars(d_par : dict[str,list[str]]) -> pnd.DataFrame:
     d_data = {'Parameter' : [], 'Value' : [], 'Error' : []}
@@ -62,7 +63,8 @@ def _get_df_fit(kind : str, brem : int) -> pnd.DataFrame:
 
     inp_path = f'{Data.fit_dir}/{kind}/jpsi'
     inp_path = vman.get_last_version(dir_path=inp_path, version_only=False)
-    inp_path = f'{inp_path}/{sample}_{Data.trigger}/{Data.mass}_{brem}/fit.json'
+    inp_wc   = f'{inp_path}/{sample}_{Data.trigger}/{Data.mass}_{brem}/*/fit.json'
+    [inp_path] = glob.glob(inp_wc)
 
     with open(inp_path, encoding='utf-8') as ifile:
         d_par = json.load(ifile)
@@ -131,10 +133,10 @@ def _path_from_par(parameter : str) -> str:
     if 'mu' in parameter:
         return 'scale.png'
 
-    if 'sigma' in parameter and '1' in parameter:
+    if 'sigma' in parameter and 'SUJ'  in parameter:
         return 'resolution_1.png'
 
-    if 'sigma' in parameter and '2' in parameter:
+    if 'sigma' in parameter and 'DSCB' in parameter:
         return 'resolution_2.png'
 
     raise ValueError(f'Parameter not a scale or resolution: {parameter}')
@@ -186,7 +188,7 @@ def _tabulate(df : pnd.DataFrame, name : str) -> None:
     df     = pnd.DataFrame(d_data)
     df     = _split_kind(df, name)
 
-    fname  = name.replace('$', '').replace('\\', '')
+    fname  = name.replace('$', '').replace('\\', '').replace('{', '').replace('}', '')
 
     put.df_to_tex(df, f'./{fname}.tex', caption=name)
 #------------------------------------------
@@ -198,9 +200,11 @@ def main():
     df = _get_df()
     for parameter, df_parameter in df.groupby('Parameter'):
         df_parameter = df_parameter.drop(columns=['Parameter'])
+
         _tabulate(df_parameter, parameter)
 
         df_scale = _scale_from_df(df_parameter, parameter)
+
         df_scale.plot(x='brem', y='Value', yerr='Error')
 
         plt.title(parameter)
