@@ -84,10 +84,31 @@ def test_create():
     cfg['fvers'  ] = None
     cfg['create' ] = True
     cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['suj']
+    cfg['model'  ] = ['gauss']
     cfg['pfloat' ] = ['mu', 'sg']
 
-    rdf = _get_rdf(cfg=cfg)
+    rdf = _get_rdf()
+    obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
+    fcm = obj.get_fcomp()
+
+    fcm.run()
+# ------------------------------------------
+def test_fix_pars():
+    '''
+    Used to create a new version with parameters fixed from old version
+    '''
+    cfg            = copy.deepcopy(Data.cfg)
+    cfg['name'   ] = 'Bu_JpsiK_ee_eq_DPC'
+    cfg['q2bin'  ] = 'jpsi'
+    cfg['trigger'] = 'Hlt2RD_BuToKpEE_MVA'
+    cfg['nbrem'  ] = 1
+    cfg['fvers'  ] = 'v2'
+    cfg['create' ] = True
+    cfg['shared' ] = ['mu']
+    cfg['model'  ] = ['gauss']
+    cfg['pfloat' ] = ['mu', 'sg']
+
+    rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
 
