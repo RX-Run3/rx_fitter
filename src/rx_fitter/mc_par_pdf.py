@@ -55,8 +55,9 @@ class MCParPdf:
         fnal_dir = f'{self._sample}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
 
         if version is not None:
-            log.debug(f'Using user defined version of fit in: {init_dir}')
-            return f'{init_dir}/{version}/{fnal_dir}'
+            pars_dir = f'{init_dir}/{version}/{fnal_dir}'
+            log.debug(f'Using user defined version of fit in: {pars_dir}')
+            return pars_dir
 
         if not os.path.isdir(init_dir):
             init_dir = f'{init_dir}/v1'
