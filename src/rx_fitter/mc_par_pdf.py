@@ -99,11 +99,11 @@ class MCParPdf:
         raise ValueError(f'Cannot assign default model for: {self._sample}/{self._q2bin}/{self._trigger}/{self._nbrem}')
     # ------------------------------------
     def _fix_tails(self, pdf : zpdf, fix_dir : str) -> zpdf:
-        json_path = f'{fix_dir}/fit.json'
-        if not os.path.isfile(json_path):
-            log.debug('No tail fixing path found, leaving all parameters to float')
+        if self._cfg['fvers'] is None:
+            log.debug('No tail parameter fixing version provided, returning original PDF')
             return pdf
 
+        json_path = f'{fix_dir}/fit.json'
         log.info(40 * '-')
         log.info(f'Fixing parameters with: {json_path}')
         log.info(40 * '-')
