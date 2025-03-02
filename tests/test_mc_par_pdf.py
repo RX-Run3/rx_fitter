@@ -10,7 +10,6 @@ import numpy
 import pytest
 from ROOT                  import RDataFrame, RDF
 from dmu.logging.log_store import LogStore
-from rx_data.rdf_getter    import RDFGetter
 from rx_fitter.mc_par_pdf  import MCParPdf
 
 log = LogStore.add_logger('rx_fitter:test_mc_par_pdf')
