@@ -33,24 +33,23 @@ class MCParPdf:
         self._cfg    = copy.deepcopy(cfg)
         self._mass   = obs.obs[0]
 
-        self._sample = cfg['name'   ]
-        self._q2bin  = cfg['q2bin'  ]
-        self._trigger= cfg['trigger']
-        self._nbrem  = cfg['nbrem'  ]
-        self._fvers  = cfg['fvers'  ]
-        self._create = cfg['create' ]
-        self._shared = cfg['shared' ]
-        self._model  = cfg['model'  ]
-        self._pfloat = cfg['pfloat' ]
+        self._sample = self._cfg['name'   ]
+        self._q2bin  = self._cfg['q2bin'  ]
+        self._trigger= self._cfg['trigger']
+        self._nbrem  = self._cfg['nbrem'  ]
+        self._fvers  = self._cfg['fvers'  ]
+        self._create = self._cfg['create' ]
+        self._shared = self._cfg['shared' ]
+        self._model  = self._cfg['model'  ]
+        self._pfloat = self._cfg['pfloat' ]
+        self._fit_dir= self._cfg['output' ]['fit_dir']
 
         self._cfg['out_dir'] = self._get_pars_dir()
     # ---------------------------------------
     def _get_pars_dir(self, version : str = None) -> str:
         model_name = '_'.join(self._model)
-        fit_dir    = self._cfg['output']['fit_dir']
-
-        init_dir = f'{fit_dir}/mc/{self._q2bin}'
-        fnal_dir = f'{self._sample}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
+        init_dir   = f'{self._fit_dir}/mc/{self._q2bin}'
+        fnal_dir   = f'{self._sample}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
 
         if version is not None:
             pars_dir = f'{init_dir}/{version}/{fnal_dir}'
