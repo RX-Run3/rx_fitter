@@ -13,7 +13,8 @@ from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
 from rx_selection                                import selection as sel
 from rx_data.rdf_getter                          import RDFGetter
-from rx_calibration.hltcalibration.fit_component import FitComponent, load_fit_component
+from rx_calibration.hltcalibration.fit_component import FitComponent
+from rx_fitter.mc_par_pdf                        import MCParPdf
 from rx_fitter.prec                              import PRec
 
 log = LogStore.add_logger('rx_fitter:components')
@@ -95,77 +96,26 @@ def _get_last_version(path : str) -> str:
 
     return f'{init}{fnal}'
 # ------------------------------------
-def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : list[str]) -> list[str]:
-    if model is not None:
-        return model
-
-    log.info('Model not passed, will pick default')
-
-    is_sig = sample  == 'Bu_JpsiK_ee_eq_DPC'
-    is_trg = trigger == 'Hlt2RD_BuToKpEE_MVA'
-    is_jps = q2bin   == 'jpsi'
-    is_brm = nbrem   in [0, 1, 2]
-
-    if is_sig and is_jps and is_brm and is_trg:
-        return {
-                0 : ['suj', 'suj' ],
-                1 : ['suj', 'dscb'],
-                2 : ['suj', 'dscb']}[nbrem]
-
-    if sample == 'Bu_JpsiPi_ee_eq_DPC':
-        return {
-                0 : ['suj'],
-                1 : ['suj'],
-                2 : ['suj']}[nbrem]
-
-    raise ValueError(f'Cannot assign default model for: {sample}/{q2bin}/{trigger}/{nbrem}')
-# ------------------------------------
-def get_mc(
-        obs    : zobs,
-        sample : str,
-        q2bin  : str,
-        trigger: str,
-        nbrem  : int,
-        shared : list[str] = None,
-        pfloat : list[str] = None,
-        model  : list[str] = None) -> FitComponent:
+def get_mc(obs : zobs, **kwargs) -> FitComponent:
     '''
     Will return FitComponent object for given MC sample
     '''
-    shared = ['mu']       if shared is None else shared
+    cfg     = copy.deepcopy(Data.cfg)
+    cfg.update(kwargs)
 
-    if sample == 'Bu_JpsiK_ee_eq_DPC':
-        pfloat = ['mu', 'sg'] if pfloat is None else pfloat
-    else:
-        pfloat = []
+    name    = kwargs['name'   ]
+    nbrem   = kwargs['nbrem'  ]
+    q2bin   = kwargs['q2bin'  ]
+    trigger = kwargs['trigger']
 
-    model          = _get_model(sample, q2bin, trigger, nbrem, model)
-    model_name     = '_'.join(model)
-    mass           = obs.obs[0]
-    cfg            = copy.deepcopy(Data.cfg)
-    cfg['name']    = sample
-    out_dir        = f'{Data.fit_dir}/mc/{q2bin}/VERS/{sample}_{trigger}/{mass}_{nbrem}/{model_name}'
-    cfg['out_dir'] = _get_last_version(out_dir)
-
-    log.debug(f'Bulding model: {model}')
-    mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=shared, l_float=pfloat)
-    pdf   = mod.get_pdf()
-
-    obj   = load_fit_component(cfg=cfg, pdf=pdf)
-    if obj is not None:
-        log.info('Will load PDF from cached parameters file')
-        return obj
-
-    log.info('Cached parameters file not found, fitting again')
-    log.debug(f'Output directory: {out_dir}')
     bcut  = f'nbrem == {nbrem}' if nbrem in [0, 1] else f'nbrem >= {nbrem}'
     d_cut = {'nbrem' : bcut}
-    rdf   = get_rdf(sample, q2bin, trigger, d_cut)
+    rdf   = get_rdf(name, q2bin, trigger, d_cut)
     rdf   = rdf.Define('weights', '1')
 
-    obj   = FitComponent(cfg=cfg, rdf=rdf, pdf=pdf, obs=obs)
+    obj   = MCParPdf(rdf=rdf, obs=obs, cfg=cfg)
 
-    return obj
+    return obj.get_fcomp()
 # ------------------------------------
 def get_prc(name : str, obs : zobs, q2bin : str, trigger : str, cuts : dict[str,str] = None, bw : int = None) -> FitComponent:
     '''
