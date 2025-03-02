@@ -1,7 +1,6 @@
 '''
 Module with tests for MCParPdf class
 '''
-import os
 import copy
 
 import ROOT
@@ -18,10 +17,20 @@ class Data:
     '''
     data class
     '''
-    os.environ['FITDIR'] = '/tmp/tests/rx_fitter/mc_par_pdf/fits'
-    cache_dir            = '/tmp/tests/rx_fitter/mc_par_pdf'
-
     cfg = {
+            'fvers'  : None,
+            'create' : False,
+            'name'   : 'Bu_JpsiK_ee_eq_DPC',
+            'q2bin'  : 'jpsi',
+            'nbrem'  : 1,
+            'trigger': 'Hlt2RD_BuToKpEE_MVA',
+            'shared' : ['mu'],
+            'model'  : ['cbl'],
+            'pfloat' : ['mu', 'sg'],
+            'output' :
+            {
+                'fit_dir' : '/tmp/tests/rx_fitter/mc_par_pdf/fits',
+                },
             'fitting':
             {
                 'error_method'  : 'minuit_hesse',
@@ -54,17 +63,7 @@ def test_read():
     '''
     Used to read inputs
     '''
-    cfg            = copy.deepcopy(Data.cfg)
-    cfg['name'   ] = 'Bu_JpsiK_ee_eq_DPC'
-    cfg['q2bin'  ] = 'jpsi'
-    cfg['trigger'] = 'Hlt2RD_BuToKpEE_MVA'
-    cfg['nbrem'  ] = 1
-    cfg['fvers'  ] = None
-    cfg['create' ] = False
-    cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['cbl']
-    cfg['pfloat' ] = ['mu', 'sg']
-
+    cfg = copy.deepcopy(Data.cfg)
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
@@ -76,15 +75,7 @@ def test_create():
     Used to create a new version
     '''
     cfg            = copy.deepcopy(Data.cfg)
-    cfg['name'   ] = 'Bu_JpsiK_ee_eq_DPC'
-    cfg['q2bin'  ] = 'jpsi'
-    cfg['trigger'] = 'Hlt2RD_BuToKpEE_MVA'
-    cfg['nbrem'  ] = 1
-    cfg['fvers'  ] = None
     cfg['create' ] = True
-    cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['cbl']
-    cfg['pfloat' ] = ['mu', 'sg']
 
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
@@ -97,15 +88,8 @@ def test_fix_pars():
     Used to create a new version with parameters fixed from old version
     '''
     cfg            = copy.deepcopy(Data.cfg)
-    cfg['name'   ] = 'Bu_JpsiK_ee_eq_DPC'
-    cfg['q2bin'  ] = 'jpsi'
-    cfg['trigger'] = 'Hlt2RD_BuToKpEE_MVA'
-    cfg['nbrem'  ] = 1
     cfg['fvers'  ] = 'v2'
     cfg['create' ] = True
-    cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['cbl']
-    cfg['pfloat' ] = ['mu', 'sg']
 
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
