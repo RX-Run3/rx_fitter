@@ -62,7 +62,7 @@ def test_read():
     cfg['fvers'  ] = None
     cfg['create' ] = False
     cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['gauss']
+    cfg['model'  ] = ['cbl']
     cfg['pfloat' ] = ['mu', 'sg']
 
     rdf = _get_rdf()
@@ -83,7 +83,7 @@ def test_create():
     cfg['fvers'  ] = None
     cfg['create' ] = True
     cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['gauss']
+    cfg['model'  ] = ['cbl']
     cfg['pfloat' ] = ['mu', 'sg']
 
     rdf = _get_rdf()
@@ -104,7 +104,7 @@ def test_fix_pars():
     cfg['fvers'  ] = 'v2'
     cfg['create' ] = True
     cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['gauss']
+    cfg['model'  ] = ['cbl']
     cfg['pfloat' ] = ['mu', 'sg']
 
     rdf = _get_rdf()
