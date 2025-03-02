@@ -1,37 +1,86 @@
-central:
-  Hlt2RD_BuToKpEE_MVA:
-    Bu_Kee_eq_btosllball05_DPC :
+input:
+  q2bin   : jpsi
+  trigger : Hlt2RD_BuToKpEE_MVA
+  samples :
+    main'       : /home/acampove/external_ssd/Data/samples/main.yaml
+    mva'        : /home/acampove/external_ssd/Data/samples/mva.yaml
+    hop'        : /home/acampove/external_ssd/Data/samples/hop.yaml
+    cascade'    : /home/acampove/external_ssd/Data/samples/cascade.yaml
+    jpsi_misid' : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
+  selection:
+    dtf_tail : B_const_mass_M > 5160
+# ----------------------
+fitting:
+  range : 
+    B_M            : [4500, 6000]
+    B_const_mass_M : [5160, 5500]
+  components:
+    Bu_JpsiK_ee_eq_DPC: true
+    data              : false
+  config:
+    data: 
+      fitting:
+        error_method : minuit_hesse
+      plotting     :
+        nbins   : 30
+        stacked : true
+        d_leg   :
+          Bu_JpsiK_ee_eq_DPC : $B^+\to K^+J/\psi(\to e^+e^-)$
+          Bu_JpsiPi_ee_eq_DPC: $B^+\to \pi^+J/\psi(\to e^+e^-)$
+          combinatorial      : Combinatorial
+    Bu_JpsiK_ee_eq_DPC: &mc
+      fitting:
+        error_method   : minuit_hesse
+        weights_column : weights
+        ntries         : 20
+        pvalue         : 0.02
+      plotting       :
+        nbins   : 30
+        stacked : true
+    Bu_JpsiK_ee_eq_DPC:
+      <<: *mc
+# ----------------------
+brem:
+  0 : nbrem == 0
+  1 : nbrem == 1
+  2 : nbrem >= 2
+# ----------------------
+components:
+  Bu_JpsiK_ee_eq_DPC:
+    0 :
       model:
-        - dscb
-      shared:
+        - suj
+        - suj
+      pfloat:
         - mu
         - sg
-    Bu_JpsiK_ee_eq_DPC:
+      shared:
+        - mu
+    1 :
       model:
-        - kde 
-      shared: []
-    Bd_Kstee_eq_btosllball05_DPC:
+        - suj
+        - dscb 
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+    2 :
       model:
-        - dscb
-      shared: []
-    Bu_Kstee_Kpi0_eq_btosllball05_DPC:
+        - suj
+        - dscb 
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+  Bu_JpsiPi_ee_eq_DPC:
+    0 : &suj
       model:
-        - dscb
+        - suj
+      pfloat: []
       shared: []
-jpsi:
-  Hlt2RD_BuToKpMuMu_MVA:
-    Bu_JpsiK_mm_eq_DPC:
-      - cbl
-      - cbl
-      - cbr
-    shared:
-      - mu
-      - sg
-    Bu_JpsiPi_mm_eq_DPC:
-      - cbl
-      - cbl
-      - cbr
-    shared:
-      - mu
-      - sg
-
+    1 :
+      <<: *suj
+    2 :
+      <<: *suj
