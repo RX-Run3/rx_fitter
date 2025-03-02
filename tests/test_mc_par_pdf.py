@@ -6,12 +6,12 @@ import copy
 
 import ROOT
 import zfit
+import numpy
 import pytest
-from ROOT                  import RDataFrame
+from ROOT                  import RDataFrame, RDF
 from dmu.logging.log_store import LogStore
 from rx_data.rdf_getter    import RDFGetter
 from rx_fitter.mc_par_pdf  import MCParPdf
-from rx_fitter             import components as cmp
 
 log = LogStore.add_logger('rx_fitter:test_mc_par_pdf')
 # ------------------------------------------
@@ -50,14 +50,13 @@ class Data:
 def _initialize():
     LogStore.set_level('rx_fitter:mc_par_pdf', 10)
 # ------------------------------------------
-def _get_rdf(cfg : dict) -> RDataFrame:
-    nbrem   = cfg['nbrem']
-    cuts    = {'nbrem' : f'nbrem == {nbrem}'}
-    trigger = cfg['trigger']
-    q2bin   = cfg['q2bin']
-    sample  = cfg['name']
+def _get_rdf() -> RDataFrame:
+    arr_mass = numpy.random.normal(loc=5280, scale=100, size=1_000)
+    arr_brem = numpy.random.randint(0, 3, size=1_000)
 
-    return cmp.get_rdf(sample, q2bin, trigger, cuts)
+    rdf = RDF.FromNumpy({'B_M' : arr_mass, 'nbrem' : arr_brem})
+
+    return rdf
 # ------------------------------------------
 def test_read():
     '''
@@ -71,10 +70,10 @@ def test_read():
     cfg['fvers'  ] = None
     cfg['create' ] = False
     cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['suj']
+    cfg['model'  ] = ['gauss']
     cfg['pfloat' ] = ['mu', 'sg']
 
-    rdf = _get_rdf(cfg=cfg)
+    rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
 
