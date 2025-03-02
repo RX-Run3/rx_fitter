@@ -31,27 +31,23 @@ class MCParPdf:
         self._obs    = obs
         self._cfg    = cfg
         self._mass   = obs.obs[0]
-        self._fit_dir= os.environ['FITDIR']
 
         self._sample = cfg['name'   ]
         self._q2bin  = cfg['q2bin'  ]
         self._trigger= cfg['trigger']
         self._nbrem  = cfg['nbrem'  ]
         self._fvers  = cfg['fvers'  ]
-
-        self._shared = ['mu'] if cfg['shared'] is None else cfg['shared']
-        self._model  = self._get_model(cfg['model'])
-
-        if self._sample == 'Bu_JpsiK_ee_eq_DPC':
-            self._pfloat = ['mu', 'sg'] if cfg['pfloat'] is None else cfg['pfloat']
-        else:
-            self._pfloat = []
+        self._shared = cfg['shared' ]
+        self._model  = cfg['model'  ]
+        self._pfloat = cfg['pfloat' ]
 
         self._cfg['out_dir'] = self._get_pars_dir()
     # ---------------------------------------
     def _get_pars_dir(self, version : str = None) -> str:
         model_name = '_'.join(self._model)
-        init_dir = f'{self._fit_dir}/mc/{self._q2bin}'
+        fit_dir    = self._cfg['output']['fit_dir']
+
+        init_dir = f'{fit_dir}/mc/{self._q2bin}'
         fnal_dir = f'{self._sample}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
 
         if version is not None:
