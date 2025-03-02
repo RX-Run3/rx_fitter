@@ -38,6 +38,7 @@ class MCParPdf:
         self._trigger= cfg['trigger']
         self._nbrem  = cfg['nbrem'  ]
         self._fvers  = cfg['fvers'  ]
+        self._create = cfg['create' ]
         self._shared = cfg['shared' ]
         self._model  = cfg['model'  ]
         self._pfloat = cfg['pfloat' ]
@@ -62,7 +63,7 @@ class MCParPdf:
             return f'{init_dir}/{fnal_dir}'
 
         init_dir = vman.get_last_version(dir_path=init_dir, version_only=False)
-        if self._cfg['create']:
+        if self._create:
             init_dir = vman.get_next_version(init_dir)
             log.info(f'Creating new version of fit in: {init_dir}')
         else:
