@@ -116,6 +116,9 @@ class MCParPdf:
             if par.name not in d_par:
                 continue
 
+            if par.name.endswith('_flt'):
+                continue
+
             [val, _] = d_par[par.name]
 
             par.set_value(val)
@@ -123,7 +126,7 @@ class MCParPdf:
             log.info(f'{par.name:<30}{"--->":<10}{val:.3f}')
             par.floating = False
 
-        return zpdf
+        return pdf
     # ---------------------------------------
     def get_fcomp(self) -> FitComponent:
         '''
