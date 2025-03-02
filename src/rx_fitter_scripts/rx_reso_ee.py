@@ -1,11 +1,14 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
+import os
 import json
 import argparse
 
 import ROOT
 import zfit
+
+from dmu.generic                             import version_management as vman
 from dmu.logging.log_store                   import LogStore
 from rx_calibration.hltcalibration.dt_fitter import DTFitter
 from rx_data.rdf_getter                      import RDFGetter
@@ -23,10 +26,11 @@ class Data:
     cpath : str
 
     dtf_tail = 5160
+    trigger  = 'Hlt2RD_BuToKpEE_MVA'
+    q2bin    = 'jpsi'
 
     cfg   = {
             'error_method' : 'minuit_hesse',
-            'out_dir'      : 'plots/fit/data',
             'plotting'     :
             {
                 'nbins'   : 30,
@@ -97,34 +101,39 @@ def _parse_args() -> None:
     Data.kind  = args.kind
     Data.cpath = args.cpath
 # ------------------------------
+def _set_out_dir() -> None:
+    fit_dir = os.environ['FITDIR']
+    ver_dir = f'{fit_dir}/data/{Data.q2bin}'
+    ver_dir = vman.get_last_version(dir_path=ver_dir, version_only=False)
+    out_dir = f'{ver_dir}/DATA_{Data.trigger}/{Data.mass}_{Data.nbrem}/full_model'
+
+    Data.cfg['out_dir'] = out_dir
+# ------------------------------
 def main():
     '''
     Start here
     '''
     _parse_args()
 
-    trigger = 'Hlt2RD_BuToKpEE_MVA'
-    q2bin   = 'jpsi'
     d_cut   = _get_cuts()
     t_lim   = _get_limits()
 
     obs     = zfit.Space(Data.mass, limits=t_lim)
 
-    cmp_sig = cmp.get_mc(obs = obs, sample = 'Bu_JpsiK_ee_eq_DPC' , trigger=trigger, q2bin=q2bin, nbrem=Data.nbrem)
-    cmp_csp = cmp.get_mc(obs = obs, sample = 'Bu_JpsiPi_ee_eq_DPC', trigger=trigger, q2bin=q2bin, nbrem=Data.nbrem)
-    cmp_prc = cmp.get_prc(obs= obs, trigger=trigger, q2bin=q2bin, name='no_tail', cuts = d_cut, bw = 20)
     cmp_cmb = cmp.get_cb(obs = obs, kind='exp')
+    cmp_sig = cmp.get_mc(obs = obs, sample = 'Bu_JpsiK_ee_eq_DPC' , trigger=Data.trigger, q2bin=Data.q2bin, nbrem=Data.nbrem)
+    cmp_csp = cmp.get_mc(obs = obs, sample = 'Bu_JpsiPi_ee_eq_DPC', trigger=Data.trigger, q2bin=Data.q2bin, nbrem=Data.nbrem)
+    cmp_prc = cmp.get_prc(obs= obs, trigger=Data.trigger, q2bin=Data.q2bin, name=Data.nbrem, cuts = d_cut, bw = 20)
 
-    rdf = cmp.get_rdf(sample='DATA*', q2bin=q2bin, trigger=trigger, cuts = d_cut)
+    rdf = cmp.get_rdf(sample='DATA*', q2bin=Data.q2bin, trigger=Data.trigger, cuts = d_cut)
 
-    out_dir = Data.cfg['out_dir']
-    Data.cfg['out_dir']= f'{out_dir}/nbrem_{Data.nbrem:03}'
     d_const = _get_constraints()
     d_const = {
             'nPRec'                : [0, 1],
             'nBu_JpsiPi_ee_eq_DPC' : [0, 1],
             }
 
+    _set_out_dir()
     obj = DTFitter(rdf = rdf, components = [cmp_cmb, cmp_prc, cmp_csp, cmp_sig], cfg=Data.cfg)
     obj.fit(constraints = d_const)
 # ------------------------------
