@@ -5,6 +5,7 @@ Module with class MCParPdf
 
 import os
 import json
+import copy
 
 from ROOT                                        import RDataFrame
 from dmu.logging.log_store                       import LogStore
@@ -29,7 +30,7 @@ class MCParPdf:
 
         self._rdf    = rdf
         self._obs    = obs
-        self._cfg    = cfg
+        self._cfg    = copy.deepcopy(cfg)
         self._mass   = obs.obs[0]
 
         self._sample = cfg['name'   ]
