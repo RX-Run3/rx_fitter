@@ -51,15 +51,26 @@ class MCParPdf:
     # ---------------------------------------
     def _get_pars_dir(self, version : str = None) -> str:
         model_name = '_'.join(self._model)
-        pars_dir = f'{self._fit_dir}/mc/{self._q2bin}/'
-        if version is None:
-            pars_dir = vman.get_last_version(dir_path=pars_dir, version_only=False)
+        init_dir = f'{self._fit_dir}/mc/{self._q2bin}'
+        fnal_dir = f'{self._sample}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
+
+        if version is not None:
+            log.debug(f'Using user defined version of fit in: {init_dir}')
+            return f'{init_dir}/{version}/{fnal_dir}'
+
+        if not os.path.isdir(init_dir):
+            init_dir = f'{init_dir}/v1'
+            log.info(f'No fitting path found, making first version of fit directory in: {init_dir}')
+            return f'{init_dir}/{fnal_dir}'
+
+        init_dir = vman.get_last_version(dir_path=init_dir, version_only=False)
+        if self._cfg['create']:
+            init_dir = vman.get_next_version(init_dir)
+            log.info(f'Creating new version of fit in: {init_dir}')
         else:
-            pars_dir = f'{pars_dir}/{version}'
+            log.info(f'Using latest version of fit in: {init_dir}')
 
-        pars_dir = f'{pars_dir}/{self._sample}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
-
-        return pars_dir
+        return f'{init_dir}/{fnal_dir}'
     # ---------------------------------------
     def _get_model(self, model : list[str]) -> list[str]:
         if model is not None:
