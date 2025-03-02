@@ -10,13 +10,19 @@ input:
   selection:
     dtf_tail : B_const_mass_M > 5160
 # ----------------------
+output:
+  fit_dir : /home/acampove/external_ssd/fits
+# ----------------------
 fitting:
   range : 
     B_M            : [4500, 6000]
     B_const_mass_M : [5160, 5500]
   components:
-    Bu_JpsiK_ee_eq_DPC: true
-    data              : false
+    Signal         : true
+    Cabibbo        : false 
+    PRec           : false 
+    combinatorial  : false
+    data           : false
   config:
     data: 
       fitting:
@@ -28,7 +34,8 @@ fitting:
           Bu_JpsiK_ee_eq_DPC : $B^+\to K^+J/\psi(\to e^+e^-)$
           Bu_JpsiPi_ee_eq_DPC: $B^+\to \pi^+J/\psi(\to e^+e^-)$
           combinatorial      : Combinatorial
-    Bu_JpsiK_ee_eq_DPC: &mc
+    Signal :
+      sample           : Bu_JpsiK_ee_eq_DPC
       fitting:
         error_method   : minuit_hesse
         weights_column : weights
@@ -37,8 +44,20 @@ fitting:
       plotting       :
         nbins   : 30
         stacked : true
-    Bu_JpsiK_ee_eq_DPC:
-      <<: *mc
+    Cabibbo :
+      sample           : Bu_JpsiPi_ee_eq_DPC
+      fitting:
+        error_method   : minuit_hesse
+        weights_column : weights
+        ntries         : 20
+        pvalue         : 0.02
+      plotting       :
+        nbins   : 30
+        stacked : true
+    PRec:
+      bw : 20
+    combinatorial:
+      kind : exp
 # ----------------------
 brem:
   0 : nbrem == 0
