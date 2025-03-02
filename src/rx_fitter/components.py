@@ -8,6 +8,7 @@ import copy
 
 from zfit.core.interfaces                        import ZfitSpace as zobs
 from ROOT                                        import RDataFrame
+from dmu.generic                                 import version_management as vman
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
 from rx_selection                                import selection as sel
@@ -24,7 +25,6 @@ class Data:
     fit_dir   = os.environ['FITDIR']
     cache_dir = '/tmp/cache/rx_fits'
     cfg       = {
-            'out_dir': f'{fit_dir}/fit',
             'fitting':
             {
                 'error_method'  : 'minuit_hesse',
@@ -89,6 +89,12 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
 
     return rdf
 # ------------------------------------
+def _get_last_version(path : str) -> str:
+    [init, fnal] = path.split('VERS')
+    init         = vman.get_last_version(dir_path=init, version_only=False)
+
+    return f'{init}{fnal}'
+# ------------------------------------
 def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : list[str]) -> list[str]:
     if model is not None:
         return model
@@ -102,10 +108,9 @@ def _get_model(sample : str, q2bin : str, trigger : str, nbrem : int, model : li
 
     if is_sig and is_jps and is_brm and is_trg:
         return {
-                0 : ['suj', 'suj'],
-                1 : ['suj', 'suj'],
-                2 : ['suj', 'suj']}[nbrem]
-
+                0 : ['suj', 'suj' ],
+                1 : ['suj', 'dscb'],
+                2 : ['suj', 'dscb']}[nbrem]
 
     if sample == 'Bu_JpsiPi_ee_eq_DPC':
         return {
@@ -128,16 +133,19 @@ def get_mc(
     Will return FitComponent object for given MC sample
     '''
     shared = ['mu']       if shared is None else shared
-    pfloat = ['mu', 'sg'] if pfloat is None else pfloat
+
+    if sample == 'Bu_JpsiK_ee_eq_DPC':
+        pfloat = ['mu', 'sg'] if pfloat is None else pfloat
+    else:
+        pfloat = []
 
     model          = _get_model(sample, q2bin, trigger, nbrem, model)
-    brem_name      = 'all' if nbrem not in [0, 1, 2] else nbrem
     model_name     = '_'.join(model)
     mass           = obs.obs[0]
     cfg            = copy.deepcopy(Data.cfg)
     cfg['name']    = sample
-    out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{q2bin}/{sample}_{trigger}/{mass}_{brem_name}/{model_name}'
+    out_dir        = f'{Data.fit_dir}/mc/{q2bin}/VERS/{sample}_{trigger}/{mass}_{nbrem}/{model_name}'
+    cfg['out_dir'] = _get_last_version(out_dir)
 
     log.debug(f'Bulding model: {model}')
     mod   = ModelFactory(preffix=sample, obs=obs, l_pdf=model, l_shared=shared, l_float=pfloat)
@@ -166,8 +174,8 @@ def get_prc(name : str, obs : zobs, q2bin : str, trigger : str, cuts : dict[str,
     mass        = obs.obs[0]
     cfg         = copy.deepcopy(Data.cfg)
     cfg['name'] = 'PRec'
-    out_dir     = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{trigger}_{q2bin}_{name}'
+    out_dir        = f'{Data.fit_dir}/mc/{q2bin}/VERS/binclusive_{trigger}/{mass}_{name}/kde'
+    cfg['out_dir'] = _get_last_version(out_dir)
 
     bw     = {'jpsi' :  5, 'psi2' : 10}[q2bin] if bw is None else bw
 
@@ -192,13 +200,13 @@ def get_cb(obs : zobs, kind : str) -> FitComponent:
     '''
     cfg            = copy.deepcopy(Data.cfg)
     cfg['name']    = 'combinatorial'
-    out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{kind}'
+    cfg['out_dir'] = f'/tmp/components/{kind}'
 
-    mod   = ModelFactory(preffix='', obs=obs, l_pdf = [kind], l_shared = [], l_float= [])
+    mod   = ModelFactory(preffix='cmb', obs=obs, l_pdf = [kind], l_shared = [], l_float= [])
     pdf   = mod.get_pdf()
 
     obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
+    obj.run()
 
     return obj
 # ------------------------------------
