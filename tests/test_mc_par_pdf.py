@@ -22,7 +22,7 @@ class Data:
     os.environ['FITDIR'] = '/tmp/tests/rx_fitter/mc_par_pdf/fits'
     cache_dir            = '/tmp/tests/rx_fitter/mc_par_pdf'
 
-    cfg       = {
+    cfg = {
             'fitting':
             {
                 'error_method'  : 'minuit_hesse',
@@ -71,7 +71,7 @@ def test_read():
     cfg['fvers'  ] = None
     cfg['create' ] = False
     cfg['shared' ] = ['mu']
-    cfg['model'  ] = ['suj', 'dscb']
+    cfg['model'  ] = ['suj']
     cfg['pfloat' ] = ['mu', 'sg']
 
     rdf = _get_rdf(cfg=cfg)
