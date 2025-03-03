@@ -84,29 +84,23 @@ def _fit_data(l_cmp : list[FitComponent]) -> None:
 # ------------------------------
 def _get_components() -> list[FitComponent]:
     obs     = zfit.Space(Data.mass, limits=_get_limits())
-    q2bin   = Data.cfg['input']['q2bin']
-    trigger = Data.cfg['input']['trigger']
     l_fcm   = []
 
-    if Data.cfg['fiting']['components']['Signal']:
-        sample = Data.cfg['fitting']['config']['Signal']['sample']
-        fcm    = cmp.get_mc(obs = obs, name= sample, trigger=trigger, q2bin=q2bin, nbrem=Data.nbrem)
+    if Data.cfg['fitting']['components']['Signal']:
+        fcm    = cmp.get_mc(obs=obs, component_name='Signal', nbrem=Data.nbrem, cfg=Data.cfg)
         l_fcm.append(fcm)
 
-    if Data.cfg['fiting']['components']['Cabibbo']:
-        sample = Data.cfg['fitting']['config']['Cabibbo']['sample']
-        fcm    = cmp.get_mc(obs = obs, name= sample, trigger=trigger, q2bin=q2bin, nbrem=Data.nbrem)
+    if Data.cfg['fitting']['components']['Cabibbo']:
+        fcm    = cmp.get_mc(obs=obs, component_name='Cabibbo', nbrem=Data.nbrem, cfg=Data.cfg)
         l_fcm.append(fcm)
 
-    if Data.cfg['fiting']['components']['combinatorial']:
+    if Data.cfg['fitting']['components']['combinatorial']:
         kind  = Data.cfg['fitting']['config']['combinatorial']['kind']
         fcm   = cmp.get_cb(obs = obs, kind= kind)
         l_fcm.append(fcm)
 
     if Data.cfg['fitting']['components']['PRec']:
-        d_cut = _get_cuts()
-        bw    = Data.cfg['fitting']['config']['PRec']['bw']
-        fcm   = cmp.get_prc(obs= obs, name= Data.nbrem, trigger=trigger, q2bin=q2bin, cuts = d_cut, bw = bw)
+        fcm   = cmp.get_prc(obs= obs, nbrem=Data.nbrem, cfg=Data.cfg)
         l_fcm.append(fcm)
 
     return l_fcm
