@@ -60,56 +60,70 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
 
     return rdf
 # ------------------------------------
-def _get_last_version(path : str) -> str:
-    [init, fnal] = path.split('VERS')
-    init         = vman.get_last_version(dir_path=init, version_only=False)
+def _cuts_from_conf(nbrem : int, cfg : dict) -> dict[str,str]:
+    bcut  = cfg['brem'][nbrem]
+    d_cut = {'nbrem' : bcut}
+    cuts  = cfg['input']['selection']
+    d_cut.update(cuts)
 
-    return f'{init}{fnal}'
+    return d_cut
 # ------------------------------------
-def get_mc(obs : zobs, **kwargs) -> FitComponent:
+def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
     '''
     Will return FitComponent object for given MC sample
     '''
-    cfg     = copy.deepcopy(Data.cfg)
-    cfg.update(kwargs)
+    cfg     = copy.deepcopy(cfg)
+    cuts    = _cuts_from_conf(nbrem, cfg)
 
-    name    = kwargs['name'   ]
-    nbrem   = kwargs['nbrem'  ]
-    q2bin   = kwargs['q2bin'  ]
-    trigger = kwargs['trigger']
+    d_inp   = cfg['input']
+    trigger = d_inp['trigger']
+    q2bin   = d_inp['q2bin'  ]
 
-    bcut  = f'nbrem == {nbrem}' if nbrem in [0, 1] else f'nbrem >= {nbrem}'
-    d_cut = {'nbrem' : bcut}
-    rdf   = get_rdf(name, q2bin, trigger, d_cut)
-    rdf   = rdf.Define('weights', '1')
+    d_cmp   = cfg['fitting']['config'][component_name]
+    d_fit   = d_cmp['fitting']
+    d_plt   = d_cmp['plotting']
+
+    sample  = d_cmp['sample']
+    rdf     = get_rdf(sample, q2bin, trigger, cuts)
+    rdf     = rdf.Define('weights', '1')
+
+    cfg['component_name'] = component_name
+    cfg['q2bin'  ]        = q2bin
+    cfg['trigger']        = trigger
+    cfg['nbrem'  ]        = nbrem
+
+    cmp_cfg         = cfg['components'][component_name][nbrem]
+    cfg['fvers'   ] = cmp_cfg['fvers'  ]
+    cfg['create'  ] = cmp_cfg['create' ]
+    cfg['shared'  ] = cmp_cfg['shared' ]
+    cfg['model'   ] = cmp_cfg['model'  ]
+    cfg['pfloat'  ] = cmp_cfg['pfloat' ]
+    cfg['fitting' ] = d_fit
+    cfg['plotting'] = d_plt
+    cfg['fitting']['weights_column'] = cmp_cfg['weights']
 
     obj   = MCParPdf(rdf=rdf, obs=obs, cfg=cfg)
 
     return obj.get_fcomp()
 # ------------------------------------
-def get_prc(name : str, obs : zobs, q2bin : str, trigger : str, cuts : dict[str,str] = None, bw : int = None) -> FitComponent:
+def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     '''
     Function returning FitComponent object for Partially reconstructed background
     '''
-    mass        = obs.obs[0]
-    cfg         = copy.deepcopy(Data.cfg)
-    cfg['name'] = 'PRec'
-    out_dir        = f'{Data.fit_dir}/mc/{q2bin}/VERS/binclusive_{trigger}/{mass}_{name}/kde'
-    cfg['out_dir'] = _get_last_version(out_dir)
+    mass     = obs.obs[0]
+    q2bin    = cfg['input']['q2bin']
+    trigger  = cfg['input']['trigger']
+    bw       = cfg['fitting']['config']['PRec']['bw']
+    l_samp   = cfg['fitting']['config']['PRec']['sample']
+    d_wgt    = cfg['fitting']['config']['PRec']['weights']
 
-    bw     = {'jpsi' :  5, 'psi2' : 10}[q2bin] if bw is None else bw
-
-    l_samp = [
-            'Bu_JpsiX_ee_eq_JpsiInAcc',
-            'Bd_JpsiX_ee_eq_JpsiInAcc',
-            'Bs_JpsiX_ee_eq_JpsiInAcc']
-
-    d_wgt= {'dec' : 1, 'sam' : 1}
-    obj  = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
-    if cuts is not None:
-        obj.cuts = cuts
+    obj      = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
+    obj.cuts = _cuts_from_conf(nbrem, cfg)
 
     pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, bandwidth=bw)
+
+    cfg['name']    = 'PRec'
+
     fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
 
     return fcm
