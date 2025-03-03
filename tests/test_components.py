@@ -72,7 +72,6 @@ class Data:
                         'sample': 'Bu_JpsiK_ee_eq_DPC',
                         'fitting': {
                             'error_method': 'minuit_hesse',
-                            'weights_column': 'weights',
                             'ntries': 2,
                             'pvalue': 0.02
                             },
@@ -85,7 +84,6 @@ class Data:
                         'sample': 'Bu_JpsiPi_ee_eq_DPC',
                         'fitting': {
                             'error_method': 'minuit_hesse',
-                            'weights_column': 'weights',
                             'ntries': 2,
                             'pvalue': 0.02
                             },
