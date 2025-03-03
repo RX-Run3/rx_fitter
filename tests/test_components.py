@@ -106,6 +106,10 @@ class Data:
                             'sam' : 1,
                             },
                         },
+                        'plotting' : {
+                                'nbins'   : 30,
+                                'stacked' : True,
+                                },
                     'combinatorial': {
                             'kind': 'exp'
                             }
