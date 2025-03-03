@@ -9,7 +9,6 @@ import pytest
 
 from zfit.core.interfaces   import ZfitSpace as zobs
 from dmu.logging.log_store  import LogStore
-from rx_data.rdf_getter     import RDFGetter
 from rx_fitter              import components as cmp
 
 log=LogStore.add_logger('rx_fitter:test_components')
@@ -190,70 +189,63 @@ def _intiailize():
     LogStore.set_level('rx_fitter:prec'              , 10)
     LogStore.set_level('rx_fitter:components'        , 10)
     LogStore.set_level('rx_calibration:fit_component', 10)
-
-    RDFGetter.samples = {
-        'main'       : '/home/acampove/external_ssd/Data/samples/main.yaml',
-        'mva'        : '/home/acampove/external_ssd/Data/samples/mva.yaml',
-        'hop'        : '/home/acampove/external_ssd/Data/samples/hop.yaml',
-        'cascade'    : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
-        'jpsi_misid' : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'}
 # --------------------------------------------------------------
-def _get_mass_range(mass : str, sample : str) -> list[int]:
-    if mass == 'B_const_mass_M' and sample == 'Bu_JpsiPi_ee_eq_DPC':
-        return [5100, 6000]
+def _get_obs(mass : str, cfg : dict) -> zobs:
+    [min_mass, max_mass] = cfg['fitting']['range'][mass]
 
-    if mass == 'B_const_mass_M' and sample == 'Bu_JpsiK_ee_eq_DPC':
-        return [5100, 5500]
+    obs = zfit.Space(mass, limits=(min_mass, max_mass))
 
-    if mass == 'B_M':
-        return [4500, 6000]
-
-    raise ValueError(f'Invalid mass and sample: {mass}/{sample}')
+    return obs
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem' , [0, 1, 2])
-@pytest.mark.parametrize('mass'  , ['B_M'])
-@pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC'])
-def test_signal(nbrem : int, mass : str, sample : str):
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+@pytest.mark.parametrize('mass' , ['B_M'])
+@pytest.mark.parametrize('name' , ['Signal'])
+def test_mc_create(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample
     '''
-    limits = _get_mass_range(mass, sample)
+    cfg            = copy.deepcopy(Data.cfg)
+    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}_{mass}_{nbrem:03}'
+    d_cmp_set      = cfg['components'][name][nbrem]
+    d_cmp_set['fvers'] = None
 
-    obs=zfit.Space(mass, limits=limits)
-    trigger = 'Hlt2RD_BuToKpEE_MVA'
+    obs            = _get_obs(mass, cfg)
 
-    cmp.Data.cfg['fitting']['ntries'] = 15
-
-    cmp.Data.cfg['out_dir'] = '/tmp/tests/rx_fitter/components/signal'
-    cmp_sig = cmp.get_mc(obs    = obs,
-                         sample = sample,
-                         trigger= trigger,
-                         q2bin  = 'jpsi',
-                         model  = ['cbl', 'cbr'],
-                         nbrem  = nbrem)
+    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
     cmp_sig.run()
 # --------------------------------------------------------------
-@pytest.mark.parametrize('mass'     , ['B_const_mass_M', 'B_M'])
-@pytest.mark.parametrize('cut, name', [
-    ('nbrem == 0', 'bz'),
-    ('nbrem == 1', 'bo'),
-    ('nbrem >= 2', 'bt')])
-def test_prec_brem(mass : str, cut : str, name : str):
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+@pytest.mark.parametrize('mass' , ['B_M'])
+@pytest.mark.parametrize('name' , ['Signal'])
+def test_mc_fix(nbrem : int, mass : str, name : str):
+    '''
+    Testing creation of PDF from MC sample with tails fixed from other version
+    '''
+    cfg            = copy.deepcopy(Data.cfg)
+    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}_{mass}_{nbrem:03}'
+    d_cmp_set      = cfg['components'][name][nbrem]
+    d_cmp_set['fvers'] = 'v1'
+
+    obs     = _get_obs(mass, cfg)
+    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
+    cmp_sig.run()
+# --------------------------------------------------------------
+#@pytest.mark.parametrize('nbrem',                 [0, 1, 2])
+#@pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M'])
+
+@pytest.mark.parametrize('nbrem',     [0])
+@pytest.mark.parametrize('mass' , ['B_M'])
+def test_prec_brem(mass : str, nbrem : int):
     '''
     Testing creation of PDF from MC sample with brem cut
     '''
-    cmp.Data.cfg['out_dir'] = '/tmp/tests/rx_fitter/components/prec'
+    log.info('')
 
-    obs     = zfit.Space(mass, limits=(4500, 6000))
-    trigger = 'Hlt2RD_BuToKpEE_MVA'
-    cmp_prc = cmp.get_prc(
-            name   = name,
-            obs    = obs,
-            q2bin  = 'jpsi',
-            trigger= trigger,
-            bw     = 20,
-            cuts   = {'nbrem' : cut, 'core' : 'B_const_mass_M > 5150'})
+    cfg            = copy.deepcopy(Data.cfg)
+    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_prec_brem/{mass}_{nbrem:03}/v1'
 
+    obs            = _get_obs(mass, cfg)
+    cmp_prc        = cmp.get_prc(obs, nbrem, cfg)
     cmp_prc.run()
 # --------------------------------------------------------------
 def test_combinatorial():
