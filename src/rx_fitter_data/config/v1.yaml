@@ -75,6 +75,8 @@ components:
         - sg
       shared:
         - mu
+      fvers : v2
+      create: true
     1 :
       model:
         - suj
@@ -84,6 +86,8 @@ components:
         - sg
       shared:
         - mu
+      fvers : v2
+      create: true
     2 :
       model:
         - suj
@@ -93,6 +97,8 @@ components:
         - sg
       shared:
         - mu
+      fvers : v2
+      create: true
   Cabibbo:
     0 : &suj
       model:
