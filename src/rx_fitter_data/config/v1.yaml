@@ -7,8 +7,8 @@ input:
     hop'        : /home/acampove/external_ssd/Data/samples/hop.yaml
     cascade'    : /home/acampove/external_ssd/Data/samples/cascade.yaml
     jpsi_misid' : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
-  selection:
-    dtf_tail : B_const_mass_M > 5160
+  selection: # Used to override default selection
+    mass : B_const_mass_M > 5160
 # ----------------------
 output:
   fit_dir : /home/acampove/external_ssd/fits
