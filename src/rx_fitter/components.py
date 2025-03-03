@@ -37,7 +37,7 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
     d_sel=sel.selection(project='RK', analysis=analysis, q2bin=q2bin, process=sample)
     d_sel.update(cuts)
     for cut_name, cut_value in d_sel.items():
-        log.info(f'{cut_name:<20}{cut_value}')
+        log.debug(f'{cut_name:<20}{cut_value}')
         rdf = rdf.Filter(cut_value, cut_name)
 
     if cuts is not None:
@@ -46,8 +46,9 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
             log.info(f'   {name:<20}{expr}')
             rdf = rdf.Filter(expr, name)
 
-    rep = rdf.Report()
-    rep.Print()
+    if log.getEffectiveLevel() < 20:
+        rep = rdf.Report()
+        rep.Print()
 
     return rdf
 # ------------------------------------
