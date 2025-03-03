@@ -208,6 +208,24 @@ def _get_obs(mass : str, cfg : dict) -> zobs:
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_M'])
 @pytest.mark.parametrize('name' , ['Signal'])
+def test_mc_reuse(nbrem : int, mass : str, name : str):
+    '''
+    Testing reuse of old fit
+    '''
+    cfg            = copy.deepcopy(Data.cfg)
+    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}_{mass}_{nbrem:03}'
+    d_cmp_set      = cfg['components'][name][nbrem]
+    d_cmp_set['create'] = False
+    d_cmp_set['fvers' ] = None
+
+    obs            = _get_obs(mass, cfg)
+
+    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
+    cmp_sig.run()
+# --------------------------------------------------------------
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+@pytest.mark.parametrize('mass' , ['B_M'])
+@pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_create(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample
