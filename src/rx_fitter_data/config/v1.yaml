@@ -65,7 +65,7 @@ brem:
   2 : nbrem >= 2
 # ----------------------
 components:
-  Bu_JpsiK_ee_eq_DPC:
+  Signal:
     0 :
       model:
         - suj
@@ -93,7 +93,7 @@ components:
         - sg
       shared:
         - mu
-  Bu_JpsiPi_ee_eq_DPC:
+  Cabibbo:
     0 : &suj
       model:
         - suj
