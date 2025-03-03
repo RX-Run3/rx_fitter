@@ -22,9 +22,8 @@ class Data:
     '''
     nbrem : int
     mass  : str
-    cpath : str
-
     cfg   : dict
+    vers  = 'v1'
 # ------------------------------
 def _get_cuts() -> dict[str,str]:
     d_cut         = {}
@@ -55,7 +54,7 @@ def _set_out_dir() -> None:
     Data.cfg['out_dir'] = out_dir
 # ------------------------------
 def _load_config() -> None:
-    cfg_path = files('rx_fitter_data').joinpath('config/v1.yaml')
+    cfg_path = files('rx_fitter_data').joinpath(f'config/{Data.vers}.yaml')
     with open(cfg_path, encoding='utf-8') as ifile:
         Data.cfg = yaml.safe_load(ifile)
 # ------------------------------
