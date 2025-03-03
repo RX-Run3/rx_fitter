@@ -28,14 +28,6 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
     '''
     Function that returns a ROOT dataframe for a given dataset, MC or real data
     '''
-    out_path = f'{Data.cache_dir}/{sample}_{q2bin}.root'
-    if os.path.isfile(out_path):
-        log.info('DataFrame already cached, reloading')
-        rdf = RDataFrame('tree', out_path)
-        return rdf
-
-    log.info('DataFrame not cached')
-
     gtr = RDFGetter(sample=sample, trigger=trigger)
     rdf = gtr.get_rdf()
     rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
