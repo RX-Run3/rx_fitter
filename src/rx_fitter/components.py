@@ -8,7 +8,6 @@ import copy
 
 from zfit.core.interfaces                        import ZfitSpace as zobs
 from ROOT                                        import RDataFrame
-from dmu.generic                                 import version_management as vman
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
 from rx_selection                                import selection as sel
