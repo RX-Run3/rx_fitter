@@ -70,12 +70,15 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
     d_inp   = cfg['input']
     trigger = d_inp['trigger']
     q2bin   = d_inp['q2bin'  ]
+    l_path  = d_inp['samples']
 
     d_cmp   = cfg['fitting']['config'][component_name]
     d_fit   = d_cmp['fitting']
     d_plt   = d_cmp['plotting']
 
     sample  = d_cmp['sample']
+
+    RDFGetter.samples = l_path
     rdf     = get_rdf(sample, q2bin, trigger, cuts)
     rdf     = rdf.Define('weights', '1')
 
