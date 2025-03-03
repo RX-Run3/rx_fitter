@@ -113,9 +113,12 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
     trigger  = cfg['input']['trigger']
+    l_path   = cfg['input']['samples']
     bw       = cfg['fitting']['config']['PRec']['bw']
     l_samp   = cfg['fitting']['config']['PRec']['sample']
     d_wgt    = cfg['fitting']['config']['PRec']['weights']
+
+    RDFGetter.samples = l_path
 
     obj      = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
     obj.cuts = _cuts_from_conf(nbrem, cfg)
