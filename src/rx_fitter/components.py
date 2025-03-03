@@ -3,7 +3,6 @@ Module with functions needed to provide fit components
 '''
 # pylint: disable=too-many-positional-arguments, too-many-function-args, too-many-arguments, too-many-locals
 
-import os
 import copy
 
 from zfit.core.interfaces                        import ZfitSpace as zobs
