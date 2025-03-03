@@ -1,8 +1,6 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
-import os
-import json
 import argparse
 from importlib.resources import files
 
@@ -14,7 +12,6 @@ from dmu.generic                                 import version_management as vm
 from dmu.logging.log_store                       import LogStore
 from rx_calibration.hltcalibration.dt_fitter     import DTFitter
 from rx_calibration.hltcalibration.fit_component import FitComponent
-from rx_data.rdf_getter                          import RDFGetter
 from rx_fitter                                   import components as cmp
 
 log = LogStore.add_logger('rx_fitter:rx_reso_ee')
@@ -41,12 +38,10 @@ def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Script used to fit resonant electron mode')
     parser.add_argument('-b', '--nbrem' , type=int, help='Brem category'   , required=True, choices=[0,1,2])
     parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=['B_M', 'B_const_mass_M'])
-    parser.add_argument('-c', '--cpath' , type=str, help='Path to JSON file with parameters to constraint')
     args = parser.parse_args()
 
     Data.nbrem = args.nbrem
     Data.mass  = args.mass
-    Data.cpath = args.cpath
 # ------------------------------
 def _set_out_dir() -> None:
     q2bin   = Data.cfg['input']['q2bin'  ]
@@ -123,7 +118,6 @@ def main():
     '''
     _parse_args()
     _load_config()
-
 
     l_cmp   = _get_components()
     _fit_data(l_cmp)
