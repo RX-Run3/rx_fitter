@@ -39,19 +39,15 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
 
     gtr = RDFGetter(sample=sample, trigger=trigger)
     rdf = gtr.get_rdf()
+    rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
 
     analysis = 'MM' if 'MuMu' in trigger else 'EE'
 
-    d_sel = sel.selection(project='RK', analysis=analysis, q2bin=q2bin, process=sample)
-    d_sel = _update_selection(d_sel)
+    d_sel=sel.selection(project='RK', analysis=analysis, q2bin=q2bin, process=sample)
+    d_sel.update(cuts)
     for cut_name, cut_value in d_sel.items():
         log.info(f'{cut_name:<20}{cut_value}')
-        if cut_name == 'mass':
-            cut_value = '(1)'
-
         rdf = rdf.Filter(cut_value, cut_name)
-
-    rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
 
     if cuts is not None:
         log.warning('Overriding default selection')
