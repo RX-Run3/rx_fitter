@@ -33,23 +33,22 @@ class MCParPdf:
         self._cfg    = copy.deepcopy(cfg)
         self._mass   = obs.obs[0]
 
-        self._sample = self._cfg['name'   ]
-        self._q2bin  = self._cfg['q2bin'  ]
-        self._trigger= self._cfg['trigger']
-        self._nbrem  = self._cfg['nbrem'  ]
-        self._fvers  = self._cfg['fvers'  ]
-        self._create = self._cfg['create' ]
-        self._shared = self._cfg['shared' ]
-        self._model  = self._cfg['model'  ]
-        self._pfloat = self._cfg['pfloat' ]
-        self._fit_dir= self._cfg['output' ]['fit_dir']
+        self._component_name = self._cfg['component_name']
 
+        self._q2bin       = self._cfg['q2bin'  ]
+        self._trigger     = self._cfg['trigger']
+        self._nbrem       = self._cfg['nbrem'  ]
+        self._create      = self._cfg['create' ]
+        self._model       = self._cfg['model'  ]
+
+        self._fit_dir        = cfg['output' ]['fit_dir']
         self._cfg['out_dir'] = self._get_pars_dir()
+        self._cfg['name'   ] = self._component_name
     # ---------------------------------------
     def _get_pars_dir(self, version : str = None) -> str:
         model_name = '_'.join(self._model)
         init_dir   = f'{self._fit_dir}/mc/{self._q2bin}'
-        fnal_dir   = f'{self._sample}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
+        fnal_dir   = f'{self._component_name}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
 
         if version is not None:
             pars_dir = f'{init_dir}/{version}/{fnal_dir}'
@@ -105,7 +104,13 @@ class MCParPdf:
         Returns instance of FitComponent
         '''
         log.debug(f'Bulding model: {self._model}')
-        mod   = ModelFactory(preffix=self._sample, obs=self._obs, l_pdf=self._model, l_shared=self._shared, l_float=self._pfloat)
+        mod   = ModelFactory(
+                obs     = self._obs,
+                preffix = self._component_name,
+                l_pdf   = self._cfg['model' ],
+                l_shared= self._cfg['shared'],
+                l_float = self._cfg['pfloat'])
+
         pdf   = mod.get_pdf()
 
         obj   = load_fit_component(cfg=self._cfg, pdf=pdf)
@@ -113,7 +118,7 @@ class MCParPdf:
             log.info('Will load PDF from cached parameters file')
             return obj
 
-        fix_dir = self._get_pars_dir(self._fvers)
+        fix_dir = self._get_pars_dir(self._cfg['fvers'])
         pdf     = self._fix_tails(pdf=pdf, fix_dir=fix_dir)
 
         obj     = FitComponent(cfg=self._cfg, rdf=self._rdf, pdf=pdf, obs=self._obs)
