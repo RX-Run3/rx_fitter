@@ -95,7 +95,11 @@ class Data:
                             }
                         },
                     'PRec': {
-                        'bw': 20,
+                        'cfg_kde':
+                        {
+                        'bandwidth': 20,
+                        'padding'  : {'lowermirror': 0.5, 'uppermirror': 0.5},
+                            },
                         'sample' : [
                             'Bu_JpsiX_ee_eq_JpsiInAcc',
                             'Bd_JpsiX_ee_eq_JpsiInAcc',
@@ -234,11 +238,8 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
     cmp_sig.run()
 # --------------------------------------------------------------
-#@pytest.mark.parametrize('nbrem',                 [0, 1, 2])
-#@pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M'])
-
-@pytest.mark.parametrize('nbrem',     [0])
-@pytest.mark.parametrize('mass' , ['B_M'])
+@pytest.mark.parametrize('nbrem',                 [0, 1, 2])
+@pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M'])
 def test_prec_brem(mass : str, nbrem : int):
     '''
     Testing creation of PDF from MC sample with brem cut
