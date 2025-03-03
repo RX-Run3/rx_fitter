@@ -89,7 +89,7 @@ components:
         - sg
       shared:
         - mu
-      fvers : v2
+      fvers : v3
       create: true
     1 :
       model:
@@ -100,7 +100,7 @@ components:
         - sg
       shared:
         - mu
-      fvers : v2
+      fvers : v3
       create: true
     2 :
       model:
@@ -111,7 +111,7 @@ components:
         - sg
       shared:
         - mu
-      fvers : v2
+      fvers : v3
       create: true
   Cabibbo:
     0 : &suj
