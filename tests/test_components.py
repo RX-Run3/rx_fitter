@@ -119,7 +119,9 @@ class Data:
                                 ],
                             'shared': [
                                 'mu'
-                                ]
+                                ],
+                            'fvers' : 'v2',
+                            'create': True,
                             },
                         '1': {
                             'model': [
@@ -132,7 +134,9 @@ class Data:
                                 ],
                             'shared': [
                                 'mu'
-                                ]
+                                ],
+                            'fvers' : 'v2',
+                            'create': True,
                             },
                         '2': {
                             'model': [
@@ -145,7 +149,9 @@ class Data:
                                 ],
                             'shared': [
                                 'mu'
-                                ]
+                                ],
+                            'fvers' : 'v2',
+                            'create': True,
                             }
                         },
                     'Cabibbo': {
