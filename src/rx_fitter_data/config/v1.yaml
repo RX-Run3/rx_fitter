@@ -63,6 +63,9 @@ fitting:
       weights:
         dec : 1
         sam : 1
+      plotting       :
+        nbins   : 30
+        stacked : true
     combinatorial:
       kind : exp
 # ----------------------
