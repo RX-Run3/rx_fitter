@@ -1,6 +1,8 @@
 '''
 Module with functions to test functions in components.py
 '''
+import copy
+
 import ROOT
 import zfit
 import pytest
@@ -9,6 +11,168 @@ from dmu.logging.log_store  import LogStore
 from rx_data.rdf_getter     import RDFGetter
 from rx_fitter              import components as cmp
 
+# --------------------------------------------------------------
+class Data:
+    '''
+    Data class
+    '''
+    cfg = {
+            'input': {
+                'q2bin': 'jpsi',
+                'trigger': 'Hlt2RD_BuToKpEE_MVA',
+                'samples': {
+                    'main': '/home/acampove/external_ssd/Data/samples/main.yaml',
+                    'mva': '/home/acampove/external_ssd/Data/samples/mva.yaml',
+                    'hop': '/home/acampove/external_ssd/Data/samples/hop.yaml',
+                    'cascade': '/home/acampove/external_ssd/Data/samples/cascade.yaml',
+                    'jpsi_misid': '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'
+                    },
+                'selection': {
+                    'mass': 'B_const_mass_M > 5160'
+                    }
+            },
+            'output': {
+                'fit_dir': '/tmp/tests/rx_fitter/components',
+            },
+            'fitting': {
+                'range': {
+                    'B_M': [
+                        4500,
+                        6000
+                        ],
+                    'B_const_mass_M': [
+                        5160,
+                        5500
+                        ]
+                    },
+                'components': {
+                    'Signal': true,
+                    'Cabibbo': false,
+                    'PRec': false,
+                    'combinatorial': false,
+                    'data': false
+                    },
+                'config': {
+                    'data': {
+                        'fitting': {
+                            'error_method': 'minuit_hesse'
+                            },
+                        'plotting': {
+                            'nbins': 30,
+                            'stacked': true,
+                            'd_leg': {
+                                'Bu_JpsiK_ee_eq_DPC': '$B^+\\to K^+J/\\psi(\\to e^+e^-)$',
+                                'Bu_JpsiPi_ee_eq_DPC': '$B^+\\to \\pi^+J/\\psi(\\to e^+e^-)$',
+                                'combinatorial': 'Combinatorial'
+                                }
+                            }
+                        },
+                    'Signal': {
+                        'sample': 'Bu_JpsiK_ee_eq_DPC',
+                        'fitting': {
+                            'error_method': 'minuit_hesse',
+                            'weights_column': 'weights',
+                            'ntries': 20,
+                            'pvalue': 0.02
+                            },
+                        'plotting': {
+                            'nbins': 30,
+                            'stacked': true
+                            }
+                        },
+                    'Cabibbo': {
+                        'sample': 'Bu_JpsiPi_ee_eq_DPC',
+                        'fitting': {
+                            'error_method': 'minuit_hesse',
+                            'weights_column': 'weights',
+                            'ntries': 20,
+                            'pvalue': 0.02
+                            },
+                        'plotting': {
+                            'nbins': 30,
+                            'stacked': true
+                            }
+                        },
+                    'PRec': {
+                        'bw': 20
+                        },
+                    'combinatorial': {
+                        'kind': 'exp'
+                        }
+                    }
+            },
+            'brem': {
+                    0 : 'nbrem == 0',
+                    1 : 'nbrem == 1',
+                    2 : 'nbrem >= 2'
+            },
+            'components': {
+                    'Signal': {
+                        '0': {
+                            'model': [
+                                'suj',
+                                'suj'
+                                ],
+                            'pfloat': [
+                                'mu',
+                                'sg'
+                                ],
+                            'shared': [
+                                'mu'
+                                ]
+                            },
+                        '1': {
+                            'model': [
+                                'suj',
+                                'dscb'
+                                ],
+                            'pfloat': [
+                                'mu',
+                                'sg'
+                                ],
+                            'shared': [
+                                'mu'
+                                ]
+                            },
+                        '2': {
+                            'model': [
+                                'suj',
+                                'dscb'
+                                ],
+                            'pfloat': [
+                                'mu',
+                                'sg'
+                                ],
+                            'shared': [
+                                'mu'
+                                ]
+                            }
+                        },
+                    'Cabibbo': {
+                        '0': {
+                            'model': [
+                                'suj'
+                                ],
+                            'pfloat': [],
+                            'shared': []
+                            },
+                        '1': {
+                            'model': [
+                                'suj'
+                                ],
+                            'pfloat': [],
+                            'shared': []
+                            },
+                        '2': {
+                            'model': [
+                                'suj'
+                                ],
+                            'pfloat': [],
+                            'shared': []
+                            }
+                        }
+            }
+  }
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _intiailize():
