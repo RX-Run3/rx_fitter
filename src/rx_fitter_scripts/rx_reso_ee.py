@@ -103,6 +103,9 @@ def _get_components() -> list[FitComponent]:
         fcm   = cmp.get_prc(obs= obs, nbrem=Data.nbrem, cfg=Data.cfg)
         l_fcm.append(fcm)
 
+    for fcm in l_fcm:
+        fcm.run()
+
     return l_fcm
 # ------------------------------
 def main():
