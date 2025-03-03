@@ -55,7 +55,14 @@ fitting:
         nbins   : 30
         stacked : true
     PRec:
+      sample :
+        - Bu_JpsiX_ee_eq_JpsiInAcc
+        - Bd_JpsiX_ee_eq_JpsiInAcc
+        - Bs_JpsiX_ee_eq_JpsiInAcc
       bw : 20
+      weights:
+        dec : 1
+        sam : 1
     combinatorial:
       kind : exp
 # ----------------------
