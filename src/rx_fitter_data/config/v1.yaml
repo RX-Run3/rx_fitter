@@ -60,6 +60,10 @@ fitting:
         - Bd_JpsiX_ee_eq_JpsiInAcc
         - Bs_JpsiX_ee_eq_JpsiInAcc
       bw : 20
+      sample :
+        - Bu_JpsiX_ee_eq_JpsiInAcc
+        - Bd_JpsiX_ee_eq_JpsiInAcc
+        - Bs_JpsiX_ee_eq_JpsiInAcc
       weights:
         dec : 1
         sam : 1
