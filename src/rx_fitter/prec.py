@@ -3,6 +3,7 @@ Module containing PRec
 '''
 import os
 import copy
+import json
 import hashlib
 
 from ROOT     import RDataFrame
@@ -329,11 +330,14 @@ class PRec:
         return df
     #-----------------------------------------------------------
     def _get_identifier(self, mass : str, cut : str, **kwargs) -> str:
-        fcut = frozenset(self._d_cut.items())
-        fwgt = frozenset(self._d_wg.items())
-        fset = frozenset(kwargs.items())
+        cwargs = copy.deepcopy(kwargs)
+        del cwargs['obs']
 
-        lstr = str(fcut) + str(fwgt) + str(fset) + str(self._l_sample) + self._trig + self._q2bin
+        scut = json.dumps(self._d_cut, sort_keys=True)
+        swgt = json.dumps(self._d_wg , sort_keys=True)
+        scwg = json.dumps(cwargs     , sort_keys=True)
+
+        lstr = str(scut) + str(swgt) + str(scwg) + str(self._l_sample) + self._trig + self._q2bin
         lstr = ''.join(lstr)
         val  = mass + cut + lstr
 
