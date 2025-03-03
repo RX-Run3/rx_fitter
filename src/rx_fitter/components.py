@@ -132,12 +132,13 @@ def get_cb(obs : zobs, kind : str) -> FitComponent:
     '''
     Returns fit component for combinatorial fit
     '''
-    cfg            = copy.deepcopy(Data.cfg)
-    cfg['name']    = 'combinatorial'
-    cfg['out_dir'] = f'/tmp/components/{kind}'
+    mod = ModelFactory(preffix='cmb', obs=obs, l_pdf = [kind], l_shared = [], l_float= [])
+    pdf = mod.get_pdf()
 
-    mod   = ModelFactory(preffix='cmb', obs=obs, l_pdf = [kind], l_shared = [], l_float= [])
-    pdf   = mod.get_pdf()
+    cfg = {
+            'name'    : f'cmb_{kind}',
+            'out_dir' : f'/tmp/cmb_{kind}',
+            }
 
     obj   = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
     obj.run()
