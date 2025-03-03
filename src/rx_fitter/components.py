@@ -116,6 +116,7 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     bw       = cfg['fitting']['config']['PRec']['bw']
     l_samp   = cfg['fitting']['config']['PRec']['sample']
     d_wgt    = cfg['fitting']['config']['PRec']['weights']
+    d_plt    = cfg['fitting']['config']['PRec']['plotting']
 
     RDFGetter.samples = l_path
 
@@ -125,6 +126,7 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, bandwidth=bw)
 
     cfg['name']    = 'PRec'
+    cfg['plotting']= d_plt
 
     fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
 
