@@ -7,10 +7,12 @@ import ROOT
 import zfit
 import pytest
 
+from zfit.core.interfaces   import ZfitSpace as zobs
 from dmu.logging.log_store  import LogStore
 from rx_data.rdf_getter     import RDFGetter
 from rx_fitter              import components as cmp
 
+log=LogStore.add_logger('rx_fitter:test_components')
 # --------------------------------------------------------------
 class Data:
     '''
@@ -18,8 +20,8 @@ class Data:
     '''
     cfg = {
             'input': {
-                'q2bin': 'jpsi',
-                'trigger': 'Hlt2RD_BuToKpEE_MVA',
+                'q2bin'   : 'jpsi',
+                'trigger' : 'Hlt2RD_BuToKpEE_MVA',
                 'samples': {
                     'main': '/home/acampove/external_ssd/Data/samples/main.yaml',
                     'mva': '/home/acampove/external_ssd/Data/samples/mva.yaml',
@@ -46,11 +48,11 @@ class Data:
                         ]
                     },
                 'components': {
-                    'Signal': true,
-                    'Cabibbo': false,
-                    'PRec': false,
-                    'combinatorial': false,
-                    'data': false
+                    'Signal': True,
+                    'Cabibbo': False,
+                    'PRec': False,
+                    'combinatorial': False,
+                    'data': False
                     },
                 'config': {
                     'data': {
@@ -59,7 +61,7 @@ class Data:
                             },
                         'plotting': {
                             'nbins': 30,
-                            'stacked': true,
+                            'stacked': True,
                             'd_leg': {
                                 'Bu_JpsiK_ee_eq_DPC': '$B^+\\to K^+J/\\psi(\\to e^+e^-)$',
                                 'Bu_JpsiPi_ee_eq_DPC': '$B^+\\to \\pi^+J/\\psi(\\to e^+e^-)$',
@@ -72,12 +74,12 @@ class Data:
                         'fitting': {
                             'error_method': 'minuit_hesse',
                             'weights_column': 'weights',
-                            'ntries': 20,
+                            'ntries': 2,
                             'pvalue': 0.02
                             },
                         'plotting': {
                             'nbins': 30,
-                            'stacked': true
+                            'stacked': True
                             }
                         },
                     'Cabibbo': {
@@ -85,20 +87,29 @@ class Data:
                         'fitting': {
                             'error_method': 'minuit_hesse',
                             'weights_column': 'weights',
-                            'ntries': 20,
+                            'ntries': 2,
                             'pvalue': 0.02
                             },
                         'plotting': {
                             'nbins': 30,
-                            'stacked': true
+                            'stacked': True
                             }
                         },
                     'PRec': {
-                        'bw': 20
+                        'bw': 20,
+                        'sample' : [
+                            'Bu_JpsiX_ee_eq_JpsiInAcc',
+                            'Bd_JpsiX_ee_eq_JpsiInAcc',
+                            'Bs_JpsiX_ee_eq_JpsiInAcc',
+                            ],
+                        'weights' : {
+                            'dec' : 1,
+                            'sam' : 1,
+                            },
                         },
                     'combinatorial': {
-                        'kind': 'exp'
-                        }
+                            'kind': 'exp'
+                            }
                     }
             },
             'brem': {
@@ -108,11 +119,8 @@ class Data:
             },
             'components': {
                     'Signal': {
-                        '0': {
-                            'model': [
-                                'suj',
-                                'suj'
-                                ],
+                        0: {
+                            'model': ['suj'],
                             'pfloat': [
                                 'mu',
                                 'sg'
@@ -122,12 +130,10 @@ class Data:
                                 ],
                             'fvers' : 'v2',
                             'create': True,
+                            'weights' : 'weights',
                             },
-                        '1': {
-                            'model': [
-                                'suj',
-                                'dscb'
-                                ],
+                        1: {
+                            'model': ['suj'],
                             'pfloat': [
                                 'mu',
                                 'sg'
@@ -137,12 +143,10 @@ class Data:
                                 ],
                             'fvers' : 'v2',
                             'create': True,
+                            'weights' : 'weights',
                             },
-                        '2': {
-                            'model': [
-                                'suj',
-                                'dscb'
-                                ],
+                        2: {
+                            'model' : ['suj'],
                             'pfloat': [
                                 'mu',
                                 'sg'
@@ -152,24 +156,25 @@ class Data:
                                 ],
                             'fvers' : 'v2',
                             'create': True,
+                            'weights' : 'weights',
                             }
                         },
                     'Cabibbo': {
-                        '0': {
+                        0: {
                             'model': [
                                 'suj'
                                 ],
                             'pfloat': [],
                             'shared': []
                             },
-                        '1': {
+                        1: {
                             'model': [
                                 'suj'
                                 ],
                             'pfloat': [],
                             'shared': []
                             },
-                        '2': {
+                        2: {
                             'model': [
                                 'suj'
                                 ],
