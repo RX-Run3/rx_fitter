@@ -23,33 +23,7 @@ class Data:
     '''
     Data class
     '''
-    fit_dir   = os.environ['FITDIR']
     cache_dir = '/tmp/cache/rx_fits'
-    cfg       = {
-            'fitting':
-            {
-                'error_method'  : 'minuit_hesse',
-                'weights_column': 'weights',
-                'ntries'        : 20,
-                'pvalue'        : 0.02,
-                },
-            'plotting' :
-            {
-                'nbins'   : 50,
-                'stacked' : True,
-                },
-            }
-# ---------------------------------
-def _update_selection(d_sel : dict[str,str]) -> dict[str,str]:
-    if 'selection' not in Data.cfg:
-        log.info('Not updating selection')
-        return d_sel
-
-    log.info('Updating selection')
-    d_cut = Data.cfg['selection']
-    d_sel.update(d_cut)
-
-    return d_sel
 # ---------------------------------
 def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = None) -> RDataFrame:
     '''
