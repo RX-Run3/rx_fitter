@@ -105,11 +105,11 @@ class Data:
                             'dec' : 1,
                             'sam' : 1,
                             },
-                        },
                         'plotting' : {
                                 'nbins'   : 30,
                                 'stacked' : True,
                                 },
+                        },
                     'combinatorial': {
                             'kind': 'exp'
                             }
