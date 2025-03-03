@@ -91,6 +91,7 @@ components:
         - mu
       fvers : v3
       create: true
+      weights : weights
     1 :
       model:
         - suj
@@ -102,6 +103,7 @@ components:
         - mu
       fvers : v3
       create: true
+      weights : weights
     2 :
       model:
         - suj
@@ -113,12 +115,16 @@ components:
         - mu
       fvers : v3
       create: true
+      weights : weights
   Cabibbo:
     0 : &suj
       model:
         - suj
       pfloat: []
       shared: []
+      fvers : null
+      create: false
+      weights : weights
     1 :
       <<: *suj
     2 :
