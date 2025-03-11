@@ -71,7 +71,6 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
     Will return FitComponent object for given MC sample
     '''
     cfg     = copy.deepcopy(cfg)
-    cuts    = _cuts_from_conf(nbrem, cfg)
 
     d_inp   = cfg['input']
     trigger = d_inp['trigger']
@@ -85,6 +84,7 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
     sample  = d_cmp['sample']
 
     RDFGetter.samples = l_path
+    cuts    = _get_cuts(nbrem, cfg)
     rdf     = get_rdf(sample, q2bin, trigger, cuts)
     rdf     = rdf.Define('weights', '1')
 
@@ -125,7 +125,7 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     RDFGetter.samples = l_path
 
     obj      = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
-    obj.cuts = _cuts_from_conf(nbrem, cfg)
+    obj.cuts = _get_cuts(nbrem, cfg)
 
     pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, **cfg_kde)
 
