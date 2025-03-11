@@ -89,7 +89,7 @@ components:
         - sg
       shared:
         - mu
-      fvers : v3
+      fvers : v4
       create: true
       weights : weights
     1 :
@@ -101,7 +101,7 @@ components:
         - sg
       shared:
         - mu
-      fvers : v3
+      fvers : v4
       create: true
       weights : weights
     2 :
@@ -113,7 +113,7 @@ components:
         - sg
       shared:
         - mu
-      fvers : v3
+      fvers : v4
       create: true
       weights : weights
   Cabibbo:
