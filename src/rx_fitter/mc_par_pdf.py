@@ -57,7 +57,7 @@ class MCParPdf:
 
         if not os.path.isdir(init_dir):
             init_dir = f'{init_dir}/v1'
-            log.info(f'No fitting path found, making first version of fit directory in: {init_dir}')
+            log.info(f'No output directory found, making first version of fit directory in: {init_dir}')
             return f'{init_dir}/{fnal_dir}'
 
         init_dir = vman.get_last_version(dir_path=init_dir, version_only=False)
