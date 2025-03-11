@@ -87,7 +87,9 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
     cfg['nbrem'  ]        = nbrem
 
     cmp_cfg         = cfg['components'][component_name][nbrem]
-    cfg['fvers'   ] = cmp_cfg['fvers'  ]
+    if 'fvers' in cmp_cfg:
+        cfg['fvers'] = cmp_cfg['fvers']
+
     cfg['create'  ] = cmp_cfg['create' ]
     cfg['shared'  ] = cmp_cfg['shared' ]
     cfg['model'   ] = cmp_cfg['model'  ]

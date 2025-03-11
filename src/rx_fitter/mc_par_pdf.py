@@ -118,8 +118,9 @@ class MCParPdf:
             log.info('Will load PDF from cached parameters file')
             return obj
 
-        fix_dir = self._get_pars_dir(self._cfg['fvers'])
-        pdf     = self._fix_tails(pdf=pdf, fix_dir=fix_dir)
+        if 'fvers' in self._cfg:
+            fix_dir = self._get_pars_dir(self._cfg['fvers'])
+            pdf     = self._fix_tails(pdf=pdf, fix_dir=fix_dir)
 
         obj     = FitComponent(cfg=self._cfg, rdf=self._rdf, pdf=pdf, obs=self._obs)
 
