@@ -23,7 +23,7 @@ class Data:
     nbrem : int
     mass  : str
     cfg   : dict
-    vers  = 'v1'
+    vers  : str
 # ------------------------------
 def _get_cuts() -> dict[str,str]:
     d_cut         = {}
@@ -37,10 +37,12 @@ def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Script used to fit resonant electron mode')
     parser.add_argument('-b', '--nbrem' , type=int, help='Brem category'   , required=True, choices=[0,1,2])
     parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=['B_M', 'B_const_mass_M'])
+    parser.add_argument('-v', '--vers'  , type=str, help='Version of fit configuration', required=True)
     args = parser.parse_args()
 
     Data.nbrem = args.nbrem
     Data.mass  = args.mass
+    Data.vers  = args.vers
 # ------------------------------
 def _set_out_dir() -> None:
     q2bin   = Data.cfg['input']['q2bin'  ]
