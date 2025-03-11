@@ -1,7 +1,7 @@
 input:
+  name    : Signal
   trigger : Hlt2RD_BuToKpEE_MVA
   sample  : Bu_JpsiK_ee_eq_DPC
-  name    : Signal
   q2bin   : jpsi
   samples_ihep:  &ihep
     main       : /publicfs/ucas/user/campoverde/Data/data/samples/main.yaml
@@ -133,3 +133,32 @@ fitting:
         stacked : true
     combinatorial:
       kind : exp
+components:
+  Signal:
+    0 :
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+        - sg
+      create  : true
+      weights : weights
+    1 :
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+        - sg
+      create  : true
+      weights : weights
+    2 :
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+        - sg
+      create  : true
+      weights : weights
