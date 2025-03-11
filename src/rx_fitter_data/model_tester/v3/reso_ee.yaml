@@ -65,7 +65,6 @@ models:
     - suj
     - cbl
     - cbr
-out_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit/v3/
 parameters:
   shared:
     - mu
@@ -162,3 +161,6 @@ components:
         - sg
       create  : true
       weights : weights
+output:
+  #fit_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit/v3/
+  fit_dir: /home/acampove/external_ssd/test_fits
