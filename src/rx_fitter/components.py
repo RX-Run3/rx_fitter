@@ -39,23 +39,30 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
         log.debug(f'{cut_name:<20}{cut_value}')
         rdf = rdf.Filter(cut_value, cut_name)
 
-    if cuts is not None:
-        log.warning('Overriding default selection')
-        for name, expr in cuts.items():
-            log.info(f'   {name:<20}{expr}')
-            rdf = rdf.Filter(expr, name)
-
     if log.getEffectiveLevel() < 20:
         rep = rdf.Report()
         rep.Print()
 
     return rdf
 # ------------------------------------
-def _cuts_from_conf(nbrem : int, cfg : dict) -> dict[str,str]:
-    bcut  = cfg['brem'][nbrem]
-    d_cut = {'nbrem' : bcut}
-    cuts  = cfg['input']['selection']
-    d_cut.update(cuts)
+def _get_cuts(nbrem : int, cfg : dict) -> dict[str,str]:
+    d_cut = {}
+    if   nbrem in [0, 1]:
+        d_cut['nbrem'] = f'nbrem == {nbrem}'
+    elif nbrem == 2:
+        d_cut['nbrem'] = f'nbrem >= {nbrem}'
+    else:
+        raise ValueError(f'Invalid Brem value: {nbrem}')
+
+    if 'input'     not in cfg:
+        return d_cut
+
+    if 'selection' not in cfg['input']:
+        return d_cut
+
+    log.warning('Overriding default selection')
+    cuts= cfg['input']['selection']
+    cuts.update(d_cut)
 
     return d_cut
 # ------------------------------------
