@@ -62,22 +62,11 @@ def main():
     '''
 
     _parse_args()
-    _load_config()
+    _initialize()
+    name = Data.cfg['input']['name']
 
-    obs                       = _get_obs()
-    l_mod                     = Data.cfg['models'][Data.model]
-    RDFGetter.samples         = Data.cfg['samples']
-    cmp.Data.cfg['out_dir']   = Data.cfg['out_dir']
-
-    cmp_sig = cmp.get_mc(
-            obs    = obs,
-            sample = Data.sample,
-            trigger= Data.trigger,
-            q2bin  = Data.q2bin,
-            nbrem  = Data.nbrem,
-            shared = Data.cfg['parameters']['shared'],
-            pfloat = Data.cfg['parameters']['floating'],
-            model  = l_mod)
+    obs     = _get_obs()
+    cmp_sig = cmp.get_mc(obs = obs, component_name=name, nbrem  = Data.nbrem, cfg=Data.cfg)
 
     cmp_sig.run()
 # --------------------------------
