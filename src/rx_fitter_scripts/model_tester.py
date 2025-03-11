@@ -63,10 +63,13 @@ def main():
 
     _parse_args()
     _initialize()
-    name = Data.cfg['input']['name']
+    component_name = Data.cfg['input']['name']
+    l_model        = Data.cfg['models'][Data.model]
+
+    Data.cfg['components'][component_name][Data.nbrem]['model'] = l_model
 
     obs     = _get_obs()
-    cmp_sig = cmp.get_mc(obs = obs, component_name=name, nbrem  = Data.nbrem, cfg=Data.cfg)
+    cmp_sig = cmp.get_mc(obs = obs, component_name=component_name, nbrem  = Data.nbrem, cfg=Data.cfg)
 
     cmp_sig.run()
 # --------------------------------
