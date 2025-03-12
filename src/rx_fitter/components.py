@@ -62,9 +62,12 @@ def _get_cuts(nbrem : int, cfg : dict) -> dict[str,str]:
 
     log.warning('Overriding default selection')
     cuts= cfg['input']['selection']
+    for name, expr in cuts.items():
+        log.debug(f'{name:<20}{expr}')
+
     cuts.update(d_cut)
 
-    return d_cut
+    return cuts
 # ------------------------------------
 def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
     '''
