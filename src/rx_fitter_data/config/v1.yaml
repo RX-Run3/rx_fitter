@@ -85,19 +85,17 @@ components:
         - sg
       shared:
         - mu
-        - sg
       create  : false 
       weights : weights
     1 :
       model:
         - suj
-        - dscb
+        - suj 
       pfloat:
         - mu
         - sg
       shared:
         - mu
-        - sg
       create  : false 
       weights : weights
     2 :
@@ -109,7 +107,6 @@ components:
         - sg
       shared:
         - mu
-        - sg
       create  : false 
       weights : weights
   Cabibbo:
