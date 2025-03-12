@@ -9,15 +9,20 @@ input:
     hop        : /publicfs/ucas/user/campoverde/Data/data/samples/hop.yaml
     cascade    : /publicfs/ucas/user/campoverde/Data/data/samples/cascade.yaml
     jpsi_misid : /publicfs/ucas/user/campoverde/Data/data/samples/jpsi_misid.yaml
+    ecalo_bias : /publicfs/ucas/user/campoverde/Data/data/samples/ecalo_bias.yaml
   samples_laptop: &laptop
     main       : /home/acampove/external_ssd/Data/samples/main.yaml
     mva        : /home/acampove/external_ssd/Data/samples/mva.yaml
     hop        : /home/acampove/external_ssd/Data/samples/hop.yaml
     cascade    : /home/acampove/external_ssd/Data/samples/cascade.yaml
     jpsi_misid : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
+    ecalo_bias : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
   samples:
     <<: *laptop
 binning:
+  ecalo_bias.B_M:
+    - 4500
+    - 6000
   B_M:
     - 4500
     - 6000
@@ -65,6 +70,29 @@ models:
     - suj
     - cbl
     - cbr
+  mod_014:
+    - voigt
+    - dscb 
+  mod_015:
+    - voigt
+    - qgaus 
+  mod_016:
+    - dscb 
+    - qgaus 
+  mod_017:
+    - cbr 
+    - qgaus 
+  mod_018:
+    - cbr 
+    - voigt
+  mod_019:
+    - voigt
+    - qgaus 
+    - cbl
+  mod_020:
+    - voigt 
+    - dscb 
+    - qgaus 
 parameters:
   shared:
     - mu
