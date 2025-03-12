@@ -73,11 +73,6 @@ fitting:
     combinatorial:
       kind : exp
 # ----------------------
-brem:
-  0 : nbrem == 0
-  1 : nbrem == 1
-  2 : nbrem >= 2
-# ----------------------
 components:
   Signal:
     0 :
@@ -90,7 +85,7 @@ components:
       shared:
         - mu
         - sg
-      create  : true
+      create  : false 
       weights : weights
     1 :
       model:
@@ -102,19 +97,19 @@ components:
       shared:
         - mu
         - sg
-      create  : true
+      create  : false 
       weights : weights
     2 :
       model:
         - suj
-        - dscb
+        - suj 
       pfloat:
         - mu
         - sg
       shared:
         - mu
         - sg
-      create  : true
+      create  : false 
       weights : weights
   Cabibbo:
     0 : &suj
