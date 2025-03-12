@@ -26,6 +26,7 @@ class Data:
 # --------------------------------
 def _initialize():
     LogStore.set_level('rx_fitter:components', Data.level)
+    LogStore.set_level('rx_data:rdf_getter'  , Data.level)
     _load_config()
 # --------------------------------
 def _load_config():
