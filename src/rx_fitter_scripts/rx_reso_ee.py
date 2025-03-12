@@ -84,21 +84,13 @@ def _fit_data(l_cmp : list[FitComponent]) -> None:
 
     cfg_fit = Data.cfg['fitting']['config']['data']
 
-    _set_out_dir()
-    obj = DTFitter(rdf = rdf, components = l_cmp, cfg=cfg_fit)
+    cfg_fit['out_dir']  = _get_out_dir()
+    obj = DTFitter(rdf  = rdf, components = l_cmp, cfg=cfg_fit)
     obj.fit(constraints = d_const)
 # ------------------------------
 def _get_components() -> list[FitComponent]:
     obs     = zfit.Space(Data.mass, limits=_get_limits())
     l_fcm   = []
-
-    if Data.cfg['fitting']['components']['Signal']:
-        fcm    = cmp.get_mc(obs=obs, component_name='Signal', nbrem=Data.nbrem, cfg=Data.cfg)
-        l_fcm.append(fcm)
-
-    if Data.cfg['fitting']['components']['Cabibbo']:
-        fcm    = cmp.get_mc(obs=obs, component_name='Cabibbo', nbrem=Data.nbrem, cfg=Data.cfg)
-        l_fcm.append(fcm)
 
     if Data.cfg['fitting']['components']['combinatorial']:
         kind  = Data.cfg['fitting']['config']['combinatorial']['kind']
@@ -109,6 +101,14 @@ def _get_components() -> list[FitComponent]:
         fcm   = cmp.get_prc(obs= obs, nbrem=Data.nbrem, cfg=Data.cfg)
         l_fcm.append(fcm)
 
+    if Data.cfg['fitting']['components']['Cabibbo']:
+        fcm    = cmp.get_mc(obs=obs, component_name='Cabibbo', nbrem=Data.nbrem, cfg=Data.cfg)
+        l_fcm.append(fcm)
+
+    if Data.cfg['fitting']['components']['Signal']:
+        fcm    = cmp.get_mc(obs=obs, component_name='Signal', nbrem=Data.nbrem, cfg=Data.cfg)
+        l_fcm.append(fcm)
+
     for fcm in l_fcm:
         fcm.run()
 
@@ -116,6 +116,7 @@ def _get_components() -> list[FitComponent]:
 # ------------------------------
 def _initialize():
     _load_config()
+    EnableImplicitMT(10)
     LogStore.set_level('rx_fitter:components'        , Data.level)
     LogStore.set_level('rx_calibration:fit_component', Data.level)
 # ------------------------------
