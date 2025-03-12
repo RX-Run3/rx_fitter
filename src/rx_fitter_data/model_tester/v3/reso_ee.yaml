@@ -18,7 +18,7 @@ input:
     jpsi_misid : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
     ecalo_bias : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
   samples:
-    <<: *laptop
+    <<: *ihep
 binning:
   ecalo_bias.B_M:
     - 4500
@@ -190,5 +190,4 @@ components:
       create  : true
       weights : weights
 output:
-  #fit_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit/v3/
-  fit_dir: /home/acampove/external_ssd/test_fits
+  fit_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit/v3/
