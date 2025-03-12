@@ -24,10 +24,11 @@ class Data:
     mass  : str
     cfg   : dict
     vers  : str
+    level : int
 # ------------------------------
 def _get_cuts() -> dict[str,str]:
     d_cut         = {}
-    d_cut['brem'] = Data.cfg['brem'][Data.nbrem]
+    d_cut['brem'] = f'nbrem == {Data.nbrem}' if Data.nbrem in [0, 1] else 'nbrem >= {Data.nbrem}'
     d_sel         = Data.cfg['input']['selection']
     d_cut.update(d_sel)
 
@@ -36,13 +37,15 @@ def _get_cuts() -> dict[str,str]:
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Script used to fit resonant electron mode')
     parser.add_argument('-b', '--nbrem' , type=int, help='Brem category'   , required=True, choices=[0,1,2])
-    parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=['B_M', 'B_const_mass_M'])
+    parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=['ecalo_bias_B_M', 'B_M', 'B_const_mass_M'])
     parser.add_argument('-v', '--vers'  , type=str, help='Version of fit configuration', required=True)
+    parser.add_argument('-l', '--level' , type=int, help='Logging level', default=20, choices=[10, 20, 30])
     args = parser.parse_args()
 
     Data.nbrem = args.nbrem
     Data.mass  = args.mass
     Data.vers  = args.vers
+    Data.level = args.level
 # ------------------------------
 def _set_out_dir() -> None:
     q2bin   = Data.cfg['input']['q2bin'  ]
@@ -110,12 +113,17 @@ def _get_components() -> list[FitComponent]:
 
     return l_fcm
 # ------------------------------
+def _initialize():
+    _load_config()
+    LogStore.set_level('rx_fitter:components'        , Data.level)
+    LogStore.set_level('rx_calibration:fit_component', Data.level)
+# ------------------------------
 def main():
     '''
     Start here
     '''
     _parse_args()
-    _load_config()
+    _initialize()
 
     l_cmp   = _get_components()
     _fit_data(l_cmp)
