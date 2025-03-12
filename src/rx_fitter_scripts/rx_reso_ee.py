@@ -8,6 +8,7 @@ import yaml
 import ROOT
 import zfit
 
+from ROOT                                        import EnableImplicitMT
 from dmu.generic                                 import version_management as vman
 from dmu.logging.log_store                       import LogStore
 from rx_calibration.hltcalibration.dt_fitter     import DTFitter
@@ -47,7 +48,7 @@ def _parse_args() -> None:
     Data.vers  = args.vers
     Data.level = args.level
 # ------------------------------
-def _set_out_dir() -> None:
+def _get_out_dir() -> str:
     q2bin   = Data.cfg['input']['q2bin'  ]
     trigger = Data.cfg['input']['trigger']
     fit_dir = Data.cfg['output']['fit_dir']
@@ -56,7 +57,7 @@ def _set_out_dir() -> None:
     ver_dir = vman.get_last_version(dir_path=ver_dir, version_only=False)
     out_dir = f'{ver_dir}/DATA_{trigger}/{Data.mass}_{Data.nbrem}/full_model'
 
-    Data.cfg['out_dir'] = out_dir
+    return out_dir
 # ------------------------------
 def _load_config() -> None:
     cfg_path = files('rx_fitter_data').joinpath(f'config/{Data.vers}.yaml')
