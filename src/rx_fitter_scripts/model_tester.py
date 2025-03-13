@@ -16,13 +16,14 @@ class Data:
     '''
     data class
     '''
-    cfg     : dict
+    cfg       : dict
 
-    obs_name: str
-    version : str
-    nbrem   : int
-    model   : str
-    level   : int
+    obs_name  : str
+    version   : str
+    nbrem     : int
+    model     : str
+    level     : int
+    selection : str
 # --------------------------------
 def _initialize():
     LogStore.set_level('rx_fitter:components', Data.level)
@@ -44,11 +45,12 @@ def _get_obs():
 # --------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to test fitting models')
-    parser.add_argument('-m', '--model'  , type=str, help='Nickname of model'        , required=True)
-    parser.add_argument('-v', '--vers'   , type=str, help='Version of configuration' , required=True)
-    parser.add_argument('-b', '--nbrem'  , type=int, help='Bremstrahlung category'   , required=True , choices=[-1, 0, 1, 2])
-    parser.add_argument('-o', '--obsname', type=str, help='Name of observable'       , required=True , choices=['B_M', 'B_const_mass_M'])
-    parser.add_argument('-l', '--level'  , type=int, help='Logging level'            , default=20    , choices=[10, 20, 30])
+    parser.add_argument('-m', '--model'    , type=str, help='Nickname of model'        , required=True)
+    parser.add_argument('-v', '--vers'     , type=str, help='Version of configuration' , required=True)
+    parser.add_argument('-b', '--nbrem'    , type=int, help='Bremstrahlung category'   , required=True , choices=[-1, 0, 1, 2])
+    parser.add_argument('-o', '--obsname'  , type=str, help='Name of observable'       , required=True , choices=['B_M', 'B_const_mass_M'])
+    parser.add_argument('-s', '--selection', type=str, help='Name of selection'        , required=True , choices=['no_prc', 'default'])
+    parser.add_argument('-l', '--level'    , type=int, help='Logging level'            , default=20    , choices=[10, 20, 30])
     args = parser.parse_args()
 
     Data.model    = args.model
@@ -56,6 +58,7 @@ def _parse_args():
     Data.nbrem    = args.nbrem
     Data.obs_name = args.obsname
     Data.level    = args.level
+    Data.selection= args.selection
 # --------------------------------
 def main():
     '''
@@ -68,6 +71,11 @@ def main():
     l_model        = Data.cfg['models'][Data.model]
 
     Data.cfg['components'][component_name][Data.nbrem]['model'] = l_model
+    d_sel = Data.cfg['input']['selection'][Data.selection]
+    log.debug(f'Overriding selection')
+    for name, expr in d_sel.items():
+        log.debug(f'{name:<20}{expr}')
+    Data.cfg['input']['selection'] = d_sel
 
     obs     = _get_obs()
     cmp_sig = cmp.get_mc(obs = obs, component_name=component_name, nbrem  = Data.nbrem, cfg=Data.cfg)
