@@ -9,6 +9,8 @@ input:
     jpsi_misid  : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
     ecalo_bias  : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
   selection: # Used to override default selection
+    bdt  : mva_cmb > 0.5
+    no78 : block != 7 && block != 8
     mass : B_const_mass_M > 5160
 # ----------------------
 output:
