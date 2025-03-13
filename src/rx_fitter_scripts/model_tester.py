@@ -72,10 +72,12 @@ def main():
 
     Data.cfg['components'][component_name][Data.nbrem]['model'] = l_model
     d_sel = Data.cfg['input']['selection'][Data.selection]
-    log.debug(f'Overriding selection')
+    log.debug('Overriding selection')
     for name, expr in d_sel.items():
         log.debug(f'{name:<20}{expr}')
     Data.cfg['input']['selection'] = d_sel
+    fit_dir = Data.cfg['output']['fit_dir']
+    Data.cfg['output']['fit_dir'] = f'{fit_dir}/{Data.selection}'
 
     obs     = _get_obs()
     cmp_sig = cmp.get_mc(obs = obs, component_name=component_name, nbrem  = Data.nbrem, cfg=Data.cfg)
