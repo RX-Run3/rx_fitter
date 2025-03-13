@@ -19,6 +19,12 @@ input:
     ecalo_bias : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
   samples:
     <<: *ihep
+  selection:
+    no_prc:
+      bdt : mva_cmb > 0.5
+      no78: block != 7 && block != 8 
+    default:
+      {}
 binning:
   ecalo_bias.B_M:
     - 4500
@@ -70,29 +76,6 @@ models:
     - suj
     - cbl
     - cbr
-  mod_014:
-    - voigt
-    - dscb 
-  mod_015:
-    - voigt
-    - qgaus 
-  mod_016:
-    - dscb 
-    - qgaus 
-  mod_017:
-    - cbr 
-    - qgaus 
-  mod_018:
-    - cbr 
-    - voigt
-  mod_019:
-    - voigt
-    - qgaus 
-    - cbl
-  mod_020:
-    - voigt 
-    - dscb 
-    - qgaus 
 parameters:
   shared:
     - mu
@@ -190,4 +173,4 @@ components:
       create  : true
       weights : weights
 output:
-  fit_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit/v3/
+  fit_dir: /publicfs/ucas/user/campoverde/Packages/RK/rx_fitter/src/plots/fit/v4/
