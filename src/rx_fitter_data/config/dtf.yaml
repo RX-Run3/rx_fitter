@@ -1,0 +1,144 @@
+input:
+  q2bin   : jpsi
+  trigger : Hlt2RD_BuToKpEE_MVA
+  samples :
+    main        : /home/acampove/external_ssd/Data/samples/main.yaml
+    mva         : /home/acampove/external_ssd/Data/samples/mva.yaml
+    hop         : /home/acampove/external_ssd/Data/samples/hop.yaml
+    cascade     : /home/acampove/external_ssd/Data/samples/cascade.yaml
+    jpsi_misid  : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
+    ecalo_bias  : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
+  selection: # Used to override default selection
+    #mass : B_const_mass_M > 5160
+    mass : B_const_mass_M > 4800 
+# ----------------------
+output:
+  fit_dir : /home/acampove/external_ssd/fits
+# ----------------------
+fitting:
+  range :
+    B_M            : [4500, 6500]
+    ecalo_bias_B_M : [4500, 6000]
+    B_const_mass_M : [5100, 5500]
+  components:
+    combinatorial  : true
+    PRec           : true 
+    Cabibbo        : true 
+    Signal         : true
+    data           : false 
+  config:
+    data:
+      error_method : minuit_hesse
+      plotting     :
+        nbins   : 30
+        stacked : true
+        d_leg   :
+          Bu_JpsiK_ee_eq_DPC : $B^+\to K^+J/\psi(\to e^+e^-)$
+          Bu_JpsiPi_ee_eq_DPC: $B^+\to \pi^+J/\psi(\to e^+e^-)$
+          combinatorial      : Combinatorial
+    Signal :
+      sample           : Bu_JpsiK_ee_eq_DPC
+      fitting:
+        error_method   : minuit_hesse
+        weights_column : weights
+        ntries         : 20
+        pvalue         : 0.02
+      plotting       :
+        nbins   : 30
+        stacked : true
+    Cabibbo :
+      sample           : Bu_JpsiPi_ee_eq_DPC
+      fitting:
+        error_method   : minuit_hesse
+        weights_column : weights
+        ntries         : 20
+        pvalue         : 0.02
+      plotting       :
+        nbins   : 30
+        stacked : true
+    PRec:
+      sample :
+        - Bu_JpsiX_ee_eq_JpsiInAcc
+        - Bd_JpsiX_ee_eq_JpsiInAcc
+        - Bs_JpsiX_ee_eq_JpsiInAcc
+      bw : 20
+      sample :
+        - Bu_JpsiX_ee_eq_JpsiInAcc
+        - Bd_JpsiX_ee_eq_JpsiInAcc
+        - Bs_JpsiX_ee_eq_JpsiInAcc
+      weights:
+        dec : 1
+        sam : 1
+      plotting       :
+        nbins   : 30
+        stacked : true
+      cfg_kde: {}
+    combinatorial:
+      kind : exp
+# ----------------------
+components:
+  Signal:
+    0 :
+      model:
+        - dscb
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+        - sg
+      create  : false 
+      weights : weights
+    1 :
+      model:
+        - dscb
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+        - sg
+      create  : false 
+      weights : weights
+    2 :
+      model:
+        - dscb 
+      pfloat:
+        - mu
+        - sg
+      shared:
+        - mu
+        - sg
+      create  : false 
+      weights : weights
+  Cabibbo:
+    0 :
+      model:
+        - dscb
+      pfloat: []
+      shared:
+        - mu
+        - sg
+      fvers : null
+      create: false
+      weights : weights
+    1 :
+      model:
+        - dscb
+      pfloat: []
+      shared:
+        - mu
+        - sg
+      fvers : null
+      create: false
+      weights : weights
+    2 :
+      model:
+        - dscb 
+      pfloat: []
+      shared:
+        - mu
+        - sg
+      fvers : null
+      create: false
+      weights : weights
