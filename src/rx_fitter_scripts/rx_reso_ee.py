@@ -102,11 +102,11 @@ def _get_components() -> list[FitComponent]:
         l_fcm.append(fcm)
 
     if Data.cfg['fitting']['components']['Cabibbo']:
-        fcm    = cmp.get_mc(obs=obs, component_name='Cabibbo', nbrem=Data.nbrem, cfg=Data.cfg)
+        fcm   = cmp.get_mc(obs=obs, component_name='Cabibbo', nbrem=Data.nbrem, cfg=Data.cfg)
         l_fcm.append(fcm)
 
     if Data.cfg['fitting']['components']['Signal']:
-        fcm    = cmp.get_mc(obs=obs, component_name='Signal', nbrem=Data.nbrem, cfg=Data.cfg)
+        fcm   = cmp.get_mc(obs=obs, component_name='Signal', nbrem=Data.nbrem, cfg=Data.cfg)
         l_fcm.append(fcm)
 
     for fcm in l_fcm:
