@@ -9,8 +9,6 @@ input:
     jpsi_misid  : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
     ecalo_bias  : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
   selection: # Used to override default selection
-    bdt  : mva_cmb > 0.5
-    no78 : block != 7 && block != 8
     mass : B_const_mass_M > 5160
 # ----------------------
 output:
@@ -18,15 +16,15 @@ output:
 # ----------------------
 fitting:
   range :
-    B_M            : [4500, 6000]
+    B_M            : [4500, 6500]
     ecalo_bias_B_M : [4500, 6000]
     B_const_mass_M : [5160, 5500]
   components:
-    combinatorial  : true 
-    PRec           : false
-    Cabibbo        : false
+    combinatorial  : true
+    PRec           : true 
+    Cabibbo        : true 
     Signal         : true
-    data           : true 
+    data           : false 
   config:
     data:
       error_method : minuit_hesse
@@ -73,6 +71,7 @@ fitting:
       plotting       :
         nbins   : 30
         stacked : true
+      cfg_kde: {}
     combinatorial:
       kind : exp
 # ----------------------
@@ -80,35 +79,35 @@ components:
   Signal:
     0 :
       model:
-        - suj
-        - suj
+        - cbl 
       pfloat:
         - mu
         - sg
       shared:
         - mu
+        - sg
       create  : false 
       weights : weights
     1 :
       model:
-        - suj
-        - suj 
+        - dscb
       pfloat:
         - mu
         - sg
       shared:
         - mu
+        - sg
       create  : false 
       weights : weights
     2 :
       model:
         - suj
-        - suj 
       pfloat:
         - mu
         - sg
       shared:
         - mu
+        - sg
       create  : false 
       weights : weights
   Cabibbo:
