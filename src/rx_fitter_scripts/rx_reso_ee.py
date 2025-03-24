@@ -1,6 +1,7 @@
 '''
 Script used to fit the resonant mode in the electron channel
 '''
+import copy
 import argparse
 from importlib.resources import files
 
@@ -77,36 +78,36 @@ def _fit_data(l_cmp : list[FitComponent]) -> None:
     d_cut   = _get_cuts()
 
     rdf     = cmp.get_rdf(sample='DATA*', q2bin=q2bin, trigger=trigger, cuts = d_cut)
-    d_const = {
-            'nPRec'                : [0, 1],
-            'nBu_JpsiPi_ee_eq_DPC' : [0, 1],
-            }
-
     cfg_fit = Data.cfg['fitting']['config']['data']
+
+    d_cons  = {}
+    if 'constrains' in cfg_fit:
+        d_cons  = cfg_fit['constrains']
 
     cfg_fit['out_dir']  = _get_out_dir()
     obj = DTFitter(rdf  = rdf, components = l_cmp, cfg=cfg_fit)
-    obj.fit(constraints = d_const)
+    obj.fit(constraints = d_cons)
 # ------------------------------
 def _get_components() -> list[FitComponent]:
+    cfg     = copy.deepcopy(Data.cfg)
     obs     = zfit.Space(Data.mass, limits=_get_limits())
     l_fcm   = []
 
-    if Data.cfg['fitting']['components']['combinatorial']:
-        kind  = Data.cfg['fitting']['config']['combinatorial']['kind']
+    if cfg['fitting']['components']['combinatorial']:
+        kind  = cfg['fitting']['config']['combinatorial']['kind']
         fcm   = cmp.get_cb(obs = obs, kind= kind)
         l_fcm.append(fcm)
 
-    if Data.cfg['fitting']['components']['PRec']:
-        fcm   = cmp.get_prc(obs= obs, nbrem=Data.nbrem, cfg=Data.cfg)
+    if cfg['fitting']['components']['PRec']:
+        fcm   = cmp.get_prc(obs= obs, nbrem=Data.nbrem, cfg=cfg)
         l_fcm.append(fcm)
 
-    if Data.cfg['fitting']['components']['Cabibbo']:
-        fcm   = cmp.get_mc(obs=obs, component_name='Cabibbo', nbrem=Data.nbrem, cfg=Data.cfg)
+    if cfg['fitting']['components']['Cabibbo']:
+        fcm   = cmp.get_mc(obs=obs, component_name='Cabibbo', nbrem=Data.nbrem, cfg=cfg)
         l_fcm.append(fcm)
 
-    if Data.cfg['fitting']['components']['Signal']:
-        fcm   = cmp.get_mc(obs=obs, component_name='Signal', nbrem=Data.nbrem, cfg=Data.cfg)
+    if cfg['fitting']['components']['Signal']:
+        fcm   = cmp.get_mc(obs=obs, component_name='Signal', nbrem=Data.nbrem, cfg=cfg)
         l_fcm.append(fcm)
 
     for fcm in l_fcm:
