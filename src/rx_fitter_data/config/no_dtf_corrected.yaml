@@ -103,7 +103,7 @@ components:
       weights : weights
     2 :
       model:
-        - suj
+        - dscb 
       pfloat:
         - mu
         - sg
