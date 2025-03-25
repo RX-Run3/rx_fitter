@@ -20,8 +20,8 @@ output:
 # ----------------------
 fitting:
   range :
-    B_M            : [4500, 6000]
-    ecalo_bias_B_M : [4500, 6000]
+    B_M             : [4500, 6000]
+    B_M_brem_track_2: [4500, 6000]
   components:
     combinatorial  : true
     PRec           : false 
