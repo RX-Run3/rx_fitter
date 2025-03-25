@@ -10,9 +10,6 @@ input:
     ecalo_bias  : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
     brem_track_2: /home/acampove/external_ssd/Data/samples/brem_track_2.yaml
   selection: # Used to override default selection
-    jpsi_misid : (1)
-    cascade    : (1)
-    hop        : (1)
     mass       : B_const_mass_M > 5160
 # ----------------------
 output:
@@ -152,3 +149,8 @@ components:
       fvers : null
       create: false
       weights : weights
+# ----------------------
+brem:
+  0 : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0
+  1 : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1
+  2 : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2
