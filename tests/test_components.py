@@ -126,7 +126,7 @@ class Data:
             'components': {
                     'Signal': {
                         0: {
-                            'model': ['suj'],
+                            'model' : ['cbl'],
                             'pfloat': [
                                 'mu',
                                 'sg'
@@ -139,7 +139,7 @@ class Data:
                             'weights' : 'weights',
                             },
                         1: {
-                            'model': ['suj'],
+                            'model': ['dscb'],
                             'pfloat': [
                                 'mu',
                                 'sg'
@@ -152,7 +152,7 @@ class Data:
                             'weights' : 'weights',
                             },
                         2: {
-                            'model' : ['suj'],
+                            'model' : ['dscb'],
                             'pfloat': [
                                 'mu',
                                 'sg'
