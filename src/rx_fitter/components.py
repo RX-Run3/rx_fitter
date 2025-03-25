@@ -29,7 +29,6 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
     '''
     gtr = RDFGetter(sample=sample, trigger=trigger)
     rdf = gtr.get_rdf()
-    rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
 
     analysis = 'MM' if 'MuMu' in trigger else 'EE'
 
@@ -46,13 +45,8 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
     return rdf
 # ------------------------------------
 def _get_cuts(nbrem : int, cfg : dict) -> dict[str,str]:
-    d_cut = {}
-    if   nbrem in [0, 1]:
-        d_cut['nbrem'] = f'nbrem == {nbrem}'
-    elif nbrem == 2:
-        d_cut['nbrem'] = f'nbrem >= {nbrem}'
-    else:
-        raise ValueError(f'Invalid Brem value: {nbrem}')
+    d_cut          = {}
+    d_cut['nbrem'] = cfg['brem'][nbrem]
 
     if 'input'     not in cfg:
         return d_cut
