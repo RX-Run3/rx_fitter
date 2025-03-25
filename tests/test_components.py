@@ -22,11 +22,12 @@ class Data:
                 'q2bin'   : 'jpsi',
                 'trigger' : 'Hlt2RD_BuToKpEE_MVA',
                 'samples': {
-                    'main': '/home/acampove/external_ssd/Data/samples/main.yaml',
-                    'mva': '/home/acampove/external_ssd/Data/samples/mva.yaml',
-                    'hop': '/home/acampove/external_ssd/Data/samples/hop.yaml',
-                    'cascade': '/home/acampove/external_ssd/Data/samples/cascade.yaml',
-                    'jpsi_misid': '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml'
+                    'main'        : '/home/acampove/external_ssd/Data/samples/main.yaml',
+                    'mva'         : '/home/acampove/external_ssd/Data/samples/mva.yaml',
+                    'hop'         : '/home/acampove/external_ssd/Data/samples/hop.yaml',
+                    'cascade'     : '/home/acampove/external_ssd/Data/samples/cascade.yaml',
+                    'jpsi_misid'  : '/home/acampove/external_ssd/Data/samples/jpsi_misid.yaml',
+                    'brem_track_2': '/home/acampove/external_ssd/Data/samples/brem_track_2.yaml'
                     },
                 'selection': {
                     'mass': 'B_const_mass_M > 5160'
