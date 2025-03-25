@@ -10,6 +10,7 @@ input:
     ecalo_bias  : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
     brem_track_2: /home/acampove/external_ssd/Data/samples/brem_track_2.yaml
   selection: # Used to override default selection
+    q2         : (Jpsi_M_brem_track_2 * Jpsi_M_brem_track_2) > 6000000 && (Jpsi_M_brem_track_2 * Jpsi_M_brem_track_2) < 12960000
     mass       : B_const_mass_M > 5160
 # ----------------------
 output:
@@ -103,6 +104,7 @@ components:
       weights : weights
     2 :
       model:
+        - gauss 
         - dscb 
       pfloat:
         - mu
