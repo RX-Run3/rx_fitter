@@ -8,6 +8,7 @@ input:
     cascade     : /home/acampove/external_ssd/Data/samples/cascade.yaml
     jpsi_misid  : /home/acampove/external_ssd/Data/samples/jpsi_misid.yaml
     ecalo_bias  : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
+    brem_track_2: /home/acampove/external_ssd/Data/samples/brem_track_2.yaml
   selection: # Used to override default selection
     jpsi_misid : (1)
     cascade    : (1)
