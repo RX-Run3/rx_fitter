@@ -204,6 +204,52 @@ def _get_obs(mass : str, cfg : dict) -> zobs:
 
     return obs
 # --------------------------------------------------------------
+def _get_brem_cut(nbrem : int, kind : str) -> str:
+    l1 = 'L1_HASBREMADDED'
+    l2 = 'L2_HASBREMADDED'
+    if kind is not None:
+        l1 = f'{l1}_{kind}'
+        l2 = f'{l2}_{kind}'
+
+    expr = f'int({l1}) + int({l2})'
+
+    if nbrem in [0, 1]:
+        cut = f'{expr} == {nbrem}'
+    else:
+        cut = f'{expr} >= {nbrem}'
+
+    log.info(f'Using brem requirement: {cut}')
+
+    return cut
+# --------------------------------------------------------------
+def _get_fitting_range(kind : str) -> dict[str:list[int]]:
+    if kind is None:
+        return {'B_M' : [4500, 6000]}
+
+    return {f'B_M_{kind}' : [4500, 6000]}
+# --------------------------------------------------------------
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+@pytest.mark.parametrize('kind' , [None, 'brem_track_2'])
+def test_brem_definitions(nbrem : int, kind : str):
+    '''
+    Will test old and new brem definition
+    '''
+    mass = 'B_M' if kind is None else f'B_M_{kind}'
+
+    cfg            = copy.deepcopy(Data.cfg)
+    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_brem_definitions/{kind}/{nbrem:03}'
+
+    d_cmp_set           = cfg['components']['Signal'][nbrem]
+    d_cmp_set['create'] = False
+    d_cmp_set['fvers' ] = None
+    cfg['brem'][nbrem]  = _get_brem_cut(nbrem, kind)
+    cfg['fitting']['range'] = _get_fitting_range(kind)
+
+    obs            = _get_obs(mass, cfg)
+
+    cmp_sig = cmp.get_mc(obs=obs, component_name='Signal', nbrem=nbrem, cfg=cfg)
+    cmp_sig.run()
+# --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_M'])
 @pytest.mark.parametrize('name' , ['Signal'])
