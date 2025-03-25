@@ -27,6 +27,7 @@ class Data:
     cfg   : dict
     vers  : str
     level : int
+    l_mass = ['ecalo_bias_B_M', 'B_M', 'B_const_mass_M', 'B_M_brem_track_2']
 # ------------------------------
 def _get_cuts() -> dict[str,str]:
     d_cut         = {}
@@ -39,7 +40,7 @@ def _get_cuts() -> dict[str,str]:
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Script used to fit resonant electron mode')
     parser.add_argument('-b', '--nbrem' , type=int, help='Brem category'   , required=True, choices=[0,1,2])
-    parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=['ecalo_bias_B_M', 'B_M', 'B_const_mass_M'])
+    parser.add_argument('-m', '--mass'  , type=str, help='Branch with mass', required=True, choices=Data.l_mass)
     parser.add_argument('-v', '--vers'  , type=str, help='Version of fit configuration', required=True)
     parser.add_argument('-l', '--level' , type=int, help='Logging level', default=20, choices=[10, 20, 30])
     args = parser.parse_args()
