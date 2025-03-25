@@ -31,7 +31,7 @@ class Data:
 # ------------------------------
 def _get_cuts() -> dict[str,str]:
     d_cut         = {}
-    d_cut['brem'] = f'nbrem == {Data.nbrem}' if Data.nbrem in [0, 1] else f'nbrem >= {Data.nbrem}'
+    d_cut['brem'] = Data.cfg['brem'][Data.nbrem]
     d_sel         = Data.cfg['input']['selection']
     d_cut.update(d_sel)
 
