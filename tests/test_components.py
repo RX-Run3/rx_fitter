@@ -236,8 +236,8 @@ def test_brem_definitions(nbrem : int, kind : str):
     '''
     mass = 'B_M' if kind is None else f'B_M_{kind}'
 
-    cfg            = copy.deepcopy(Data.cfg)
-    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_brem_definitions/{kind}/{nbrem:03}'
+    cfg                      = copy.deepcopy(Data.cfg)
+    cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/test_brem_definitions/{kind}/{nbrem:03}'
 
     d_cmp_set           = cfg['components']['Signal'][nbrem]
     d_cmp_set['create'] = False
