@@ -82,8 +82,8 @@ def _fit_data(l_cmp : list[FitComponent]) -> None:
     cfg_fit = Data.cfg['fitting']['config']['data']
 
     d_cons  = {}
-    if 'constrains' in cfg_fit:
-        d_cons  = cfg_fit['constrains']
+    if 'constraints' in cfg_fit:
+        d_cons  = cfg_fit['constraints']
 
     cfg_fit['out_dir']  = _get_out_dir()
     obj = DTFitter(rdf  = rdf, components = l_cmp, cfg=cfg_fit)
