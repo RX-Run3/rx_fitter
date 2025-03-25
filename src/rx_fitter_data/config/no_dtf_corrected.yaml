@@ -82,7 +82,7 @@ components:
   Signal:
     0 :
       model:
-        - cbl 
+        - dscb
       pfloat:
         - mu
         - sg
@@ -93,6 +93,7 @@ components:
       weights : weights
     1 :
       model:
+        - gauss 
         - dscb
       pfloat:
         - mu
