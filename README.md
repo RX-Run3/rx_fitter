@@ -19,7 +19,7 @@ model_tester -m mod_001 -b  0 -o B_M -v v2
 
 which is going to fit the `B_M` observable with the model `mod_001` as defined in the config file
 
-```
+```bash
 rx_fitter_data/model_tester/v2/reso_ee.yaml
 ```
 
@@ -31,7 +31,7 @@ thus, one can run this command for each model with cluster jobs.
 
 For these fits run:
 
-```bsh
+```bash
 rx_reso_ee -m B_M_brem_track_2 -v no_dtf -b 0
 ```
 
@@ -45,7 +45,7 @@ where:
 
 These can be obtained by running:
 
-```python
+```bash
 reso_scale
 ```
 
