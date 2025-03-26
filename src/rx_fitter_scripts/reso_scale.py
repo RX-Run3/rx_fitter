@@ -2,11 +2,12 @@
 Script used to plot and tabulate mass scales and resolutions
 '''
 import os
-import re
 import json
 import glob
+import argparse
 
 import numpy
+import mplhep
 import pandas            as pnd
 import matplotlib.pyplot as plt
 import dmu.pdataframe.utilities as put
@@ -21,10 +22,10 @@ class Data:
     Data class
     '''
     fit_dir   = os.environ['FITDIR']
-    mc_sample = 'Bu_JpsiK_ee_eq_DPC'
+    mc_sample = 'Signal'
     trigger   = 'Hlt2RD_BuToKpEE_MVA'
-    mass      = 'B_M'
-    sgregex   = r'sg_(suj|dscb)_.*_flt'
+    mass      = 'B_M_brem_track_2'
+    sgregex   = 'sg_Signal_flt'
 
     l_brem    = [0, 1, 2]
     l_kind    = ['data', 'mc']
@@ -33,14 +34,10 @@ def _name_from_parname(name : str) -> str:
     if name.startswith('mu_'):
         return r'$\mu$'
 
-    mtch = re.match(Data.sgregex, name)
-    if not mtch:
-        raise ValueError(f'Cannot match {name} as a width with: {Data.sgregex}')
+    if name.startswith('sg_'):
+        return r'$\sigma$'
 
-    mod = mtch.group(1)
-    mod = mod.upper()
-
-    return f'$\sigma_{{{mod}}}$'
+    raise ValueError(f'Invalid parameter name {name}')
 #------------------------------------------
 def _df_from_pars(d_par : dict[str,list[str]]) -> pnd.DataFrame:
     d_data = {'Parameter' : [], 'Value' : [], 'Error' : []}
@@ -64,9 +61,13 @@ def _get_df_fit(kind : str, brem : int) -> pnd.DataFrame:
     inp_path = f'{Data.fit_dir}/{kind}/jpsi'
     inp_path = vman.get_last_version(dir_path=inp_path, version_only=False)
     inp_wc   = f'{inp_path}/{sample}_{Data.trigger}/{Data.mass}_{brem}/*/fit.json'
-    [inp_path] = glob.glob(inp_wc)
+    l_path   = glob.glob(inp_wc)
+    npath    = len(l_path)
+    if npath != 1:
+        raise ValueError(f'No one and only one path found in {inp_wc}')
 
-    with open(inp_path, encoding='utf-8') as ifile:
+    log.debug(f'Looking for parameters in: {inp_path}')
+    with open(l_path[0], encoding='utf-8') as ifile:
         d_par = json.load(ifile)
 
     df = _df_from_pars(d_par)
@@ -78,6 +79,7 @@ def _get_df() -> pnd.DataFrame:
     for kind in Data.l_kind:
         l_df_brem = []
         for brem in Data.l_brem:
+            log.debug(f'Extracting parameters for {kind}/{brem}')
             df         = _get_df_fit(kind = kind, brem = brem)
             df['brem'] = brem
             l_df_brem.append(df)
@@ -90,6 +92,16 @@ def _get_df() -> pnd.DataFrame:
     df = pnd.concat(l_df_kind, axis=0)
 
     return df
+#------------------------------------------
+def _parse_args():
+    parser = argparse.ArgumentParser(description='Script used to calculate mass scales and resolution from fit results')
+    parser.add_argument('-l', '--log_level' , type=int, help='Logging level', choices=[10, 20, 30])
+    args = parser.parse_args()
+
+    _set_log_level(args.log_level)
+#------------------------------------------
+def _set_log_level(level : int) -> None:
+    LogStore.set_level('rx_fitter:reso_scale', level)
 #------------------------------------------
 def _prepare_df(df : pnd.DataFrame, kind : str) -> pnd.DataFrame:
     df = df[df.kind == kind]
@@ -133,19 +145,28 @@ def _path_from_par(parameter : str) -> str:
     if 'mu' in parameter:
         return 'scale.png'
 
-    if 'sigma' in parameter and 'SUJ'  in parameter:
-        return 'resolution_1.png'
-
-    if 'sigma' in parameter and 'DSCB' in parameter:
-        return 'resolution_2.png'
+    if 'sigma' in parameter:
+        return 'resolution.png'
 
     raise ValueError(f'Parameter not a scale or resolution: {parameter}')
 #------------------------------------------
-def _ylim_from_par(parameter: str) -> tuple[float,float]:
+def _ylim_from_par(parameter : str) -> tuple[float,float]:
     if 'mu' in parameter:
-        return -20, 20
+        return -20, -10
 
-    return 0.5, 1.5
+    if 'sigma' in parameter:
+        return 1.0, 2.0
+
+    raise NotImplementedError(f'Invalid parameter {parameter}')
+#------------------------------------------
+def _ylabel_from_par(parameter : str) -> str:
+    if 'mu'    in parameter:
+        return r'$\Delta\mu$[MeV]'
+
+    if 'sigma' in parameter:
+        return r'$s_{\sigma}$'
+
+    raise NotImplementedError(f'Invalid parameter {parameter}')
 #------------------------------------------
 def _format_float(val : float) -> str:
     if val < 10:
@@ -192,10 +213,15 @@ def _tabulate(df : pnd.DataFrame, name : str) -> None:
 
     put.df_to_tex(df, f'./{fname}.tex', caption=name)
 #------------------------------------------
+def _initialize() -> None:
+    plt.style.use(mplhep.style.LHCb2)
+#------------------------------------------
 def main():
     '''
     Starts here
     '''
+    _parse_args()
+    _initialize()
 
     df = _get_df()
     for parameter, df_parameter in df.groupby('Parameter'):
@@ -213,9 +239,11 @@ def main():
 
         fig_path = _path_from_par(parameter)
         t_ylim   = _ylim_from_par(parameter)
+        ylabel   = _ylabel_from_par(parameter)
 
+        plt.ylabel(ylabel)
         plt.ylim(t_ylim)
-
+        log.info(f'Saving to: {fig_path}')
         plt.savefig(fig_path)
 #------------------------------------------
 if __name__ == '__main__':
