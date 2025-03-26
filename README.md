@@ -27,6 +27,20 @@ thus, one can run this command for each model with cluster jobs.
 
 # Resonant mode fits
 
+## No mass constraint
+
+For these fits run:
+
+```bsh
+rx_reso_ee -m B_M_brem_track_2 -v no_dtf -b 0
+```
+
+where:
+
+`-m` Signals which version of the mass to use    
+`-v` Signals the configuration file   
+`-b` Signals the brem category   
+
 ## Mass resolutions and scales
 
 These can be obtained by running:
