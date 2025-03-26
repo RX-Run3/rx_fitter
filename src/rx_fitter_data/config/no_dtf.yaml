@@ -10,9 +10,9 @@ input:
     ecalo_bias  : /home/acampove/external_ssd/Data/samples/ecalo_bias.yaml
     brem_track_2: /home/acampove/external_ssd/Data/samples/brem_track_2.yaml
   selection: # Used to override default selection
-    jpsi_misid : (1)
-    cascade    : (1)
-    hop        : (1)
+    q2         : (Jpsi_const_mass_M * Jpsi_const_mass_M) > 6000000 && (Jpsi_const_mass_M * Jpsi_const_mass_M) < 12960000
+    #q2         : (Jpsi_M_brem_track_2 * Jpsi_M_brem_track_2) > 6000000 && (Jpsi_M_brem_track_2 * Jpsi_M_brem_track_2) < 12960000
+    #q2         : (1)
     mass       : B_const_mass_M > 5160
 # ----------------------
 output:
@@ -20,8 +20,8 @@ output:
 # ----------------------
 fitting:
   range :
-    B_M            : [4500, 6000]
-    ecalo_bias_B_M : [4500, 6000]
+    B_M             : [4500, 6000]
+    B_M_brem_track_2: [4500, 6000]
   components:
     combinatorial  : true
     PRec           : false 
@@ -30,11 +30,10 @@ fitting:
     data           : true 
   config:
     data:
-      constraints  :
-        - ncmb_exp : [0, 1]
       error_method : minuit_hesse
       plotting     :
         nbins   : 30
+        yscale  : linear
         stacked : true
         d_leg   :
           Bu_JpsiK_ee_eq_DPC : $B^+\to K^+J/\psi(\to e^+e^-)$
@@ -45,10 +44,11 @@ fitting:
       fitting:
         error_method   : minuit_hesse
         weights_column : weights
-        ntries         : 20
-        pvalue         : 0.02
+        ntries         : 5 
+        pvalue         : 0.01
       plotting       :
         nbins   : 30
+        yscale  : linear
         stacked : true
     Cabibbo :
       sample           : Bu_JpsiPi_ee_eq_DPC
@@ -95,6 +95,7 @@ components:
       weights : weights
     1 :
       model:
+        - gauss 
         - dscb
       pfloat:
         - mu
@@ -106,7 +107,8 @@ components:
       weights : weights
     2 :
       model:
-        - suj
+        - gauss 
+        - dscb 
       pfloat:
         - mu
         - sg
@@ -152,3 +154,8 @@ components:
       fvers : null
       create: false
       weights : weights
+# ----------------------
+brem:
+  0 : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0
+  1 : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1
+  2 : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2
