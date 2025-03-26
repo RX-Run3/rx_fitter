@@ -191,7 +191,7 @@ def _path_from_par(parameter : str) -> str:
 #------------------------------------------
 def _ylim_from_par(parameter : str) -> tuple[float,float]:
     if 'mu'    in parameter:
-        return -20, -10
+        return -20, 0
 
     if 'sigma' in parameter:
         return 1.0, 2.0
