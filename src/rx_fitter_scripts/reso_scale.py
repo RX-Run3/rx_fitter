@@ -8,6 +8,7 @@ import argparse
 
 import numpy
 import mplhep
+import jacobi
 import pandas            as pnd
 import matplotlib.pyplot as plt
 import dmu.pdataframe.utilities as put
@@ -37,12 +38,27 @@ def _name_from_parname(name : str) -> str:
     if name.startswith('sg_'):
         return r'$\sigma$'
 
+    if name == 'nSignal':
+        return 'yield'
+
     raise ValueError(f'Invalid parameter name {name}')
+#------------------------------------------
+def _is_par_needed(name : str) -> str:
+    if name == 'nSignal':
+        return True
+
+    if name.startswith('mu_'):
+        return True
+
+    if name.startswith('sg_'):
+        return True
+
+    return False
 #------------------------------------------
 def _df_from_pars(d_par : dict[str,list[str]]) -> pnd.DataFrame:
     d_data = {'Parameter' : [], 'Value' : [], 'Error' : []}
     for name, [val, err] in d_par.items():
-        if not name.startswith('mu_') and not name.startswith('sg_'):
+        if not _is_par_needed(name):
             continue
 
         name = _name_from_parname(name)
@@ -90,6 +106,26 @@ def _get_df() -> pnd.DataFrame:
         l_df_kind.append(df)
 
     df = pnd.concat(l_df_kind, axis=0)
+    df = df.reset_index(drop=True)
+    df = _frac_from_yield(df)
+
+    return df
+#------------------------------------------
+def _frac_from_yield(df : pnd.DataFrame) -> pnd.DataFrame:
+    l_df = []
+    for _, df_kind in df.groupby('kind'):
+        df          = df_kind[df_kind.Parameter == 'yield']
+        frac, cov   = jacobi.propagate(lambda x : x / numpy.sum(x), df.Value.values, df.Error.values)
+        df['Value'] = frac
+        df['Error'] = numpy.sqrt(numpy.diag(cov))
+        df.Parameter= df.Parameter.replace({'yield' : 'frac'})
+
+        for index in df.index:
+            df_kind.loc[index] = df.loc[index]
+
+        l_df.append(df_kind)
+
+    df = pnd.concat(l_df, axis=0)
 
     return df
 #------------------------------------------
@@ -161,10 +197,10 @@ def _ylim_from_par(parameter : str) -> tuple[float,float]:
 #------------------------------------------
 def _ylabel_from_par(parameter : str) -> str:
     if 'mu'    in parameter:
-        return r'$\Delta\mu$[MeV]'
+        return r'$\mu_{Data}-\mu_{MC}$[MeV]'
 
     if 'sigma' in parameter:
-        return r'$s_{\sigma}$'
+        return r'$\sigma_{Data}/\sigma_{MC}$'
 
     raise NotImplementedError(f'Invalid parameter {parameter}')
 #------------------------------------------
@@ -233,7 +269,6 @@ def main():
 
         df_scale.plot(x='brem', y='Value', yerr='Error')
 
-        plt.title(parameter)
         plt.grid()
         plt.legend([])
 
