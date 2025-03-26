@@ -213,6 +213,18 @@ def _ylabel_from_par(parameter : str) -> str:
 
     raise NotImplementedError(f'Invalid parameter {parameter}')
 #------------------------------------------
+def _caption_from_par(parameter : str) -> str:
+    if 'mu'    in parameter:
+        return r'$\mu$'
+
+    if 'sigma' in parameter:
+        return r'$\sigma$'
+
+    if 'frac'  in parameter:
+        return r'$f_{brem}$'
+
+    raise NotImplementedError(f'Invalid parameter {parameter}')
+#------------------------------------------
 def _format_float(val : float) -> str:
     if val < 10:
         return f'{val:.2f}'
@@ -249,14 +261,21 @@ def _split_kind(df : pnd.DataFrame, name : str) -> pnd.DataFrame:
     return df
 #------------------------------------------
 def _tabulate(df : pnd.DataFrame, name : str) -> None:
-    sr_val = df.apply(_value_from_df,axis=1)
+    # Brem fractions will be showin in %
+    if 'frac' in name:
+        df['Value'] = 100 * df.Value
+        df['Error'] = 100 * df.Error
+
+    sr_val = df.apply(_value_from_df, axis=1)
     d_data = {'Sample' : df.kind, 'Brem' : df.brem, name : sr_val}
     df     = pnd.DataFrame(d_data)
     df     = _split_kind(df, name)
 
+
     fname  = name.replace('$', '').replace('\\', '').replace('{', '').replace('}', '')
 
-    put.df_to_tex(df, f'./{fname}.tex', caption=name)
+    label  = _caption_from_par(name)
+    put.df_to_tex(df, f'./{fname}.tex', caption=label, column_format='ll|l')
 #------------------------------------------
 def _initialize() -> None:
     plt.style.use(mplhep.style.LHCb2)
