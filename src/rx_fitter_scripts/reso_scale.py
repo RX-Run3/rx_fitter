@@ -173,25 +173,31 @@ def _scale_from_df(df : pnd.DataFrame, parameter : str) -> pnd.DataFrame:
     if 'mu' in parameter:
         df_sc = _subtract_df(df_dt, df_mc)
     else:
-        df_sc = _divide_df(df_dt, df_mc)
+        df_sc =   _divide_df(df_dt, df_mc)
 
     return df_sc
 #------------------------------------------
 def _path_from_par(parameter : str) -> str:
-    if 'mu' in parameter:
+    if 'mu'    in parameter:
         return 'scale.png'
 
     if 'sigma' in parameter:
         return 'resolution.png'
 
+    if 'frac'  in parameter:
+        return 'brem_fraction.png'
+
     raise ValueError(f'Parameter not a scale or resolution: {parameter}')
 #------------------------------------------
 def _ylim_from_par(parameter : str) -> tuple[float,float]:
-    if 'mu' in parameter:
+    if 'mu'    in parameter:
         return -20, -10
 
     if 'sigma' in parameter:
         return 1.0, 2.0
+
+    if 'frac'  in parameter:
+        return 0.7, 1.3
 
     raise NotImplementedError(f'Invalid parameter {parameter}')
 #------------------------------------------
@@ -201,6 +207,9 @@ def _ylabel_from_par(parameter : str) -> str:
 
     if 'sigma' in parameter:
         return r'$\sigma_{Data}/\sigma_{MC}$'
+
+    if 'frac'  in parameter:
+        return r'$frac_{Data}/frac_{MC}$'
 
     raise NotImplementedError(f'Invalid parameter {parameter}')
 #------------------------------------------
