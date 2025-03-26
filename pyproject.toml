@@ -3,9 +3,10 @@ name        = 'rx_fitter'
 version     = '0.0.1'
 readme      = 'README.md'
 dependencies= [
-'rx_data',
 'asdf',
 'pdg',
+'mplhep',
+'rx_data',
 'data-manipulation-utilities',
 'rx_calibration',
 ]
