@@ -19,6 +19,7 @@ dev  = ['pytest']
 where   = ['src']
 
 [project.scripts]
+validate_cmb='rx_fitter_scripts.validate_cmb:main'
 reso_scale='rx_fitter_scripts.reso_scale:main'
 rx_data_no_tail='rx_fitter_scripts.rx_data_no_tail:main'
 model_tester='rx_fitter_scripts.model_tester:main'
