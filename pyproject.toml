@@ -5,7 +5,7 @@ readme      = 'README.md'
 dependencies= [
 'asdf',
 'pdg',
-'jacobi'
+'jacobi',
 'mplhep',
 'rx_data',
 'data-manipulation-utilities',
