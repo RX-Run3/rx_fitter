@@ -5,6 +5,7 @@ import argparse
 from importlib.resources    import files
 
 import yaml
+import ROOT
 import zfit
 import matplotlib.pyplot as plt
 
