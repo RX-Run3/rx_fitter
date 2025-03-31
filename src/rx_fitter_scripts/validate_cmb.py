@@ -37,6 +37,7 @@ class Data:
     trigger: str
     initial: int
     final  : int
+    ntries : int
 # --------------------------------
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Used to perform fits to validate choice of PDF for combinatorial')
@@ -47,6 +48,7 @@ def _parse_args() -> None:
     parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'    , required=True)
     parser.add_argument('-i', '--initial', type=int, help='Index of initial fit', default=0)
     parser.add_argument('-f', '--final'  , type=int, help='Index of final fit, if not passed, will do all', default=1000)
+    parser.add_argument('-n', '--ntries' , type=int, help='Maximum number of tries, default 1', default=1)
     args = parser.parse_args()
 
     Data.q2bin  = args.q2bin
@@ -56,6 +58,7 @@ def _parse_args() -> None:
     Data.trigger= args.trigger
     Data.initial= args.initial
     Data.final  = args.final
+    Data.ntries = args.ntries
 # --------------------------------
 def _apply_selection(rdf : RDataFrame) -> RDataFrame:
     d_sel = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
@@ -100,8 +103,10 @@ def _data_from_rdf(rdf : RDataFrame, cut : str) ->  zdata:
     return data
 # --------------------------------
 def _fit(pdf : zpdf, data : zdata) -> None:
+    d_retry = {'ntries' : Data.ntries, 'pvalue_thresh' : 0.05, 'ignore_status' : False}
+
     obj = Fitter(pdf, data)
-    res = obj.fit()
+    res = obj.fit(cfg={'strategy' : {'retry' : d_retry}})
 
     return res
 # --------------------------------
