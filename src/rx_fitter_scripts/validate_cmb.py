@@ -35,6 +35,7 @@ class Data:
     config : str
     sample : str
     trigger: str
+    first  : bool
 # --------------------------------
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Used to perform fits to validate choice of PDF for combinatorial')
@@ -43,6 +44,7 @@ def _parse_args() -> None:
     parser.add_argument('-c', '--config' , type=str, help='Name of config file', required=True)
     parser.add_argument('-s', '--sample' , type=str, help='Name of sample'     , required=True)
     parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'    , required=True)
+    parser.add_argument('-f', '--first'  , action='store_true', help='If used, will only do first fit')
     args = parser.parse_args()
 
     Data.q2bin  = args.q2bin
@@ -50,6 +52,7 @@ def _parse_args() -> None:
     Data.config = args.config
     Data.sample = args.sample
     Data.trigger= args.trigger
+    Data.first  = args.first
 # --------------------------------
 def _apply_selection(rdf : RDataFrame) -> RDataFrame:
     d_sel = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
@@ -140,6 +143,9 @@ def main():
         _fit(pdf, data)
 
         _plot(pdf, data, name)
+
+        if Data.first:
+            return
 # --------------------------------
 if __name__ == '__main__':
     main()
