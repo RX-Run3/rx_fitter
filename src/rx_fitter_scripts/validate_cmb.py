@@ -35,7 +35,8 @@ class Data:
     config : str
     sample : str
     trigger: str
-    first  : bool
+    initial: int
+    final  : int
 # --------------------------------
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Used to perform fits to validate choice of PDF for combinatorial')
@@ -44,7 +45,8 @@ def _parse_args() -> None:
     parser.add_argument('-c', '--config' , type=str, help='Name of config file', required=True)
     parser.add_argument('-s', '--sample' , type=str, help='Name of sample'     , required=True)
     parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'    , required=True)
-    parser.add_argument('-f', '--first'  , action='store_true', help='If used, will only do first fit')
+    parser.add_argument('-i', '--initial', type=int, help='Index of initial fit', default=0)
+    parser.add_argument('-f', '--final'  , type=int, help='Index of final fit, if not passed, will do all', default=1000)
     args = parser.parse_args()
 
     Data.q2bin  = args.q2bin
@@ -52,7 +54,8 @@ def _parse_args() -> None:
     Data.config = args.config
     Data.sample = args.sample
     Data.trigger= args.trigger
-    Data.first  = args.first
+    Data.initial= args.initial
+    Data.final  = args.final
 # --------------------------------
 def _apply_selection(rdf : RDataFrame) -> RDataFrame:
     d_sel = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
@@ -126,6 +129,12 @@ def _initialize() -> None:
     with open(conf_path, encoding='utf-8') as ifile:
         Data.cfg = yaml.safe_load(ifile)
 # --------------------------------
+def _skip_fit(index : int) -> bool:
+    if Data.initial <= index <= Data.final:
+        return False
+
+    return True
+# --------------------------------
 def main():
     '''
     Start here
@@ -137,15 +146,21 @@ def main():
     rdf  = _get_rdf()
 
     d_cutflow = Data.cfg['cutflow']
+
+    index = 0
     for name, cut in d_cutflow.items():
-        log.info(f'Fitting {name}')
+        if _skip_fit(index):
+            log.info(f'Skipping {name}/{index}')
+            index += 1
+            continue
+
+        log.info(f'Fitting {name}/{index}')
         data = _data_from_rdf(rdf, cut)
         _fit(pdf, data)
 
         _plot(pdf, data, name)
 
-        if Data.first:
-            return
+        index += 1
 # --------------------------------
 if __name__ == '__main__':
     main()
