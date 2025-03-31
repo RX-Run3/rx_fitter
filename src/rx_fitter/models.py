@@ -10,6 +10,13 @@ from zfit.core.interfaces   import ZfitSpace as zobs
 from zfit.core.basepdf      import BasePDF   as zpdf
 
 # ---------------------------------------------
+def _get_pol2(obs : zobs) -> zpdf:
+    a   = zfit.Parameter('a', -0.005, -0.95, 0.00)
+    b   = zfit.Parameter('b',  0.000, -0.95, 0.95)
+    pdf = zfit.pdf.Chebyshev(obs=obs, coeffs=[a, b])
+
+    return pdf
+# ---------------------------------------------
 def _get_exponential(obs : zobs) -> zpdf:
     c  = zfit.Parameter('c', -0.002, -0.003, 0.0)
     pdf= zfit.pdf.Exponential(obs=obs, lam=c)
@@ -47,6 +54,9 @@ def get_pdf(obs : zobs, name : str) -> zpdf:
 
     if name == 'Exp':
         return _get_exponential(obs=obs)
+
+    if name == 'Pol2':
+        return _get_pol2(obs=obs)
 
     raise NotImplementedError(f'Cannot find {name} PDF')
 # ---------------------------------------------
