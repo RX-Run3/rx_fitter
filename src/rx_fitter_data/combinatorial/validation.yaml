@@ -1,6 +1,7 @@
 selection:
   #leak: B_const_mass_M < 5250 || B_const_mass_M > 5350 # Can be turned on to check effect of charge misidentification followed by resonant leakage into SS
-  bdt : (1)
+  bdt  : (1)
+  mass : (1)
 cutflow:
   No MVA                                 : (1)
   $BDT_{prc} > 0.3$                      : mva_prc > 0.3
