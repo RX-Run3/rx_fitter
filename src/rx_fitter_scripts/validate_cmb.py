@@ -44,7 +44,7 @@ class Data:
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Used to perform fits to validate choice of PDF for combinatorial')
     parser.add_argument('-q', '--q2bin'  , type=str, help='Q2bin', choices=['low', 'central', 'high'], required=True)
-    parser.add_argument('-m', '--model'  , type=str, help='Fitting model', choices=['HypExp', 'ModExp', 'Exp', 'Pol2', 'Pol3'], required=True)
+    parser.add_argument('-m', '--model'  , type=str, help='Fitting model', choices=['HypExp', 'ModExp', 'Exp', 'Pol2', 'Pol3', 'SUJohnson'], required=True)
     parser.add_argument('-c', '--config' , type=str, help='Name of config file', required=True)
     parser.add_argument('-s', '--sample' , type=str, help='Name of sample'     , required=True)
     parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'    , required=True)
