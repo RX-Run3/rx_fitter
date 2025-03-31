@@ -1,0 +1,8 @@
+selection:
+  bdt : (1)
+cutflow:
+  prc > 0.3 : mva_prc > 0.3
+  prc > 0.5 : mva_prc > 0.5
+  prc > 0.7 : mva_prc > 0.7
+data:
+  observable : B_M_brem_track_2
