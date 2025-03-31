@@ -16,7 +16,7 @@ from dmu.stats.fitter       import Fitter
 from dmu.stats.zfit_plotter import ZFitPlotter
 from rx_data.rdf_getter     import RDFGetter
 from rx_selection           import selection as sel
-from rx_fitter              import utilities
+from rx_fitter              import models
 
 log=LogStore.add_logger('rx_fitter:validate_cmb')
 # --------------------------------
@@ -92,7 +92,7 @@ def main():
     _parse_args()
     _initialize()
 
-    pdf  = utilities.get_pdf(obs=Data.obs, name='HypExp')
+    pdf  = models.get_pdf(obs=Data.obs, name='HypExp')
     data = _get_data()
     res  = _fit(pdf, data)
 
