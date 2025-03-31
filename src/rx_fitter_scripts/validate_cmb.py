@@ -58,13 +58,25 @@ def _apply_selection(rdf : RDataFrame) -> RDataFrame:
 
     return rdf
 # --------------------------------
-def _get_data() ->  zdata:
+def _suffix_from_name(name : str) -> str:
+    name = name.replace(' ',  '_')
+    name = name.replace('<', 'lt')
+    name = name.replace('>', 'gt')
+    name = name.replace('=', 'eq')
+
+    return name
+# --------------------------------
+def _get_rdf() ->  zdata:
     gtr = RDFGetter(sample=Data.sample, trigger=Data.trigger)
     gtr.initialize()
     rdf = gtr.get_rdf()
     rdf = _apply_selection(rdf)
 
-    var = Data.cfg['input']['observable']
+    return rdf
+# --------------------------------
+def _data_from_rdf(rdf : RDataFrame, cut : str) ->  zdata:
+    rdf      = rdf.Filter(cut)
+    var      = Data.cfg['input']['observable']
     arr_mass = rdf.AsNumpy([var])[var]
     data     = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
 
@@ -76,10 +88,12 @@ def _fit(pdf : zpdf, data : zdata) -> None:
 
     return res
 # --------------------------------
-def _plot(pdf : zpdf, data : zdata) -> None:
+def _plot(pdf : zpdf, data : zdata, name : str) -> None:
+    suffix = _suffix_from_name(name)
+
     obj= ZFitPlotter(data=data, model=pdf)
-    obj.plot(nbins=50)
-    plt.savefig('fit.png')
+    obj.plot(nbins=50, title=name)
+    plt.savefig(f'fit_{suffix}.png')
 # --------------------------------
 def _initialize() -> None:
     conf_path = files('rx_fitter_data').joinpath(f'combinatorial/{Data.config}.yaml')
@@ -94,11 +108,15 @@ def main():
     _initialize()
 
     pdf  = models.get_pdf(obs=Data.obs, name='HypExp')
-    data = _get_data()
-    res  = _fit(pdf, data)
+    rdf  = _get_rdf()
 
-    print(res)
-    _plot(pdf, data)
+    d_cutflow = Data.cfg['cutflow']
+    for name, cut in d_cutflow.items():
+        log.info(f'Fitting {name}')
+        data = _data_from_rdf(rdf, cut)
+        _fit(pdf, data)
+
+        _plot(pdf, data, name)
 # --------------------------------
 if __name__ == '__main__':
     main()
