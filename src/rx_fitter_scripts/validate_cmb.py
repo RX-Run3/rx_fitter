@@ -31,6 +31,7 @@ class Data:
 
     cfg    : dict
     q2bin  : str
+    model  : str
     config : str
     sample : str
     trigger: str
@@ -38,12 +39,14 @@ class Data:
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Used to perform fits to validate choice of PDF for combinatorial')
     parser.add_argument('-q', '--q2bin'  , type=str, help='Q2bin', choices=['low', 'central', 'high'], required=True)
+    parser.add_argument('-m', '--model'  , type=str, help='Fitting model', choices=['HypExp', 'ModExp'], required=True)
     parser.add_argument('-c', '--config' , type=str, help='Name of config file', required=True)
     parser.add_argument('-s', '--sample' , type=str, help='Name of sample'     , required=True)
     parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'    , required=True)
     args = parser.parse_args()
 
     Data.q2bin  = args.q2bin
+    Data.model  = args.model
     Data.config = args.config
     Data.sample = args.sample
     Data.trigger= args.trigger
@@ -98,7 +101,7 @@ def _fit(pdf : zpdf, data : zdata) -> None:
 # --------------------------------
 def _get_out_dir() -> str:
     fit_dir = os.environ['FITDIR']
-    plt_dir = f'{fit_dir}/{Data.sample}/{Data.trigger}/{Data.q2bin}'
+    plt_dir = f'{fit_dir}/{Data.sample}/{Data.trigger}/{Data.q2bin}/{Data.model}'
     plt_dir = plt_dir.replace('*', 'p')
 
     os.makedirs(plt_dir, exist_ok=True)
@@ -106,11 +109,13 @@ def _get_out_dir() -> str:
     return plt_dir
 # --------------------------------
 def _plot(pdf : zpdf, data : zdata, name : str) -> None:
-    suffix = _suffix_from_name(name)
-    out_dir= _get_out_dir()
+    suffix   = _suffix_from_name(name)
+    out_dir  = _get_out_dir()
+    nentries = data.value().shape[0]
+    ext_text = f'Entries={nentries}\n{Data.sample}\n{Data.trigger}'
 
     obj= ZFitPlotter(data=data, model=pdf)
-    obj.plot(nbins=50, title=name)
+    obj.plot(nbins=50, title=name, ext_text=ext_text, d_leg={'ZPDF' : Data.model})
     plt.savefig(f'{out_dir}/fit_{suffix}.png')
 # --------------------------------
 def _initialize() -> None:
@@ -125,7 +130,7 @@ def main():
     _parse_args()
     _initialize()
 
-    pdf  = models.get_pdf(obs=Data.obs, name='HypExp')
+    pdf  = models.get_pdf(obs=Data.obs, name=Data.model)
     rdf  = _get_rdf()
 
     d_cutflow = Data.cfg['cutflow']
