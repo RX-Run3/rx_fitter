@@ -28,7 +28,7 @@ class Data:
     Dataclass
     '''
     minx = 4500
-    maxx = 6000
+    maxx = 6500
     obs  = zfit.Space('mass', limits=(minx, maxx))
 
     cfg    : dict
@@ -129,6 +129,8 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
 
     obj= ZFitPlotter(data=data, model=pdf)
     obj.plot(nbins=50, title=name, ext_text=ext_text, d_leg={'ZPDF' : Data.model})
+
+    obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
     obj.axs[1].set_ylim([-5, +5])
     obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
