@@ -63,6 +63,11 @@ def _suffix_from_name(name : str) -> str:
     name = name.replace('<', 'lt')
     name = name.replace('>', 'gt')
     name = name.replace('=', 'eq')
+    name = name.replace('{', '_')
+    name = name.replace('}', '_')
+    name = name.replace('.', 'p')
+    name = name.replace('$', '_')
+    name = name.replace('&&', 'and')
 
     return name
 # --------------------------------
