@@ -51,3 +51,16 @@ reso_scale
 
 which will pick the latest versions of the data and MC fits
 
+# Combinatorial
+
+## Model validation
+
+In order to validate the model used to fit the combinatorial, these fits are done to the SS data
+with the full selection and multiple MVA working points. To do this run:
+
+```bash
+validate_cmb -q low -c validation -s "DATA*" -t Hlt2RD_BuToKpEE_SameSign_MVA -m HypExp
+```
+
+where the configuration is specified through both the arguments and the config `validation.yaml`. The latter
+is specified with the `-c` flag and is part of the project itself.
