@@ -1,6 +1,8 @@
 '''
 Script used to validate PDFs needed to fit combinatorial
 '''
+import os
+import re
 import argparse
 from importlib.resources    import files
 
@@ -68,6 +70,7 @@ def _suffix_from_name(name : str) -> str:
     name = name.replace('.', 'p')
     name = name.replace('$', '_')
     name = name.replace('&&', 'and')
+    name = re.sub(r'_+', '_', name)
 
     return name
 # --------------------------------
@@ -93,12 +96,22 @@ def _fit(pdf : zpdf, data : zdata) -> None:
 
     return res
 # --------------------------------
+def _get_out_dir() -> str:
+    fit_dir = os.environ['FITDIR']
+    plt_dir = f'{fit_dir}/{Data.sample}/{Data.trigger}/{Data.q2bin}'
+    plt_dir = plt_dir.replace('*', 'p')
+
+    os.makedirs(plt_dir, exist_ok=True)
+
+    return plt_dir
+# --------------------------------
 def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     suffix = _suffix_from_name(name)
+    out_dir= _get_out_dir()
 
     obj= ZFitPlotter(data=data, model=pdf)
     obj.plot(nbins=50, title=name)
-    plt.savefig(f'fit_{suffix}.png')
+    plt.savefig(f'{out_dir}/fit_{suffix}.png')
 # --------------------------------
 def _initialize() -> None:
     conf_path = files('rx_fitter_data').joinpath(f'combinatorial/{Data.config}.yaml')
