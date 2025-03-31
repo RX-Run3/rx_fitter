@@ -10,6 +10,12 @@ from zfit.core.interfaces   import ZfitSpace as zobs
 from zfit.core.basepdf      import BasePDF   as zpdf
 
 # ---------------------------------------------
+def _get_exponential(obs : zobs) -> zpdf:
+    c  = zfit.Parameter('c', -0.002, -0.003, 0.0)
+    pdf= zfit.pdf.Exponential(obs=obs, lam=c)
+
+    return pdf
+# ---------------------------------------------
 def _get_hypexp(obs : zobs) -> zpdf:
     mu = zfit.Parameter('mu',  5000,   4000,  6000)
     ap = zfit.Parameter('ap', 0.020,      0,  0.10)
@@ -38,6 +44,9 @@ def get_pdf(obs : zobs, name : str) -> zpdf:
 
     if name == 'ModExp':
         return _get_modexp(obs=obs)
+
+    if name == 'Exp':
+        return _get_exponential(obs=obs)
 
     raise NotImplementedError(f'Cannot find {name} PDF')
 # ---------------------------------------------
