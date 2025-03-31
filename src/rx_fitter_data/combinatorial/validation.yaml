@@ -4,6 +4,8 @@ cutflow:
   $BDT_{prc} > 0.3$                     : mva_prc > 0.3
   $BDT_{prc} > 0.5$                     : mva_prc > 0.5
   $BDT_{prc} > 0.7$                     : mva_prc > 0.7
+  $BDT_{prc} > 0.7$ && $BDT_{cmb} > 0.1$: mva_prc > 0.7 && mva_cmb > 0.1
+  $BDT_{prc} > 0.7$ && $BDT_{cmb} > 0.2$: mva_prc > 0.7 && mva_cmb > 0.2
   $BDT_{prc} > 0.7$ && $BDT_{cmb} > 0.3$: mva_prc > 0.7 && mva_cmb > 0.3
   $BDT_{prc} > 0.7$ && $BDT_{cmb} > 0.5$: mva_prc > 0.7 && mva_cmb > 0.5
   $BDT_{prc} > 0.7$ && $BDT_{cmb} > 0.7$: mva_prc > 0.7 && mva_cmb > 0.7
