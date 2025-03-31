@@ -11,9 +11,9 @@ from zfit.core.basepdf      import BasePDF   as zpdf
 
 # ---------------------------------------------
 def _get_hypexp(obs : zobs) -> zpdf:
-    mu = zfit.Parameter('mu',  5000,  4000,  6000)
-    ap = zfit.Parameter('ap', 0.020,     0,  0.10)
-    bt = zfit.Parameter('bt', 0.002, 0.001, 0.003)
+    mu = zfit.Parameter('mu',  5000,   4000,  6000)
+    ap = zfit.Parameter('ap', 0.020,      0,  0.10)
+    bt = zfit.Parameter('bt', 0.002, 0.0001, 0.003)
 
     pdf= HypExp(obs=obs, mu=mu, alpha=ap, beta=bt)
 
