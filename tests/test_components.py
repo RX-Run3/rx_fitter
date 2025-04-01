@@ -31,7 +31,7 @@ class Data:
             },
             'fitting': {
                 'range': {
-                    'B_M': [
+                    mass : [
                         4500,
                         6000
                         ],
@@ -217,17 +217,16 @@ def _get_brem_cut(nbrem : int, kind : str) -> str:
 # --------------------------------------------------------------
 def _get_fitting_range(kind : str) -> dict[str:list[int]]:
     if kind is None:
-        return {'B_M' : [4500, 6000]}
+        return {Data.mass : [4500, 6000]}
 
     return {f'B_M_{kind}' : [4500, 6000]}
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('kind' , [None, 'brem_track_2'])
+@pytest.mark.parametrize('kind' , ['brem_track_2'])
 def test_brem_definitions(nbrem : int, kind : str):
     '''
     Will test old and new brem definition
     '''
-    mass = 'B_M' if kind is None else f'B_M_{kind}'
 
     cfg                      = copy.deepcopy(Data.cfg)
     cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/test_brem_definitions/{kind}/{nbrem:03}'
@@ -238,13 +237,13 @@ def test_brem_definitions(nbrem : int, kind : str):
     cfg['brem'][nbrem]  = _get_brem_cut(nbrem, kind)
     cfg['fitting']['range'] = _get_fitting_range(kind)
 
-    obs            = _get_obs(mass, cfg)
+    obs            = _get_obs(Data.mass, cfg)
 
     cmp_sig = cmp.get_mc(obs=obs, component_name='Signal', nbrem=nbrem, cfg=cfg)
     cmp_sig.run()
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_M'])
+@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
 @pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_reuse(nbrem : int, mass : str, name : str):
     '''
@@ -262,7 +261,7 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     cmp_sig.run()
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_M'])
+@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
 @pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_create(nbrem : int, mass : str, name : str):
     '''
@@ -279,7 +278,7 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     cmp_sig.run()
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_M'])
+@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
 @pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_fix(nbrem : int, mass : str, name : str):
     '''
@@ -295,7 +294,7 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     cmp_sig.run()
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem',                 [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M'])
+@pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M_brem_track_2'])
 def test_prec_brem(mass : str, nbrem : int):
     '''
     Testing creation of PDF from MC sample with brem cut
