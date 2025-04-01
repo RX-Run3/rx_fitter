@@ -2,9 +2,11 @@
 Module with functions to test functions in components.py
 '''
 import copy
+from importlib.resources import files
 
 import ROOT
 import zfit
+import yaml
 import pytest
 
 from zfit.core.interfaces   import ZfitSpace as zobs
@@ -17,193 +19,17 @@ class Data:
     '''
     Data class
     '''
-    mass = 'B_M_brem_track_2'
-    cfg  = {
-            'input': {
-                'q2bin'   : 'jpsi',
-                'trigger' : 'Hlt2RD_BuToKpEE_MVA',
-                'selection': {
-                    'mass': 'B_const_mass_M > 5160'
-                    }
-            },
-            'output': {
-                'fit_dir': '/tmp/tests/rx_fitter/components',
-            },
-            'fitting': {
-                'range': {
-                    mass : [
-                        4500,
-                        6000
-                        ],
-                    'B_const_mass_M': [
-                        5160,
-                        5500
-                        ]
-                    },
-                'components': {
-                    'Signal': True,
-                    'Cabibbo': False,
-                    'PRec': False,
-                    'combinatorial': False,
-                    'data': False,
-                    'Bd_Kstee_eq_btosllball05_DPC' : True
-                    },
-                'config': {
-                    'data': {
-                        'fitting': {
-                            'error_method': 'minuit_hesse'
-                            },
-                        'plotting': {
-                            'nbins': 30,
-                            'stacked': True,
-                            'd_leg': {
-                                'Bu_JpsiK_ee_eq_DPC': '$B^+\\to K^+J/\\psi(\\to e^+e^-)$',
-                                'Bu_JpsiPi_ee_eq_DPC': '$B^+\\to \\pi^+J/\\psi(\\to e^+e^-)$',
-                                'combinatorial': 'Combinatorial'
-                                }
-                            }
-                        },
-                    'Signal': {
-                        'sample': 'Bu_JpsiK_ee_eq_DPC',
-                        'fitting': {
-                            'error_method': 'minuit_hesse',
-                            'ntries': 2,
-                            'pvalue': 0.02
-                            },
-                        'plotting': {
-                            'nbins': 30,
-                            'stacked': True
-                            }
-                        },
-                    'Cabibbo': {
-                        'sample': 'Bu_JpsiPi_ee_eq_DPC',
-                        'fitting': {
-                            'error_method': 'minuit_hesse',
-                            'ntries': 2,
-                            'pvalue': 0.02
-                            },
-                        'plotting': {
-                            'nbins': 30,
-                            'stacked': True
-                            }
-                        },
-                    'PRec': {
-                        'cfg_kde':
-                        {
-                        'bandwidth': 20,
-                        'padding'  : {'lowermirror': 0.5, 'uppermirror': 0.5},
-                            },
-                        'sample' : [
-                            'Bu_JpsiX_ee_eq_JpsiInAcc',
-                            'Bd_JpsiX_ee_eq_JpsiInAcc',
-                            'Bs_JpsiX_ee_eq_JpsiInAcc',
-                            ],
-                        'weights' : {
-                            'dec' : 1,
-                            'sam' : 1,
-                            },
-                        'plotting' : {
-                                'nbins'   : 30,
-                                'stacked' : True,
-                                },
-                        },
-                    'combinatorial': {
-                            'kind': 'exp'
-                            },
-                    'Bd_Kstee_eq_btosllball05_DPC': {
-                        'cfg_kde':
-                        {
-                        'bandwidth': 20,
-                        'padding'  : {'lowermirror': 0.5, 'uppermirror': 0.5},
-                            },
-                        'sample' : [
-                            'Bd_Kstee_eq_btosllball05_DPC',
-                            ],
-                        'plotting' : {
-                                'nbins'   : 30,
-                                'stacked' : True,
-                                },
-                        },
-                    }
-            },
-            'brem': {
-                    0 : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0',
-                    1 : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1',
-                    2 : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2'
-            },
-            'components': {
-                    'Signal': {
-                        0: {
-                            'model' : ['cbl'],
-                            'pfloat': [
-                                'mu',
-                                'sg'
-                                ],
-                            'shared': [
-                                'mu'
-                                ],
-                            'fvers' : 'v2',
-                            'create': True,
-                            'weights' : 'weights',
-                            },
-                        1: {
-                            'model': ['dscb'],
-                            'pfloat': [
-                                'mu',
-                                'sg'
-                                ],
-                            'shared': [
-                                'mu'
-                                ],
-                            'fvers' : 'v2',
-                            'create': True,
-                            'weights' : 'weights',
-                            },
-                        2: {
-                            'model' : ['dscb'],
-                            'pfloat': [
-                                'mu',
-                                'sg'
-                                ],
-                            'shared': [
-                                'mu'
-                                ],
-                            'fvers' : 'v2',
-                            'create': True,
-                            'weights' : 'weights',
-                            }
-                        },
-                    'Cabibbo': {
-                        0: {
-                            'model': [
-                                'suj'
-                                ],
-                            'pfloat': [],
-                            'shared': []
-                            },
-                        1: {
-                            'model': [
-                                'suj'
-                                ],
-                            'pfloat': [],
-                            'shared': []
-                            },
-                        2: {
-                            'model': [
-                                'suj'
-                                ],
-                            'pfloat': [],
-                            'shared': []
-                            }
-                        }
-            }
-    }
+    cfg : dict
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _intiailize():
     LogStore.set_level('rx_fitter:prec'              , 10)
     LogStore.set_level('rx_fitter:components'        , 10)
     LogStore.set_level('rx_calibration:fit_component', 10)
+
+    cfg_path = files('rx_fitter_data').joinpath('tests/components.yaml')
+    with open(cfg_path, encoding='utf-8') as ifile:
+        Data.cfg = yaml.safe_load(ifile)
 # --------------------------------------------------------------
 def _get_obs(mass : str, cfg : dict) -> zobs:
     [min_mass, max_mass] = cfg['fitting']['range'][mass]
