@@ -4,7 +4,7 @@ Module with functions needed to provide fit components
 # pylint: disable=too-many-positional-arguments, too-many-function-args, too-many-arguments, too-many-locals
 
 import copy
-
+import zfit
 from zfit.core.interfaces                        import ZfitSpace as zobs
 from ROOT                                        import RDataFrame
 from dmu.stats.model_factory                     import ModelFactory
@@ -146,4 +146,38 @@ def get_cb(obs : zobs, kind : str) -> FitComponent:
     obj.run()
 
     return obj
+# ------------------------------------
+def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> FitComponent:
+    '''
+    Function returning FitComponent object for Samples that need to be modelled with a KDE
+
+    obs    : zfit observable
+    sample : Sample name, e.g.
+    nbrem  : Brem category, e.g. 0, 1, 2. None will put all the categories together
+    cfg    : Dictionary with configuration
+    '''
+
+    mass     = obs.obs[0]
+    q2bin    = cfg['input']['q2bin']
+    trigger  = cfg['input']['trigger']
+    d_plt    = cfg['fitting']['config'][sample]['plotting']
+    cfg_kde  = cfg['fitting']['config'][sample]['cfg_kde' ]
+    brem_cut = cfg['brem'][nbrem]
+    fit_dir  = cfg['output']['fit_dir']
+
+    d_cut = {}
+    if nbrem is not None:
+        d_cut['nbrem'] = brem_cut
+
+    rdf      = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
+    arr_mass = rdf.AsNumpy([mass])[mass]
+    pdf      = zfit.pdf.KDE1DimFFT(arr_mass, **cfg_kde)
+
+    cfg['name']    = 'sample'
+    cfg['plotting']= d_plt
+    cfg['out_dir'] = f'{fit_dir}/{sample}'
+
+    fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
+
+    return fcm
 # ------------------------------------
