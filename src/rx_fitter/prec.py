@@ -49,6 +49,11 @@ class PRec:
         self._d_cut       = {}
         self._d_match     = self._get_match_str()
         self._l_mass      = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
+        self._d_def       = {
+                'nbrem'            : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)',
+                'B_M_brem_track_2' : 'brem_track_2.B_M_brem_track_2'
+                }
+
         self._initialized = False
     #-----------------------------------------------------------
     def _initialize(self):
@@ -120,7 +125,15 @@ class PRec:
         return rdf
     #-----------------------------------------------------------
     def _add_columns(self, rdf : RDataFrame) -> RDataFrame:
-        rdf = rdf.Define('nbrem', 'L1_BremMultiplicity + L2_BremMultiplicity')
+        for name, expr in self._d_def.items():
+            if '.' in expr:
+                # This is needed for variables in friend trees
+                # This RDF will become a pandas dataframe, where the
+                # "name.variable" is not recognized as "variable"
+                # Unlike in ROOT dataframes
+                rdf = rdf.Redefine(name, expr)
+            else:
+                rdf = rdf.Define(name, expr)
 
         return rdf
     #-----------------------------------------------------------
