@@ -19,6 +19,7 @@ class Data:
     '''
     Data class
     '''
+    mass = 'B_M_brem_track_2'
     cfg : dict
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
