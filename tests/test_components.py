@@ -112,9 +112,9 @@ class Data:
                     }
             },
             'brem': {
-                    0 : 'nbrem == 0',
-                    1 : 'nbrem == 1',
-                    2 : 'nbrem >= 2'
+                    0 : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0',
+                    1 : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1',
+                    2 : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2'
             },
             'components': {
                     'Signal': {
