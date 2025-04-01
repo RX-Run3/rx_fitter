@@ -45,7 +45,8 @@ class Data:
                     'Cabibbo': False,
                     'PRec': False,
                     'combinatorial': False,
-                    'data': False
+                    'data': False,
+                    'Bd_Kstee_eq_btosllball05_DPC' : True
                     },
                 'config': {
                     'data': {
@@ -108,7 +109,21 @@ class Data:
                         },
                     'combinatorial': {
                             'kind': 'exp'
-                            }
+                            },
+                    'Bd_Kstee_eq_btosllball05_DPC': {
+                        'cfg_kde':
+                        {
+                        'bandwidth': 20,
+                        'padding'  : {'lowermirror': 0.5, 'uppermirror': 0.5},
+                            },
+                        'sample' : [
+                            'Bd_Kstee_eq_btosllball05_DPC',
+                            ],
+                        'plotting' : {
+                                'nbins'   : 30,
+                                'stacked' : True,
+                                },
+                        },
                     }
             },
             'brem': {
