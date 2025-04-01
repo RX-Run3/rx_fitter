@@ -332,3 +332,19 @@ def test_combinatorial():
     cmp_sig = cmp.get_cb(obs=obs, kind='exp')
     cmp_sig.run()
 # --------------------------------------------------------------
+#@pytest.mark.parametrize('nbrem', [0, 1, 2, None])
+@pytest.mark.parametrize('nbrem', [None])
+@pytest.mark.parametrize('q2bin', ['low', 'central', 'high'])
+def test_bdkstee(nbrem : int, q2bin : str):
+    '''
+    Test Bd -> K*ee
+    '''
+    name                     = 'Bd_Kstee_eq_btosllball05_DPC'
+    cfg                      = copy.deepcopy(Data.cfg)
+    cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/test_bkdksee/{q2bin}/{Data.mass}_{nbrem}'
+    cfg['input']['q2bin']    = q2bin
+
+    obs     = _get_obs(Data.mass, cfg)
+    cmp_sig = cmp.get_kde(obs=obs, sample=name, nbrem=nbrem, cfg=cfg)
+    cmp_sig.run()
+# --------------------------------------------------------------
