@@ -55,13 +55,13 @@ components:
       weights: weights
 fitting:
   components:
-    Bd_Kstee_eq_btosllball05_DPC: true
+    Bd_Kstee_eq_btosllball05_DPC     : true
     Bu_Kstee_Kpi0_eq_btosllball05_DPC: true
-    Cabibbo: false
-    PRec: false
-    Signal: true
-    combinatorial: false
-    data: false
+    Cabibbo                          : false
+    PRec                             : false
+    Signal                           : true
+    combinatorial                    : false
+    data                             : false
   config:
     Bd_Kstee_eq_btosllball05_DPC:
       cfg_kde:
@@ -74,6 +74,17 @@ fitting:
         stacked: true
       sample:
       - Bd_Kstee_eq_btosllball05_DPC
+    Bu_Kstee_Kpi0_eq_btosllball05_DPC:
+      cfg_kde:
+        bandwidth: 20
+        padding:
+          lowermirror: 0.5
+          uppermirror: 0.5
+      plotting:
+        nbins: 30
+        stacked: true
+      sample:
+        - Bu_Kstee_Kpi0_eq_btosllball05_DPC
     Cabibbo:
       fitting:
         error_method: minuit_hesse
