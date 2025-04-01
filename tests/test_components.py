@@ -168,7 +168,7 @@ def test_bxkstee(nbrem : int, q2bin : str, sample : str):
     Test Bu(d) -> K*ee
     '''
     cfg                      = copy.deepcopy(Data.cfg)
-    cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/{sample}/{q2bin}/{Data.mass}_{nbrem}'
+    cfg['output']['fit_dir'] = '/tmp/tests/rx_fitter/components'
     cfg['input']['q2bin']    = q2bin
 
     obs     = _get_obs(Data.mass, cfg)
