@@ -96,13 +96,17 @@ class PRec:
         return df
     #-----------------------------------------------------------
     def _need_var(self, name : str) -> bool:
+        needed = False
         if name.endswith('ID'):
-            return True
+            needed = True
 
         if name in self._l_mass:
-            return True
+            needed = True
 
-        return False
+        if needed:
+            log.debug(f'Picking up {name}')
+
+        return needed
     #-----------------------------------------------------------
     def _filter_rdf(self, rdf : RDataFrame, sample : str) -> RDataFrame:
         d_sel = sel.selection(project='RK', analysis='EE', q2bin=self._q2bin, process=sample)
