@@ -159,18 +159,18 @@ def test_combinatorial():
     cmp_sig.run()
 # --------------------------------------------------------------
 #@pytest.mark.parametrize('nbrem', [0, 1, 2, None])
-@pytest.mark.parametrize('nbrem', [None])
-@pytest.mark.parametrize('q2bin', ['low', 'central', 'high'])
-def test_bdkstee(nbrem : int, q2bin : str):
+@pytest.mark.parametrize('nbrem' , [None])
+@pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
+@pytest.mark.parametrize('sample', ['Bu_Kstee_Kpi0_eq_btosllball05_DPC', 'Bd_Kstee_eq_btosllball05_DPC'])
+def test_bxkstee(nbrem : int, q2bin : str, sample : str):
     '''
-    Test Bd -> K*ee
+    Test Bu(d) -> K*ee
     '''
-    name                     = 'Bd_Kstee_eq_btosllball05_DPC'
     cfg                      = copy.deepcopy(Data.cfg)
-    cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/test_bkdksee/{q2bin}/{Data.mass}_{nbrem}'
+    cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/{sample}/{q2bin}/{Data.mass}_{nbrem}'
     cfg['input']['q2bin']    = q2bin
 
     obs     = _get_obs(Data.mass, cfg)
-    cmp_sig = cmp.get_kde(obs=obs, sample=name, nbrem=nbrem, cfg=cfg)
+    cmp_sig = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
     cmp_sig.run()
 # --------------------------------------------------------------
