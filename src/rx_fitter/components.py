@@ -157,27 +157,22 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> FitComponent:
     cfg    : Dictionary with configuration
     '''
 
-    mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
     trigger  = cfg['input']['trigger']
     d_plt    = cfg['fitting']['config'][sample]['plotting']
-    cfg_kde  = cfg['fitting']['config'][sample]['cfg_kde' ]
-    brem_cut = cfg['brem'][nbrem]
     fit_dir  = cfg['output']['fit_dir']
 
     d_cut = {}
     if nbrem is not None:
+        brem_cut = cfg['brem'][nbrem]
         d_cut['nbrem'] = brem_cut
 
-    rdf      = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
-    arr_mass = rdf.AsNumpy([mass])[mass]
-    pdf      = zfit.pdf.KDE1DimFFT(arr_mass, **cfg_kde)
-
-    cfg['name']    = 'sample'
+    rdf            = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
+    cfg['name']    = sample
     cfg['plotting']= d_plt
     cfg['out_dir'] = f'{fit_dir}/{sample}'
 
-    fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
+    fcm= FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
 
     return fcm
 # ------------------------------------
