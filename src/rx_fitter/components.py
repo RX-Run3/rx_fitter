@@ -157,6 +157,7 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> FitComponent:
     cfg    : Dictionary with configuration
     '''
 
+    mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
     trigger  = cfg['input']['trigger']
     d_plt    = cfg['fitting']['config'][sample]['plotting']
@@ -170,7 +171,7 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> FitComponent:
     rdf            = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
     cfg['name']    = sample
     cfg['plotting']= d_plt
-    cfg['out_dir'] = f'{fit_dir}/{sample}'
+    cfg['out_dir'] = f'{fit_dir}/{sample}/{q2bin}/{mass}_{nbrem}'
 
     fcm= FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
 
