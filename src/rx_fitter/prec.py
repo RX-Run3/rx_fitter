@@ -48,6 +48,7 @@ class PRec:
 
         self._d_cut       = {}
         self._d_match     = self._get_match_str()
+        self._l_mass      = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
         self._initialized = False
     #-----------------------------------------------------------
     def _initialize(self):
@@ -93,7 +94,7 @@ class PRec:
         if name.endswith('ID'):
             return True
 
-        if name in ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M']:
+        if name in self._l_mass:
             return True
 
         return False
@@ -361,7 +362,7 @@ class PRec:
         return f'{dir_path}/pdf_{identifier}.json'
     #-----------------------------------------------------------
     def _drop_before_saving(self, df : pnd.DataFrame) -> pnd.DataFrame:
-        l_needed = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'wgt_br', 'wgt_dec', 'wgt_sam']
+        l_needed = self._l_mass + ['wgt_br', 'wgt_dec', 'wgt_sam']
         l_drop   = [ name for name in df.columns if  name not in l_needed ]
         df       = df.drop(l_drop, axis=1)
 
