@@ -72,8 +72,6 @@ fitting:
       plotting:
         nbins: 30
         stacked: true
-      sample:
-      - Bd_Kstee_eq_btosllball05_DPC
     Bu_Kstee_Kpi0_eq_btosllball05_DPC:
       cfg_kde:
         bandwidth: 20
@@ -83,8 +81,6 @@ fitting:
       plotting:
         nbins: 30
         stacked: true
-      sample:
-        - Bu_Kstee_Kpi0_eq_btosllball05_DPC
     Cabibbo:
       fitting:
         error_method: minuit_hesse
