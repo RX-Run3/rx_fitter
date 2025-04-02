@@ -57,6 +57,7 @@ fitting:
   components:
     Bd_Kstee_eq_btosllball05_DPC     : true
     Bu_Kstee_Kpi0_eq_btosllball05_DPC: true
+    Bs_phiee_eq_Ball_DPC             : true
     Cabibbo                          : false
     PRec                             : false
     Signal                           : true
@@ -73,6 +74,15 @@ fitting:
         nbins: 30
         stacked: true
     Bu_Kstee_Kpi0_eq_btosllball05_DPC:
+      cfg_kde:
+        bandwidth: 20
+        padding:
+          lowermirror: 0.5
+          uppermirror: 0.5
+      plotting:
+        nbins: 30
+        stacked: true
+    Bs_phiee_eq_Ball_DPC:
       cfg_kde:
         bandwidth: 20
         padding:
