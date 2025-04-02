@@ -159,13 +159,12 @@ def test_combinatorial():
     cmp_sig = cmp.get_cb(obs=obs, kind='exp')
     cmp_sig.run()
 # --------------------------------------------------------------
-#@pytest.mark.parametrize('nbrem', [0, 1, 2, None])
-@pytest.mark.parametrize('nbrem' , [None])
+@pytest.mark.parametrize('nbrem', [0, 1, 2, None])
 @pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
-@pytest.mark.parametrize('sample', ['Bu_Kstee_Kpi0_eq_btosllball05_DPC', 'Bd_Kstee_eq_btosllball05_DPC'])
-def test_bxkstee(nbrem : int, q2bin : str, sample : str):
+@pytest.mark.parametrize('sample', ['Bu_Kstee_Kpi0_eq_btosllball05_DPC', 'Bd_Kstee_eq_btosllball05_DPC', 'Bs_phiee_eq_Ball_DPC'])
+def test_bxhsee(nbrem : int, q2bin : str, sample : str):
     '''
-    Test Bu(d) -> K*ee
+    Test B(u,d,s) -> K*ee
     '''
     cfg                      = copy.deepcopy(Data.cfg)
     cfg['output']['fit_dir'] = '/tmp/tests/rx_fitter/components'
