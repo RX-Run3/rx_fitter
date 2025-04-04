@@ -64,3 +64,27 @@ validate_cmb -q low -c validation -s "DATA*" -t Hlt2RD_BuToKpEE_SameSign_MVA -m 
 
 where the configuration is specified through both the arguments and the config `validation.yaml`. The latter
 is specified with the `-c` flag and is part of the project itself.
+
+# Partially reconstructed 
+
+The partially reconstructed PDFs can be retrieved with:
+
+```python
+from rx_fitter import components as cmp
+
+cmp_prc = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
+cmp_prc.run()
+pdf = cmp_prc.pdf
+```
+
+## Scale factors
+
+These scale factors $K^x$ are used to reparametrize the background yields as $N_{PRec}^x = K^x N_{Signal}$.
+The value and error of these factors are obtained with:
+
+```python
+from rx_fitter.prec_scales    import PrecScales
+
+obj      = PrecScales(proc=process, q2bin=q2bin)
+val, err = obj.get_scale(signal=signal)
+```
