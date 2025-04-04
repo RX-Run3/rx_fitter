@@ -28,7 +28,6 @@ def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = Non
     Function that returns a ROOT dataframe for a given dataset, MC or real data
     '''
     gtr = RDFGetter(sample=sample, trigger=trigger)
-    gtr.initialize()
     rdf = gtr.get_rdf()
 
     analysis = 'MM' if 'MuMu' in trigger else 'EE'
