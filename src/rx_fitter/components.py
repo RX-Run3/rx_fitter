@@ -3,12 +3,16 @@ Module with functions needed to provide fit components
 '''
 # pylint: disable=too-many-positional-arguments, too-many-function-args, too-many-arguments, too-many-locals
 
+import os
 import copy
 import zfit
+import pandas as pnd
 from zfit.core.interfaces                        import ZfitSpace as zobs
-from ROOT                                        import RDataFrame
+from zfit.core.basepdf                           import BasePDF   as zpdf
+from ROOT                                        import RDataFrame, RDF
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
+from dmu.generic                                 import hashing
 from rx_selection                                import selection as sel
 from rx_data.rdf_getter                          import RDFGetter
 from rx_calibration.hltcalibration.fit_component import FitComponent
@@ -146,9 +150,9 @@ def get_cb(obs : zobs, kind : str) -> FitComponent:
 
     return obj
 # ------------------------------------
-def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> FitComponent:
+def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
     '''
-    Function returning FitComponent object for Samples that need to be modelled with a KDE
+    Function returning zfit PDF object for Samples that need to be modelled with a KDE
 
     obs    : zfit observable
     sample : Sample name, e.g.
@@ -156,11 +160,28 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> FitComponent:
     cfg    : Dictionary with configuration
     '''
 
+    hsh = hashing.hash_object(obj=[obs.to_json(), sample, nbrem, cfg])
+
     mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
     trigger  = cfg['input']['trigger']
     d_plt    = cfg['fitting']['config'][sample]['plotting']
     fit_dir  = cfg['output']['fit_dir']
+    out_dir  = f'{fit_dir}/{sample}/{q2bin}/{mass}_{nbrem}/{hsh}'
+
+    cfg['name']    = sample
+    cfg['plotting']= d_plt
+    cfg['out_dir'] = out_dir
+
+    if os.path.isfile(f'{out_dir}/data.json'):
+        data_path = f'{out_dir}/data.json'
+        log.debug(f'JSON file with data found, loading: {data_path}')
+
+        df        = pnd.read_json(data_path)
+        rdf       = RDF.FromPandas(df)
+        fcm       = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
+
+        return fcm.pdf
 
     d_cut = {}
     if nbrem is not None:
@@ -168,11 +189,8 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> FitComponent:
         d_cut['nbrem'] = brem_cut
 
     rdf            = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
-    cfg['name']    = sample
-    cfg['plotting']= d_plt
-    cfg['out_dir'] = f'{fit_dir}/{sample}/{q2bin}/{mass}_{nbrem}'
+    fcm = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
+    pdf = fcm.pdf
 
-    fcm= FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
-
-    return fcm
+    return pdf
 # ------------------------------------
