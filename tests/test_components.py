@@ -173,11 +173,22 @@ def test_bxhsee(nbrem : int, q2bin : str, sample : str):
     '''
     Test B(u,d,s) -> K*ee
     '''
-    cfg                      = copy.deepcopy(Data.cfg)
-    cfg['output']['fit_dir'] = '/tmp/tests/rx_fitter/components'
-    cfg['input']['q2bin']    = q2bin
+    cfg                   = _load_config(test='bxhsee')
+    cfg['input']['q2bin'] = q2bin
 
-    obs     = _get_obs(Data.mass, cfg)
+    obs     = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
     cmp_sig = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
     cmp_sig.run()
+# --------------------------------------------------------------
+def test_bxhsee_first():
+    '''
+    Test Bu -> K*ee
+    '''
+    nbrem = 1
+    sample= 'Bu_Kstee_Kpi0_eq_btosllball05_DPC'
+
+    cfg     = _load_config(test='bxhsee_first')
+    obs     = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    cmp_sig = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
+    pdf     = cmp_sig.pdf
 # --------------------------------------------------------------
