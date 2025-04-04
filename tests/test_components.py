@@ -32,6 +32,13 @@ def _intiailize():
     with open(cfg_path, encoding='utf-8') as ifile:
         Data.cfg = yaml.safe_load(ifile)
 # --------------------------------------------------------------
+def _load_config(test : str) -> dict:
+    cfg_path = files('rx_fitter_data').joinpath(f'tests/{test}.yaml')
+    with open(cfg_path, encoding='utf-8') as ifile:
+        cfg = yaml.safe_load(ifile)
+
+    return cfg
+# --------------------------------------------------------------
 def _get_obs(mass : str, cfg : dict) -> zobs:
     [min_mass, max_mass] = cfg['fitting']['range'][mass]
 
