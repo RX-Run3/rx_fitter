@@ -8,6 +8,7 @@ dependencies= [
 'jacobi',
 'mplhep',
 'rx_data',
+'rx_efficiencies',
 'data-manipulation-utilities',
 'rx_calibration',
 ]
