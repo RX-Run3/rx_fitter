@@ -67,15 +67,20 @@ is specified with the `-c` flag and is part of the project itself.
 
 # Partially reconstructed 
 
+## PDFs
 The partially reconstructed PDFs can be retrieved with:
 
 ```python
 from rx_fitter import components as cmp
 
 cmp_prc = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
-cmp_prc.run()
-pdf = cmp_prc.pdf
+pdf     = cmp_prc.pdf
 ```
+
+`nbrem:` Brem category, in `0,1,2,None`, the last value, will put the three categories together.
+`sample:` Name of the MC sample, e.g. `Bu_Kstee_Kpi0_eq_btosllball05_DPC`.
+`cfg:` Dictionary with configuration.
+
 
 ## Scale factors
 
