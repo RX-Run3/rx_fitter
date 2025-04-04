@@ -9,13 +9,13 @@ import matplotlib.pyplot as plt
 from conftest                    import ScalesData
 from dmu.logging.log_store       import LogStore
 from rx_efficiencies.decay_names import DecayNames as dn
-from rx_extractor.prec_scales    import PrecScales
+from rx_fitter.prec_scales       import PrecScales
 
-log=LogStore.add_logger('rx_extractor:test_prec_scales')
+log=LogStore.add_logger('rx_fitter:test_prec_scales')
 # -----------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _initialize():
-    LogStore.set_level('rx_efficiencies:prec_scales', 10)
+    LogStore.set_level('rx_fitter:prec_scales', 10)
 #-------------------------------
 def _plot_df(df, trig):
     df = df[df.trig == trig]

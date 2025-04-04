@@ -17,7 +17,7 @@ from dmu.generic.version_management        import get_last_version
 from rx_efficiencies.decay_names           import DecayNames as dn
 from rx_efficiencies.efficiency_calculator import EfficiencyCalculator
 
-log=LogStore.add_logger('rx_extractor:prec_scales')
+log=LogStore.add_logger('rx_fitter:prec_scales')
 #------------------------------------------
 class PrecScales:
     '''
