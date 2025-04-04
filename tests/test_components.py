@@ -176,9 +176,8 @@ def test_bxhsee(nbrem : int, q2bin : str, sample : str):
     cfg                   = _load_config(test='bxhsee')
     cfg['input']['q2bin'] = q2bin
 
-    obs     = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    cmp_sig = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
-    cmp_sig.run()
+    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
 # --------------------------------------------------------------
 def test_bxhsee_first():
     '''
@@ -187,8 +186,7 @@ def test_bxhsee_first():
     nbrem = 1
     sample= 'Bu_Kstee_Kpi0_eq_btosllball05_DPC'
 
-    cfg     = _load_config(test='bxhsee_first')
-    obs     = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    cmp_sig = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
-    pdf     = cmp_sig.pdf
+    cfg = _load_config(test='bxhsee_first')
+    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
 # --------------------------------------------------------------
