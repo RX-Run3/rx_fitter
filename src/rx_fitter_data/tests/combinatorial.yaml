@@ -1,0 +1,4 @@
+plotting:
+  nbins: 30
+  stacked: true
+out_dir: /tmp/tests/rx_fitter/components/combinatorial
