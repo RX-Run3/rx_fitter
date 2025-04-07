@@ -74,7 +74,7 @@ class MCParPdf:
             log.debug('No tail parameter fixing version provided, returning original PDF')
             return pdf
 
-        json_path = f'{fix_dir}/fit.json'
+        json_path = f'{fix_dir}/parameters.json'
         log.info(40 * '-')
         log.info(f'Fixing parameters with: {json_path}')
         log.info(40 * '-')
