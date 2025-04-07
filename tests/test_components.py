@@ -25,6 +25,7 @@ class Data:
 def _intiailize():
     LogStore.set_level('rx_fitter:prec'              , 10)
     LogStore.set_level('rx_fitter:components'        , 10)
+    LogStore.set_level('rx_fitter:mc_par_pdf'        , 10)
     LogStore.set_level('rx_calibration:fit_component', 10)
 # --------------------------------------------------------------
 def _load_config(test : str) -> dict:
@@ -172,7 +173,7 @@ def test_mc_reparametrize(nbrem : int, mass : str, name : str):
     d_cmp_set['fvers']       = 'v1'
 
     obs     = _get_obs(mass, cfg)
-    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
+    cmp_sig = cmp.get_mc_reparametrized(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
     pdf     = cmp_sig.pdf
 
     print_pdf(pdf)
