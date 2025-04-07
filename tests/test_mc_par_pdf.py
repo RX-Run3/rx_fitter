@@ -11,6 +11,7 @@ import pytest
 from ROOT                  import RDataFrame, RDF
 from dmu.logging.log_store import LogStore
 from dmu.stats.utilities   import print_pdf
+from rx_calibration.hltcalibration.fit_component import NoFitDataFound
 from rx_fitter.mc_par_pdf  import MCParPdf
 
 log = LogStore.add_logger('rx_fitter:test_mc_par_pdf')
@@ -42,26 +43,16 @@ def _get_rdf() -> RDataFrame:
 
     return rdf
 # ------------------------------------------
-def test_read():
+def test_read_fail():
     '''
-    Used to read inputs
+    Used to read inputs when no inputs are present
     '''
     cfg = _load_config('read')
     obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
 
-    fcm.run()
-# ------------------------------------------
-def test_read_reparametrize():
-    '''
-    Used to read inputs
-    '''
-    cfg = _load_config('read_reparametrize')
-    obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
-    fcm = obj.get_fcomp()
-    pdf = fcm.pdf
-
-    print_pdf(pdf)
+    with pytest.raises(NoFitDataFound):
+        fcm.run(must_load_pars=True)
 # ------------------------------------------
 def test_create():
     '''
@@ -73,8 +64,34 @@ def test_create():
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
-
     fcm.run()
+    pdf = fcm.pdf
+
+    print_pdf(pdf)
+# ------------------------------------------
+def test_read():
+    '''
+    Used to read input parameters
+    '''
+    cfg = _load_config('read')
+    obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
+    fcm = obj.get_fcomp()
+    fcm.run(must_load_pars=True)
+    pdf = fcm.pdf
+
+    print_pdf(pdf)
+# ------------------------------------------
+def test_read_reparametrize():
+    '''
+    Used to read inputs
+    '''
+    cfg = _load_config('read_reparametrize')
+    obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
+    fcm = obj.get_fcomp()
+    fcm.run(must_load_pars=True)
+    pdf = fcm.pdf
+
+    print_pdf(pdf)
 # ------------------------------------------
 def test_fix_pars():
     '''
@@ -87,6 +104,8 @@ def test_fix_pars():
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
+    fcm.run(must_load_pars=True)
+    pdf = fcm.pdf
 
-    fcm.run()
+    print_pdf(pdf)
 # ------------------------------------------
