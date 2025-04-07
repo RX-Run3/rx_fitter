@@ -104,7 +104,7 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
     trigger               = d_inp['trigger']
     q2bin                 = d_inp['q2bin'  ]
 
-    cfg['component_name'] = component_name
+    cfg['component_name'] = f'{component_name}_{nbrem:03}'
     cfg['q2bin'  ]        = q2bin
     cfg['trigger']        = trigger
     cfg['nbrem'  ]        = nbrem
