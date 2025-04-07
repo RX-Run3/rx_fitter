@@ -120,7 +120,10 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
 
     return obj.get_fcomp()
 # ------------------------------------
-def get_mc_reparametrized(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
+def _get_brem_reparametrization(pdf_z : zpdf, pdf_o : zpdf, pdf_t : zpdf) -> zpdf:
+    return pdf_z
+# ------------------------------------
+def get_mc_reparametrized(obs : zobs, component_name : str, cfg : dict, nbrem : int) -> zpdf:
     '''
     Will return reparametrized fit component. The MC fit is expected to have been done already and this
     will only load those parameters:
