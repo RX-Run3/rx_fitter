@@ -18,9 +18,9 @@ class Data:
     data class
     '''
     cfg = {
+            'component_name'   : 'Bu_JpsiK_ee_eq_DPC',
             'fvers'  : None,
             'create' : False,
-            'name'   : 'Bu_JpsiK_ee_eq_DPC',
             'q2bin'  : 'jpsi',
             'nbrem'  : 1,
             'trigger': 'Hlt2RD_BuToKpEE_MVA',
@@ -29,7 +29,7 @@ class Data:
             'pfloat' : ['mu', 'sg'],
             'output' :
             {
-                'fit_dir' : '/tmp/tests/rx_fitter/mc_par_pdf/fits',
+                'out_dir' : '/tmp/tests/rx_fitter/mc_par_pdf/fits',
                 },
             'fitting':
             {
