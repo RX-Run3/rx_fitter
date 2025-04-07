@@ -118,7 +118,7 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     d_wgt    = cfg['fitting']['config']['PRec']['weights' ]
     d_plt    = cfg['fitting']['config']['PRec']['plotting']
     cfg_kde  = cfg['fitting']['config']['PRec']['cfg_kde' ]
-    fit_dir  = cfg['output']['fit_dir']
+    fit_dir  = cfg['output']['out_dir']
 
     obj      = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
     obj.cuts = _get_cuts(nbrem, cfg)
@@ -127,7 +127,7 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
 
     cfg['name']    = 'PRec'
     cfg['plotting']= d_plt
-    cfg['out_dir'] = f'{fit_dir}/PRec'
+    cfg['out_dir'] = fit_dir
 
     fcm= FitComponent(cfg=cfg, rdf=None, pdf=pdf)
 
