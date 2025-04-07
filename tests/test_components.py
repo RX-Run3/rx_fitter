@@ -73,9 +73,9 @@ def test_brem_definitions(nbrem : int, kind : str, mass : str):
     '''
     Will test old and new brem definition
     '''
-    log.info()
+    log.info('')
 
-    cfg                      = _load_config('mc')
+    cfg                      = _load_config('mc_create')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_brem_definitions'
 
@@ -85,9 +85,10 @@ def test_brem_definitions(nbrem : int, kind : str, mass : str):
     cfg['brem'][nbrem]       = _get_brem_cut(nbrem, kind)
     cfg['fitting']['range']  = _get_fitting_range(kind)
 
-    obs     = _get_obs(mass, cfg)
-    cmp_sig = cmp.get_mc(obs=obs, component_name='Signal', nbrem=nbrem, cfg=cfg)
-    cmp_sig.run()
+    obs = _get_obs(mass, cfg)
+    pdf = cmp.get_mc(obs=obs, component_name='Signal', nbrem=nbrem, cfg=cfg)
+
+    print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
@@ -105,9 +106,8 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     d_cmp_set                = cfg['components'][name][nbrem]
     d_cmp_set['fvers']       = None
 
-    obs     = _get_obs(mass, cfg)
-    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
-    pdf     = cmp_sig.pdf
+    obs = _get_obs(mass, cfg)
+    pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
 
     print_pdf(pdf)
 # --------------------------------------------------------------
@@ -128,9 +128,8 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     d_cmp_set['create']      = False
     d_cmp_set['fvers' ]      = None
 
-    obs     = _get_obs(mass, cfg)
-    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
-    pdf     = cmp_sig.pdf
+    obs = _get_obs(mass, cfg)
+    pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
 
     print_pdf(pdf)
 # --------------------------------------------------------------
@@ -150,9 +149,8 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     d_cmp_set                = cfg['components'][name][nbrem]
     d_cmp_set['fvers']       = 'v1'
 
-    obs     = _get_obs(mass, cfg)
-    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
-    pdf     = cmp_sig.pdf
+    obs = _get_obs(mass, cfg)
+    pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
 
     print_pdf(pdf)
 # --------------------------------------------------------------
@@ -206,7 +204,7 @@ def test_prec_brem(mass : str, nbrem : int):
     '''
     log.info('')
 
-    cfg                      = _load_config('mc')
+    cfg                      = _load_config('prec')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_prec_brem/{mass}_{nbrem:03}/v1'
 
