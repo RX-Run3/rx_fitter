@@ -72,6 +72,8 @@ def test_brem_definitions(nbrem : int, kind : str, mass : str):
     '''
     Will test old and new brem definition
     '''
+    log.info()
+
     cfg                      = _load_config('mc')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_brem_definitions'
@@ -93,6 +95,8 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample
     '''
+    log.info('')
+
     cfg                      = _load_config('mc_create')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
@@ -113,6 +117,8 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     '''
     Testing reuse of old fit
     '''
+    log.info('')
+
     cfg                      = _load_config('mc_reuse')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
@@ -134,6 +140,8 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample with tails fixed from other version
     '''
+    log.info('')
+
     cfg                      = _load_config('mc_reuse')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
@@ -154,6 +162,8 @@ def test_mc_reparametrize(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample with tails fixed from other version
     '''
+    log.info('')
+
     cfg                      = _load_config('mc_reparametrize')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
@@ -188,6 +198,8 @@ def test_combinatorial(kind : str):
     '''
     Testing creation of PDF used for combinatorial
     '''
+    log.info('')
+
     cfg            = _load_config(test='combinatorial')
     cfg['name']    = 'Combinatorial'
     out_dir        = cfg['out_dir']
@@ -204,6 +216,8 @@ def test_bxhsee(nbrem : int, q2bin : str, sample : str):
     '''
     Test B(u,d,s) -> K*ee
     '''
+    log.info('')
+
     cfg                   = _load_config(test='bxhsee')
     cfg['input']['q2bin'] = q2bin
 
@@ -219,6 +233,8 @@ def test_bxhsee_first():
     '''
     Test Bu -> K*ee
     '''
+    log.info('')
+
     nbrem = 1
     sample= 'Bu_Kstee_Kpi0_eq_btosllball05_DPC'
 
