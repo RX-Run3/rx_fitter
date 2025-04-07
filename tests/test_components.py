@@ -1,7 +1,6 @@
 '''
 Module with functions to test functions in components.py
 '''
-import copy
 from importlib.resources import files
 
 import ROOT
@@ -11,6 +10,7 @@ import pytest
 
 from zfit.core.interfaces   import ZfitSpace as zobs
 from dmu.logging.log_store  import LogStore
+from dmu.stats.utilities    import print_pdf
 from rx_fitter              import components as cmp
 
 log=LogStore.add_logger('rx_fitter:test_components')
@@ -146,8 +146,9 @@ def test_prec_brem(mass : str, nbrem : int):
     '''
     log.info('')
 
-    cfg            = copy.deepcopy(Data.cfg)
-    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_prec_brem/{mass}_{nbrem:03}/v1'
+    cfg                      = _load_config('mc')
+    out_dir                  = cfg['output']['out_dir']
+    cfg['output']['out_dir'] = f'{out_dir}/test_prec_brem/{mass}_{nbrem:03}/v1'
 
     obs            = _get_obs(mass, cfg)
     cmp_prc        = cmp.get_prc(obs, nbrem, cfg)
@@ -165,6 +166,7 @@ def test_combinatorial(kind : str):
 
     obs= zfit.Space('B_M', limits=[4500, 6000])
     pdf= cmp.get_cb(obs=obs, kind=kind, cfg=cfg)
+    print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2, None])
 @pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
@@ -178,6 +180,11 @@ def test_bxhsee(nbrem : int, q2bin : str, sample : str):
 
     obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
     pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
+
+    if pdf is None:
+        return
+
+    print_pdf(pdf)
 # --------------------------------------------------------------
 def test_bxhsee_first():
     '''
@@ -189,4 +196,9 @@ def test_bxhsee_first():
     cfg = _load_config(test='bxhsee_first')
     obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
     pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
+
+    if pdf is None:
+        return
+
+    print_pdf(pdf)
 # --------------------------------------------------------------
