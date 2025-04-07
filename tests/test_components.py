@@ -248,21 +248,3 @@ def test_bxhsee(nbrem : int, q2bin : str, sample : str):
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-def test_bxhsee_first():
-    '''
-    Test Bu -> K*ee
-    '''
-    log.info('')
-
-    nbrem = 1
-    sample= 'Bu_Kstee_Kpi0_eq_btosllball05_DPC'
-
-    cfg = _load_config(test='bxhsee_first')
-    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
-
-    if pdf is None:
-        return
-
-    print_pdf(pdf)
-# --------------------------------------------------------------
