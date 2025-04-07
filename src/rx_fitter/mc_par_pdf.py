@@ -38,7 +38,6 @@ class MCParPdf:
         self._q2bin       = self._cfg['q2bin'  ]
         self._trigger     = self._cfg['trigger']
         self._nbrem       = self._cfg['nbrem'  ]
-        self._create      = self._cfg['create' ]
         self._model       = self._cfg['model'  ]
 
         self._out_dir        = cfg['output' ]['out_dir']
@@ -60,12 +59,9 @@ class MCParPdf:
             log.info(f'No output directory found, making first version of fit directory in: {init_dir}')
             return f'{init_dir}/{fnal_dir}'
 
+        log.debug(f'Looking for latest version in: {init_dir}')
         init_dir = vman.get_last_version(dir_path=init_dir, version_only=False)
-        if self._create:
-            init_dir = vman.get_next_version(init_dir)
-            log.info(f'Creating new version of fit in: {init_dir}')
-        else:
-            log.info(f'Using latest version of fit in: {init_dir}')
+        log.info(f'Will fit and save to: {init_dir}')
 
         return f'{init_dir}/{fnal_dir}'
     # ------------------------------------
