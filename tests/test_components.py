@@ -20,17 +20,12 @@ class Data:
     Data class
     '''
     mass = 'B_M_brem_track_2'
-    cfg : dict
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _intiailize():
     LogStore.set_level('rx_fitter:prec'              , 10)
     LogStore.set_level('rx_fitter:components'        , 10)
     LogStore.set_level('rx_calibration:fit_component', 10)
-
-    cfg_path = files('rx_fitter_data').joinpath('tests/components.yaml')
-    with open(cfg_path, encoding='utf-8') as ifile:
-        Data.cfg = yaml.safe_load(ifile)
 # --------------------------------------------------------------
 def _load_config(test : str) -> dict:
     cfg_path = files('rx_fitter_data').joinpath(f'tests/{test}.yaml')
@@ -76,8 +71,7 @@ def test_brem_definitions(nbrem : int, kind : str):
     '''
     Will test old and new brem definition
     '''
-
-    cfg                      = copy.deepcopy(Data.cfg)
+    cfg                      = _load_config('mc')
     cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/test_brem_definitions/{kind}/{nbrem:03}'
 
     d_cmp_set           = cfg['components']['Signal'][nbrem]
@@ -98,8 +92,9 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     '''
     Testing reuse of old fit
     '''
-    cfg            = copy.deepcopy(Data.cfg)
+    cfg            = _load_config('mc')
     cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}_{mass}_{nbrem:03}'
+
     d_cmp_set      = cfg['components'][name][nbrem]
     d_cmp_set['create'] = False
     d_cmp_set['fvers' ] = None
@@ -133,8 +128,8 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample with tails fixed from other version
     '''
-    cfg            = copy.deepcopy(Data.cfg)
-    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}_{mass}_{nbrem:03}'
+    cfg            = _load_config('mc')
+    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}'
     d_cmp_set      = cfg['components'][name][nbrem]
     d_cmp_set['fvers'] = 'v1'
 
