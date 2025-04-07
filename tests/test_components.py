@@ -93,7 +93,7 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     Testing reuse of old fit
     '''
     cfg            = _load_config('mc')
-    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}_{mass}_{nbrem:03}'
+    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc_reuse/{name}_{mass}_{nbrem:03}'
 
     d_cmp_set      = cfg['components'][name][nbrem]
     d_cmp_set['create'] = False
@@ -111,13 +111,14 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample
     '''
-    cfg            = copy.deepcopy(Data.cfg)
-    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}_{mass}_{nbrem:03}'
-    d_cmp_set      = cfg['components'][name][nbrem]
+    cfg                      = _load_config('mc')
+    out_dir                  = cfg['output']['out_dir']
+    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create/{name}_{mass}_{nbrem:03}'
+
+    d_cmp_set          = cfg['components'][name][nbrem]
     d_cmp_set['fvers'] = None
 
-    obs            = _get_obs(mass, cfg)
-
+    obs     = _get_obs(mass, cfg)
     cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
     cmp_sig.run()
 # --------------------------------------------------------------
