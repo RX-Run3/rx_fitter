@@ -1,7 +1,6 @@
 '''
 Module with tests for MCParPdf class
 '''
-import copy
 from importlib.resources import files
 
 import yaml
@@ -11,6 +10,7 @@ import numpy
 import pytest
 from ROOT                  import RDataFrame, RDF
 from dmu.logging.log_store import LogStore
+from dmu.stats.utilities   import print_pdf
 from rx_fitter.mc_par_pdf  import MCParPdf
 
 log = LogStore.add_logger('rx_fitter:test_mc_par_pdf')
@@ -47,11 +47,21 @@ def test_read():
     Used to read inputs
     '''
     cfg = _load_config('read')
-    rdf = _get_rdf()
-    obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
+    obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
 
     fcm.run()
+# ------------------------------------------
+def test_read_reparametrize():
+    '''
+    Used to read inputs
+    '''
+    cfg = _load_config('read_reparametrize')
+    obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
+    fcm = obj.get_fcomp()
+    pdf = fcm.pdf
+
+    print_pdf(pdf)
 # ------------------------------------------
 def test_create():
     '''

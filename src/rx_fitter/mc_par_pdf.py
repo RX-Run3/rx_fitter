@@ -104,10 +104,15 @@ class MCParPdf:
         Returns instance of FitComponent
         '''
         log.debug(f'Bulding model: {self._model}')
+        d_rep = None
+        if 'reparametrize' in self._cfg:
+            d_rep = self._cfg['reparametrize']
+
         mod   = ModelFactory(
                 obs     = self._obs,
                 preffix = self._component_name,
                 l_pdf   = self._cfg['model' ],
+                d_rep   = d_rep,
                 l_shared= self._cfg['shared'],
                 l_float = self._cfg['pfloat'])
 
