@@ -4,7 +4,6 @@ Module with class MCParPdf
 # pylint: disable=too-many-positional-arguments, too-many-function-args, too-many-arguments, too-many-locals, too-many-instance-attributes
 
 import os
-import json
 import copy
 
 from ROOT                                        import RDataFrame
@@ -19,7 +18,7 @@ log = LogStore.add_logger('rx_fitter:mc_par_pdf')
 # ---------------------------------------
 class MCParPdf:
     '''
-    Class intended to provide FitComponent instances from fits to MC
+    Class intended to provide zfit PDF instances from fits to MC, thin wrapper around FitComponent class
     '''
     # ---------------------------------------
     def __init__(
@@ -65,35 +64,11 @@ class MCParPdf:
 
         return f'{init_dir}/{fnal_dir}'
     # ------------------------------------
-    def _fix_tails(self, pdf : zpdf, fix_dir : str) -> zpdf:
-        json_path = f'{fix_dir}/parameters.json'
-        log.info(40 * '-')
-        log.info(f'Fixing parameters with: {json_path}')
-        log.info(40 * '-')
-        s_par = pdf.get_params()
-
-        with open(json_path, encoding='utf-8') as ifile:
-            d_par = json.load(ifile)
-
-        for par in s_par:
-            if par.name not in d_par:
-                continue
-
-            if par.name.endswith('_flt'):
-                continue
-
-            [val, _] = d_par[par.name]
-
-            par.set_value(val)
-
-            log.info(f'{par.name:<30}{"--->":<10}{val:.3f}')
-            par.floating = False
-
-        return pdf
-    # ---------------------------------------
-    def get_pdf(self) -> zpdf:
+    def get_pdf(self, must_load_pars : bool = False) -> zpdf:
         '''
         Returns instance of zfit PDF
+
+        must_load_pars (bool): Will use must_load_pars of fit component. If RDF is missing and if this flag is true, will raise NoFitDataFoundException
         '''
         log.debug(f'Bulding model: {self._model}')
         d_rep = None
@@ -118,17 +93,9 @@ class MCParPdf:
             log.info('Will load PDF from cached parameters file')
             return pdf
 
-        if 'fvers' in self._cfg and self._cfg['fvers'] is not None:
-            fvers   = self._cfg['fvers']
-
-            log.debug(f'Parameter fixing version {fvers} found, fixing tails')
-            fix_dir = self._get_pars_dir(fvers)
-            pdf     = self._fix_tails(pdf=pdf, fix_dir=fix_dir)
-        else:
-            log.debug('No fixing version found, using original PDF for fit component object')
-
+        log.debug('No fixing version found, using original PDF for fit component object')
         obj = FitComponent(cfg=self._cfg, rdf=self._rdf, pdf=pdf, obs=self._obs)
-        pdf = obj.get_pdf()
+        pdf = obj.get_pdf(must_load_pars)
 
         return pdf
 # ---------------------------------------
