@@ -5,7 +5,6 @@ Module with functions needed to provide fit components
 
 import os
 import copy
-import zfit
 import pandas as pnd
 from zfit.core.interfaces                        import ZfitSpace as zobs
 from zfit.core.basepdf                           import BasePDF   as zpdf
@@ -67,24 +66,38 @@ def _get_cuts(nbrem : int, cfg : dict) -> dict[str,str]:
 
     return cuts
 # ------------------------------------
-def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
-    '''
-    Will return FitComponent object for given MC sample
-    '''
-    cfg     = copy.deepcopy(cfg)
+def _get_mc_rdf(cfg : dict, component_name : str, nbrem : int) -> RDataFrame:
+    d_cmp_set = cfg['components'][component_name][nbrem]
+    if not d_cmp_set['create']:
+        log.info('Will not redo fit, not recalculating dataframe')
+        return None
 
+    log.info('Making ROOT dataframe with input data to run fit')
     d_inp   = cfg['input']
     trigger = d_inp['trigger']
     q2bin   = d_inp['q2bin'  ]
 
     d_cmp   = cfg['fitting']['config'][component_name]
-    d_fit   = d_cmp['fitting']
-    d_plt   = d_cmp['plotting']
-
     sample  = d_cmp['sample']
     cuts    = _get_cuts(nbrem, cfg)
     rdf     = get_rdf(sample, q2bin, trigger, cuts)
     rdf     = rdf.Define('weights', '1')
+
+    return rdf
+# ------------------------------------
+def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
+    '''
+    Will return FitComponent object for given MC sample
+    '''
+    cfg     = copy.deepcopy(cfg)
+    rdf     = _get_mc_rdf(cfg, component_name, nbrem)
+
+    d_inp                 = cfg['input']
+    d_cmp                 = cfg['fitting']['config'][component_name]
+    d_fit                 = d_cmp['fitting']
+    d_plt                 = d_cmp['plotting']
+    trigger               = d_inp['trigger']
+    q2bin                 = d_inp['q2bin'  ]
 
     cfg['component_name'] = component_name
     cfg['q2bin'  ]        = q2bin
@@ -109,7 +122,11 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
 # ------------------------------------
 def get_mc_reparametrized(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
     '''
-    Will return FitComponent object for given MC sample
+    Will return reparametrized fit component. The MC fit is expected to have been done already and this
+    will only load those parameters:
+
+    - No RDF needed
+    - No plotting needed
     '''
     cfg     = copy.deepcopy(cfg)
 
@@ -119,7 +136,6 @@ def get_mc_reparametrized(obs : zobs, component_name : str, nbrem : int, cfg : d
 
     d_cmp   = cfg['fitting']['config'][component_name]
     d_fit   = d_cmp['fitting']
-    d_plt   = d_cmp['plotting']
 
     cfg['component_name'] = component_name
     cfg['q2bin'  ]        = q2bin
@@ -130,15 +146,13 @@ def get_mc_reparametrized(obs : zobs, component_name : str, nbrem : int, cfg : d
     if 'fvers' in cmp_cfg:
         cfg['fvers'] = cmp_cfg['fvers']
 
-    if 'reparametrize' in cmp_cfg:
-        cfg['reparametrize'] = cmp_cfg['reparametrize']
+    cfg['reparametrize'] = cmp_cfg['reparametrize']
 
     cfg['create'  ] = cmp_cfg['create' ]
     cfg['shared'  ] = cmp_cfg['shared' ]
     cfg['model'   ] = cmp_cfg['model'  ]
     cfg['pfloat'  ] = cmp_cfg['pfloat' ]
     cfg['fitting' ] = d_fit
-    cfg['plotting'] = d_plt
     cfg['fitting']['weights_column'] = cmp_cfg['weights']
 
     obj   = MCParPdf(rdf=None, obs=obs, cfg=cfg)
