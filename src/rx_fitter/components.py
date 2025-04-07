@@ -163,9 +163,10 @@ def get_mc_reparametrized(obs : zobs, component_name : str, nbrem : int, cfg : d
     cfg['fitting' ] = d_fit
     cfg['fitting']['weights_column'] = cmp_cfg['weights']
 
-    obj   = MCParPdf(rdf=None, obs=obs, cfg=cfg)
+    obj = MCParPdf(rdf=None, obs=obs, cfg=cfg)
+    fcm = obj.get_fcomp()
 
-    return obj.get_fcomp()
+    return fcm.pdf
 # ------------------------------------
 def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     '''
