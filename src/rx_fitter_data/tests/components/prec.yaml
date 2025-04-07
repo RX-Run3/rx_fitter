@@ -1,0 +1,38 @@
+brem:
+  0: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0
+  1: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1
+  2: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2
+fitting:
+  components:
+    PRec : True 
+  config:
+    PRec:
+      cfg_kde:
+        bandwidth: 20
+        padding:
+          lowermirror: 0.5
+          uppermirror: 0.5
+      plotting:
+        nbins: 30
+        stacked: true
+      sample:
+      - Bu_JpsiX_ee_eq_JpsiInAcc
+      - Bd_JpsiX_ee_eq_JpsiInAcc
+      - Bs_JpsiX_ee_eq_JpsiInAcc
+      weights:
+        dec: 1
+        sam: 1
+  range:
+    B_M_brem_track_2:
+    - 4500
+    - 6000
+    B_const_mass_M:
+    - 5160
+    - 5500
+input:
+  q2bin: jpsi
+  selection:
+    mass: B_const_mass_M > 5160
+  trigger: Hlt2RD_BuToKpEE_MVA
+output:
+  out_dir: /tmp/tests/rx_fitter/components
