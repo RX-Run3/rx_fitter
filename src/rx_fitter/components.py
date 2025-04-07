@@ -107,6 +107,44 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
 
     return obj.get_fcomp()
 # ------------------------------------
+def get_mc_reparametrized(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
+    '''
+    Will return FitComponent object for given MC sample
+    '''
+    cfg     = copy.deepcopy(cfg)
+
+    d_inp   = cfg['input']
+    trigger = d_inp['trigger']
+    q2bin   = d_inp['q2bin'  ]
+
+    d_cmp   = cfg['fitting']['config'][component_name]
+    d_fit   = d_cmp['fitting']
+    d_plt   = d_cmp['plotting']
+
+    cfg['component_name'] = component_name
+    cfg['q2bin'  ]        = q2bin
+    cfg['trigger']        = trigger
+    cfg['nbrem'  ]        = nbrem
+    cmp_cfg               = cfg['components'][component_name][nbrem]
+
+    if 'fvers' in cmp_cfg:
+        cfg['fvers'] = cmp_cfg['fvers']
+
+    if 'reparametrize' in cmp_cfg:
+        cfg['reparametrize'] = cmp_cfg['reparametrize']
+
+    cfg['create'  ] = cmp_cfg['create' ]
+    cfg['shared'  ] = cmp_cfg['shared' ]
+    cfg['model'   ] = cmp_cfg['model'  ]
+    cfg['pfloat'  ] = cmp_cfg['pfloat' ]
+    cfg['fitting' ] = d_fit
+    cfg['plotting'] = d_plt
+    cfg['fitting']['weights_column'] = cmp_cfg['weights']
+
+    obj   = MCParPdf(rdf=None, obs=obs, cfg=cfg)
+
+    return obj.get_fcomp()
+# ------------------------------------
 def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     '''
     Function returning FitComponent object for Partially reconstructed background
