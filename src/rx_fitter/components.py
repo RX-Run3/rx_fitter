@@ -128,6 +128,14 @@ def get_mc_reparametrized(obs : zobs, component_name : str, nbrem : int, cfg : d
     - No RDF needed
     - No plotting needed
     '''
+    if nbrem is None:
+        pdf_z = get_mc_reparametrized(obs, component_name, cfg, 0)
+        pdf_o = get_mc_reparametrized(obs, component_name, cfg, 1)
+        pdf_t = get_mc_reparametrized(obs, component_name, cfg, 2)
+        pdf   = _get_brem_reparametrization(pdf_z=pdf_z, pdf_o=pdf_o, pdf_t=pdf_t)
+
+        return pdf
+
     cfg     = copy.deepcopy(cfg)
 
     d_inp   = cfg['input']
