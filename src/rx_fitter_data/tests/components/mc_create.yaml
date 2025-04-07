@@ -6,7 +6,6 @@ components:
   Signal:
     0:
       create: true
-      fvers: v1
       model:
       - cbl
       pfloat:
@@ -17,7 +16,6 @@ components:
       weights: weights
     1:
       create: true
-      fvers: v1
       model:
       - dscb
       pfloat:
@@ -28,7 +26,6 @@ components:
       weights: weights
     2:
       create: true
-      fvers: v1
       model:
       - dscb
       pfloat:
