@@ -1,6 +1,7 @@
 '''
 Module with tests for MCParPdf class
 '''
+import shutil
 from importlib.resources import files
 
 import yaml
@@ -48,6 +49,9 @@ def test_read_fail():
     Used to read inputs when no inputs are present
     '''
     cfg = _load_config('read')
+    out_dir = cfg['output']['out_dir']
+    shutil.rmtree(out_dir) # otherwise old fit will allow loading of parameters, and test won't fail
+
     obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
 
