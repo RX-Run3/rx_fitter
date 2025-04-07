@@ -129,8 +129,10 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample with tails fixed from other version
     '''
-    cfg            = _load_config('mc')
-    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc/{name}'
+    cfg                      = _load_config('mc')
+    out_dir                  = cfg['output']['out_dir']
+    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create/{name}_{mass}_{nbrem:03}'
+
     d_cmp_set      = cfg['components'][name][nbrem]
     d_cmp_set['fvers'] = 'v1'
 
