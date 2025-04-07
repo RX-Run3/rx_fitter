@@ -41,13 +41,13 @@ class MCParPdf:
         self._create      = self._cfg['create' ]
         self._model       = self._cfg['model'  ]
 
-        self._fit_dir        = cfg['output' ]['fit_dir']
+        self._out_dir        = cfg['output' ]['out_dir']
         self._cfg['out_dir'] = self._get_pars_dir()
         self._cfg['name'   ] = self._component_name
     # ---------------------------------------
     def _get_pars_dir(self, version : str = None) -> str:
         model_name = '_'.join(self._model)
-        init_dir   = f'{self._fit_dir}/mc/{self._q2bin}'
+        init_dir   = f'{self._out_dir}/{self._q2bin}'
         fnal_dir   = f'{self._component_name}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
 
         if version is not None:
