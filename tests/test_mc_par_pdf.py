@@ -45,13 +45,26 @@ def _get_rdf() -> RDataFrame:
 
     return rdf
 # ------------------------------------------
+def test_read_fail():
+    '''
+    Will require failure due to missing RDF and fit parameters
+    '''
+    cfg = _load_config('read')
+    out_dir = cfg['output']['out_dir']
+
+    if os.path.isdir(out_dir):
+        shutil.rmtree(out_dir) # otherwise old fit will allow loading of parameters, and test won't fail
+
+    obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
+
+    with pytest.raises(NoFitDataFound):
+        obj.get_pdf(must_load_pars=True)
+# ------------------------------------------
 def test_create():
     '''
     Used to create a new version
     '''
-    cfg            = _load_config('read')
-    cfg['create' ] = True
-
+    cfg = _load_config('read')
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
     pdf = obj.get_pdf()
@@ -64,7 +77,7 @@ def test_read():
     '''
     cfg = _load_config('read')
     obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
-    pdf = obj.get_pdf()
+    pdf = obj.get_pdf(must_load_pars=True)
 
     print_pdf(pdf)
 # ------------------------------------------
