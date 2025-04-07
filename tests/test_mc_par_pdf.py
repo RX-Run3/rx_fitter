@@ -1,6 +1,7 @@
 '''
 Module with tests for MCParPdf class
 '''
+import os
 import shutil
 from importlib.resources import files
 
