@@ -1,0 +1,23 @@
+component_name: Bu_JpsiK_ee_eq_DPC
+fvers: null
+create: false
+q2bin: jpsi
+nbrem: 1
+trigger: Hlt2RD_BuToKpEE_MVA
+shared:
+  - mu
+model:
+  - cbl
+pfloat:
+  - mu
+  - sg
+output:
+  out_dir: /tmp/tests/rx_fitter/mc_par_pdf/fits
+fitting:
+  error_method: minuit_hesse
+  weights_column: weights
+  ntries: 3
+  pvalue: 0.02
+plotting:
+  nbins: 50
+  stacked: true
