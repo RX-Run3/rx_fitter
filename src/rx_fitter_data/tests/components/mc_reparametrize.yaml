@@ -1,0 +1,69 @@
+brem:
+  0: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0
+  1: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1
+  2: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2
+components:
+  Signal:
+    0:
+      create: false 
+      fvers: v1
+      model:
+      - cbl
+      pfloat: []
+      reparametrize:
+        mu : scale
+        sg : reso
+      shared:
+      - mu
+      - sg
+      weights: weights
+    1:
+      create: false 
+      fvers: v1
+      model:
+      - dscb
+      pfloat: []
+      shared:
+      - mu
+      - sg
+      reparametrize:
+        mu : scale
+        sg : reso
+      weights: weights
+    2:
+      create: false 
+      fvers: v1
+      model:
+      - dscb
+      pfloat: []
+      shared:
+      - mu
+      - sg
+      reparametrize:
+        mu : scale
+        sg : reso
+      weights: weights
+fitting:
+  components:
+    Bu_Kstee_Kpi0_eq_btosllball05_DPC: true
+  config:
+    Signal:
+      fitting:
+        error_method: minuit_hesse
+        ntries: 2
+        pvalue: 0.02
+      plotting:
+        nbins: 30
+        stacked: true
+      sample: Bu_JpsiK_ee_eq_DPC
+  range:
+    B_M_brem_track_2:
+    - 4500
+    - 6000
+input:
+  q2bin: jpsi
+  selection:
+    mass: B_const_mass_M > 5160
+  trigger: Hlt2RD_BuToKpEE_MVA
+output:
+  out_dir: /tmp/tests/rx_fitter/components/reparametrize
