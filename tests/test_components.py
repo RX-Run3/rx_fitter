@@ -28,7 +28,7 @@ def _intiailize():
     LogStore.set_level('rx_calibration:fit_component', 10)
 # --------------------------------------------------------------
 def _load_config(test : str) -> dict:
-    cfg_path = files('rx_fitter_data').joinpath(f'tests/{test}.yaml')
+    cfg_path = files('rx_fitter_data').joinpath(f'tests/components/{test}.yaml')
     with open(cfg_path, encoding='utf-8') as ifile:
         cfg = yaml.safe_load(ifile)
 
@@ -67,41 +67,23 @@ def _get_fitting_range(kind : str) -> dict[str:list[int]]:
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('kind' , ['brem_track_2'])
-def test_brem_definitions(nbrem : int, kind : str):
+@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+def test_brem_definitions(nbrem : int, kind : str, mass : str):
     '''
     Will test old and new brem definition
     '''
     cfg                      = _load_config('mc')
-    cfg['output']['fit_dir'] = f'/tmp/tests/rx_fitter/components/test_brem_definitions/{kind}/{nbrem:03}'
+    out_dir                  = cfg['output']['out_dir']
+    cfg['output']['out_dir'] = f'{out_dir}/test_brem_definitions'
 
-    d_cmp_set           = cfg['components']['Signal'][nbrem]
-    d_cmp_set['create'] = False
-    d_cmp_set['fvers' ] = None
-    cfg['brem'][nbrem]  = _get_brem_cut(nbrem, kind)
-    cfg['fitting']['range'] = _get_fitting_range(kind)
+    d_cmp_set                = cfg['components']['Signal'][nbrem]
+    d_cmp_set['create']      = False
+    d_cmp_set['fvers' ]      = None
+    cfg['brem'][nbrem]       = _get_brem_cut(nbrem, kind)
+    cfg['fitting']['range']  = _get_fitting_range(kind)
 
-    obs            = _get_obs(Data.mass, cfg)
-
+    obs     = _get_obs(mass, cfg)
     cmp_sig = cmp.get_mc(obs=obs, component_name='Signal', nbrem=nbrem, cfg=cfg)
-    cmp_sig.run()
-# --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
-@pytest.mark.parametrize('name' , ['Signal'])
-def test_mc_reuse(nbrem : int, mass : str, name : str):
-    '''
-    Testing reuse of old fit
-    '''
-    cfg            = _load_config('mc')
-    cfg['out_dir'] = f'/tmp/tests/rx_fitter/components/test_mc_reuse/{name}_{mass}_{nbrem:03}'
-
-    d_cmp_set      = cfg['components'][name][nbrem]
-    d_cmp_set['create'] = False
-    d_cmp_set['fvers' ] = None
-
-    obs            = _get_obs(mass, cfg)
-
-    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
     cmp_sig.run()
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
@@ -111,16 +93,39 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample
     '''
-    cfg                      = _load_config('mc')
+    cfg                      = _load_config('mc_create')
     out_dir                  = cfg['output']['out_dir']
-    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create/{name}_{mass}_{nbrem:03}'
+    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
-    d_cmp_set          = cfg['components'][name][nbrem]
-    d_cmp_set['fvers'] = None
+    d_cmp_set                = cfg['components'][name][nbrem]
+    d_cmp_set['fvers']       = None
 
     obs     = _get_obs(mass, cfg)
     cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
-    cmp_sig.run()
+    pdf     = cmp_sig.pdf
+
+    print_pdf(pdf)
+# --------------------------------------------------------------
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('name' , ['Signal'])
+def test_mc_reuse(nbrem : int, mass : str, name : str):
+    '''
+    Testing reuse of old fit
+    '''
+    cfg                      = _load_config('mc_reuse')
+    out_dir                  = cfg['output']['out_dir']
+    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
+
+    d_cmp_set                = cfg['components'][name][nbrem]
+    d_cmp_set['create']      = False
+    d_cmp_set['fvers' ]      = None
+
+    obs     = _get_obs(mass, cfg)
+    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
+    pdf     = cmp_sig.pdf
+
+    print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
@@ -129,16 +134,38 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample with tails fixed from other version
     '''
-    cfg                      = _load_config('mc')
+    cfg                      = _load_config('mc_reuse')
     out_dir                  = cfg['output']['out_dir']
-    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create/{name}_{mass}_{nbrem:03}'
+    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
-    d_cmp_set      = cfg['components'][name][nbrem]
-    d_cmp_set['fvers'] = 'v1'
+    d_cmp_set                = cfg['components'][name][nbrem]
+    d_cmp_set['fvers']       = 'v1'
 
     obs     = _get_obs(mass, cfg)
     cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
-    cmp_sig.run()
+    pdf     = cmp_sig.pdf
+
+    print_pdf(pdf)
+# --------------------------------------------------------------
+@pytest.mark.parametrize('nbrem', [0, 1, 2])
+@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('name' , ['Signal'])
+def test_mc_reparametrize(nbrem : int, mass : str, name : str):
+    '''
+    Testing creation of PDF from MC sample with tails fixed from other version
+    '''
+    cfg                      = _load_config('mc_reparametrize')
+    out_dir                  = cfg['output']['out_dir']
+    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
+
+    d_cmp_set                = cfg['components'][name][nbrem]
+    d_cmp_set['fvers']       = 'v1'
+
+    obs     = _get_obs(mass, cfg)
+    cmp_sig = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
+    pdf     = cmp_sig.pdf
+
+    print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem',                 [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M_brem_track_2'])
