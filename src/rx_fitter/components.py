@@ -123,7 +123,7 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
 
     obj   = MCParPdf(rdf=rdf, obs=obs, cfg=cfg)
 
-    return obj.get_fcomp()
+    return obj.get_pdf()
 # ------------------------------------
 def _get_brem_reparametrization(pdf_z : zpdf, pdf_o : zpdf, pdf_t : zpdf) -> zpdf:
     return pdf_z
@@ -172,9 +172,9 @@ def get_mc_reparametrized(obs : zobs, component_name : str, cfg : dict, nbrem : 
     cfg['fitting']['weights_column'] = cmp_cfg['weights']
 
     obj = MCParPdf(rdf=None, obs=obs, cfg=cfg)
-    fcm = obj.get_fcomp()
+    pdf = obj.get_pdf()
 
-    return fcm.pdf
+    return pdf
 # ------------------------------------
 def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     '''
@@ -211,7 +211,7 @@ def get_cb(obs : zobs, kind : str, cfg : dict) -> FitComponent:
 
     obj = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
 
-    return obj.pdf
+    return obj.get_pdf()
 # ------------------------------------
 def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
     '''
@@ -251,9 +251,9 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
         brem_cut = cfg['brem'][nbrem]
         d_cut['nbrem'] = brem_cut
 
-    rdf            = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
+    rdf = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
     fcm = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
-    pdf = fcm.pdf
+    pdf = fcm.get_pdf()
 
     return pdf
 # ------------------------------------
