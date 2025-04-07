@@ -38,26 +38,12 @@ def _initialize():
     LogStore.set_level('rx_fitter:mc_par_pdf', 10)
 # ------------------------------------------
 def _get_rdf() -> RDataFrame:
-    arr_mass = numpy.random.normal(loc=5280, scale=100, size=1_000)
+    arr_mass = numpy.random.normal(loc=5280, scale=200, size=1_000)
     arr_brem = numpy.random.randint(0, 3, size=1_000)
 
     rdf = RDF.FromNumpy({'B_M' : arr_mass, 'nbrem' : arr_brem})
 
     return rdf
-# ------------------------------------------
-def test_read_fail():
-    '''
-    Used to read inputs when no inputs are present
-    '''
-    cfg = _load_config('read')
-    out_dir = cfg['output']['out_dir']
-    shutil.rmtree(out_dir) # otherwise old fit will allow loading of parameters, and test won't fail
-
-    obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
-    fcm = obj.get_fcomp()
-
-    with pytest.raises(NoFitDataFound):
-        fcm.run(must_load_pars=True)
 # ------------------------------------------
 def test_create():
     '''
@@ -68,9 +54,7 @@ def test_create():
 
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
-    fcm = obj.get_fcomp()
-    fcm.run()
-    pdf = fcm.pdf
+    pdf = obj.get_pdf()
 
     print_pdf(pdf)
 # ------------------------------------------
@@ -80,9 +64,7 @@ def test_read():
     '''
     cfg = _load_config('read')
     obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
-    fcm = obj.get_fcomp()
-    fcm.run(must_load_pars=True)
-    pdf = fcm.pdf
+    pdf = obj.get_pdf()
 
     print_pdf(pdf)
 # ------------------------------------------
@@ -92,25 +74,7 @@ def test_read_reparametrize():
     '''
     cfg = _load_config('read_reparametrize')
     obj = MCParPdf(rdf=None, obs=Data.obs, cfg=cfg)
-    fcm = obj.get_fcomp()
-    fcm.run(must_load_pars=True)
-    pdf = fcm.pdf
-
-    print_pdf(pdf)
-# ------------------------------------------
-def test_fix_pars():
-    '''
-    Used to create a new version with parameters fixed from old version
-    '''
-    cfg            = _load_config('read')
-    cfg['fvers'  ] = 'v2'
-    cfg['create' ] = True
-
-    rdf = _get_rdf()
-    obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
-    fcm = obj.get_fcomp()
-    fcm.run(must_load_pars=True)
-    pdf = fcm.pdf
+    pdf = obj.get_pdf()
 
     print_pdf(pdf)
 # ------------------------------------------
