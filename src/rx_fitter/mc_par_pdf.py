@@ -66,10 +66,6 @@ class MCParPdf:
         return f'{init_dir}/{fnal_dir}'
     # ------------------------------------
     def _fix_tails(self, pdf : zpdf, fix_dir : str) -> zpdf:
-        if self._cfg['fvers'] is None:
-            log.debug('No tail parameter fixing version provided, returning original PDF')
-            return pdf
-
         json_path = f'{fix_dir}/parameters.json'
         log.info(40 * '-')
         log.info(f'Fixing parameters with: {json_path}')
@@ -95,9 +91,9 @@ class MCParPdf:
 
         return pdf
     # ---------------------------------------
-    def get_fcomp(self) -> FitComponent:
+    def get_pdf(self) -> zpdf:
         '''
-        Returns instance of FitComponent
+        Returns instance of zfit PDF
         '''
         log.debug(f'Bulding model: {self._model}')
         d_rep = None
@@ -120,13 +116,19 @@ class MCParPdf:
         obj   = load_fit_component(cfg=self._cfg, pdf=pdf)
         if obj is not None:
             log.info('Will load PDF from cached parameters file')
-            return obj
+            return pdf
 
-        if 'fvers' in self._cfg:
-            fix_dir = self._get_pars_dir(self._cfg['fvers'])
+        if 'fvers' in self._cfg and self._cfg['fvers'] is not None:
+            fvers   = self._cfg['fvers']
+
+            log.debug(f'Parameter fixing version {fvers} found, fixing tails')
+            fix_dir = self._get_pars_dir(fvers)
             pdf     = self._fix_tails(pdf=pdf, fix_dir=fix_dir)
+        else:
+            log.debug('No fixing version found, using original PDF for fit component object')
 
-        obj     = FitComponent(cfg=self._cfg, rdf=self._rdf, pdf=pdf, obs=self._obs)
+        obj = FitComponent(cfg=self._cfg, rdf=self._rdf, pdf=pdf, obs=self._obs)
+        pdf = obj.get_pdf()
 
-        return obj
+        return pdf
 # ---------------------------------------
