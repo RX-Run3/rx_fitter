@@ -107,6 +107,9 @@ class MCParPdf:
         d_rep = None
         if 'reparametrize' in self._cfg:
             d_rep = self._cfg['reparametrize']
+            log.info(f'Reparametrizing PDF: {d_rep}')
+        else:
+            log.debug('Not reparametrizing PDF')
 
         mod   = ModelFactory(
                 obs     = self._obs,
