@@ -83,6 +83,11 @@ def _get_mc_rdf(cfg : dict, component_name : str, nbrem : int) -> RDataFrame:
     rdf     = get_rdf(sample, q2bin, trigger, cuts)
     rdf     = rdf.Define('weights', '1')
 
+    if 'max_entries' in cfg['input']:
+        max_entries = cfg['input']['max_entries']
+        log.warning(f'Limitting dataframe to {max_entries} entries')
+        rdf = rdf.Range(max_entries)
+
     return rdf
 # ------------------------------------
 def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
