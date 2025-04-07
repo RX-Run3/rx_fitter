@@ -2,7 +2,9 @@
 Module with tests for MCParPdf class
 '''
 import copy
+from importlib.resources import files
 
+import yaml
 import ROOT
 import zfit
 import numpy
@@ -17,35 +19,16 @@ class Data:
     '''
     data class
     '''
-    cfg = {
-            'component_name'   : 'Bu_JpsiK_ee_eq_DPC',
-            'fvers'  : None,
-            'create' : False,
-            'q2bin'  : 'jpsi',
-            'nbrem'  : 1,
-            'trigger': 'Hlt2RD_BuToKpEE_MVA',
-            'shared' : ['mu'],
-            'model'  : ['cbl'],
-            'pfloat' : ['mu', 'sg'],
-            'output' :
-            {
-                'out_dir' : '/tmp/tests/rx_fitter/mc_par_pdf/fits',
-                },
-            'fitting':
-            {
-                'error_method'  : 'minuit_hesse',
-                'weights_column': 'weights',
-                'ntries'        : 3,
-                'pvalue'        : 0.02,
-                },
-            'plotting' :
-            {
-                'nbins'   : 50,
-                'stacked' : True,
-                },
-            }
-
+    cfg : dict
     obs = zfit.Space('B_M', limits=[4500, 6000])
+# ------------------------------------------
+def _load_config(name : str) -> None:
+    cfg_path = files('rx_fitter_data').joinpath(f'tests/mc_par_pdf/{name}.yaml')
+
+    with open(cfg_path, encoding='utf-8') as ifile:
+        data = yaml.safe_load(ifile)
+
+    return data
 # ------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _initialize():
@@ -63,7 +46,7 @@ def test_read():
     '''
     Used to read inputs
     '''
-    cfg = copy.deepcopy(Data.cfg)
+    cfg = _load_config('read')
     rdf = _get_rdf()
     obj = MCParPdf(rdf=rdf, obs=Data.obs, cfg=cfg)
     fcm = obj.get_fcomp()
@@ -74,7 +57,7 @@ def test_create():
     '''
     Used to create a new version
     '''
-    cfg            = copy.deepcopy(Data.cfg)
+    cfg            = _load_config('read')
     cfg['create' ] = True
 
     rdf = _get_rdf()
@@ -87,7 +70,7 @@ def test_fix_pars():
     '''
     Used to create a new version with parameters fixed from old version
     '''
-    cfg            = copy.deepcopy(Data.cfg)
+    cfg            = _load_config('read')
     cfg['fvers'  ] = 'v2'
     cfg['create' ] = True
 
