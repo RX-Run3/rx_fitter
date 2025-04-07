@@ -6,13 +6,8 @@ nbrem: 1
 trigger: Hlt2RD_BuToKpEE_MVA
 shared:
   - mu
-  - sg
 model:
-  - cbl
-pfloat: []
-reparametrize:
-  mu : scale
-  sg : reso
+  - gauss
 output:
   out_dir: /tmp/tests/rx_fitter/mc_par_pdf/fits
 fitting:
@@ -23,3 +18,7 @@ fitting:
 plotting:
   nbins: 50
   stacked: true
+pfloat: []
+reparametrize:
+  mu : scale
+  sg : reso
