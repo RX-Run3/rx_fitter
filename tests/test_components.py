@@ -159,7 +159,7 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
 @pytest.mark.parametrize('name' , ['Signal'])
-def test_mc_reparametrize(nbrem : int, mass : str, name : str):
+def test_mc_reparametrized(nbrem : int, mass : str, name : str):
     '''
     Testing creation of PDF from MC sample with tails fixed from other version
     '''
@@ -172,9 +172,29 @@ def test_mc_reparametrize(nbrem : int, mass : str, name : str):
     d_cmp_set                = cfg['components'][name][nbrem]
     d_cmp_set['fvers']       = 'v1'
 
-    obs     = _get_obs(mass, cfg)
-    cmp_sig = cmp.get_mc_reparametrized(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
-    pdf     = cmp_sig.pdf
+    obs  = _get_obs(mass, cfg)
+    pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
+
+    print_pdf(pdf)
+# --------------------------------------------------------------
+@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('name' , ['Signal'])
+def test_mc_brem_reparametrized(mass : str, name : str):
+    '''
+    Test building full signal PDF for electron channel with Brem reparametrization
+    '''
+    log.info('')
+
+    cfg                      = _load_config('mc_reparametrize')
+    out_dir                  = cfg['output']['out_dir']
+    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
+
+    for nbrem in [0, 1, 2]:
+        d_cmp_set                = cfg['components'][name][nbrem]
+        d_cmp_set['fvers']       = 'v1'
+
+    obs  = _get_obs(mass, cfg)
+    pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, cfg=cfg, nbrem=None)
 
     print_pdf(pdf)
 # --------------------------------------------------------------
