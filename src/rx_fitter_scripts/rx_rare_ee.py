@@ -56,7 +56,7 @@ def _add_pdf_prc(sample : str) -> None:
     pdf  = cmp.get_kde(obs=Data.obs, sample=sample, nbrem=None, cfg=cfg)
     scale= zfit.Parameter(f's{sample}', 0, 0, 10)
     nprc = zfit.ComposedParameter(f'n{sample}', lambda x : x['nsig'] * x['scale'], params={'nsig' : Data.nsig, 'scale' : scale})
-    pdf  = pdf.create_extended(nprc)
+    pdf.set_yield(nprc)
 
     Data.l_pdf.append(pdf)
 # --------------------------
@@ -64,7 +64,9 @@ def _add_pdf_leak(sample : str) -> None:
     cfg                   = _load_config(component='ccbar_leak')
     cfg['input']['q2bin'] = Data.q2bin
 
-    pdf = cmp.get_kde(obs=Data.obs, sample=sample, nbrem=None, cfg=cfg)
+    pdf   = cmp.get_kde(obs=Data.obs, sample=sample, nbrem=None, cfg=cfg)
+    nleak = zfit.Parameter(f'n{sample}', 0, 0, 10_000) 
+    pdf.set_yield(nleak)
 
     Data.l_pdf.append(pdf)
 # --------------------------
