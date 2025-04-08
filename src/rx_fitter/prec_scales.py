@@ -24,9 +24,15 @@ class PrecScales:
     Class used to calculate scale factor between yields of partially reconstructed component and signal
     '''
     #------------------------------------------
-    def __init__(self, proc : str, q2bin : str):
+    def __init__(self, proc : str, q2bin : str, d_cut : dict[str,str]):
+        '''
+        proc : Nickname of decay process, nicknames are in the DecayNames class
+        q2bin: Needed to apply correct selection to get correct efficiencies and scales
+        d_cut: Will be passed to EfficiencyCalculator in order to override default selection
+        '''
         self._proc   = proc
         self._q2bin  = q2bin
+        self._d_cut  = d_cut
 
         self._d_frbf : dict
         self._df_eff : pnd.DataFrame
@@ -64,7 +70,7 @@ class PrecScales:
     def _calculate_efficiencies(self, yaml_path : str) -> None:
         log.debug('Efficiencies not found, calculating them')
         out_dir     = os.path.dirname(yaml_path)
-        obj         = EfficiencyCalculator(q2bin=self._q2bin)
+        obj         = EfficiencyCalculator(q2bin=self._q2bin, d_cut=self._d_cut)
         obj.out_dir = out_dir
         df          = obj.get_stats()
 
