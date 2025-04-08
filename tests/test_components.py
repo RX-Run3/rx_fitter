@@ -81,7 +81,6 @@ def test_brem_definitions(nbrem : int, kind : str, mass : str):
 
     d_cmp_set                = cfg['components']['Signal'][nbrem]
     d_cmp_set['create']      = False
-    d_cmp_set['fvers' ]      = None
     cfg['brem'][nbrem]       = _get_brem_cut(nbrem, kind)
     cfg['fitting']['range']  = _get_fitting_range(kind)
 
@@ -103,9 +102,6 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
-    d_cmp_set                = cfg['components'][name][nbrem]
-    d_cmp_set['fvers']       = None
-
     obs = _get_obs(mass, cfg)
     pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
 
@@ -123,10 +119,8 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     cfg                      = _load_config('mc_reuse')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
-
     d_cmp_set                = cfg['components'][name][nbrem]
     d_cmp_set['create']      = False
-    d_cmp_set['fvers' ]      = None
 
     obs = _get_obs(mass, cfg)
     pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
@@ -146,9 +140,6 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
-    d_cmp_set                = cfg['components'][name][nbrem]
-    d_cmp_set['fvers']       = 'v1'
-
     obs = _get_obs(mass, cfg)
     pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
 
@@ -167,9 +158,6 @@ def test_mc_reparametrized(nbrem : int, mass : str, name : str):
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
-    d_cmp_set                = cfg['components'][name][nbrem]
-    d_cmp_set['fvers']       = 'v1'
-
     obs  = _get_obs(mass, cfg)
     pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
 
@@ -184,11 +172,7 @@ def test_mc_brem_reparametrized(mass : str, name : str, kind : str):
     '''
     log.info('')
 
-    cfg = _load_config(kind)
-    for nbrem in [0, 1, 2]:
-        d_cmp_set            = cfg['components'][name][nbrem]
-        d_cmp_set['fvers']   = 'v1'
-
+    cfg  = _load_config(kind)
     obs  = _get_obs(mass, cfg)
     pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, cfg=cfg, nbrem=None)
 
