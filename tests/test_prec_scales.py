@@ -13,6 +13,17 @@ from rx_fitter.prec_scales       import PrecScales
 
 log=LogStore.add_logger('rx_fitter:test_prec_scales')
 # -----------------------------------
+class Data:
+    '''
+    Data class
+    '''
+    l_mva_cut = [
+            'mva_prc > 0.2',
+            'mva_prc > 0.4',
+            'mva_prc > 0.6',
+            'mva_prc > 0.8',
+            ]
+# -----------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _initialize():
     LogStore.set_level('rx_fitter:prec_scales', 10)
@@ -56,4 +67,19 @@ def test_all_datasets(q2bin : str, process : str):
         assert err < val # Error smaller than value
 
     ScalesData.collect(process, q2bin, val, err)
+#-------------------------------
+@pytest.mark.parametrize('mva_cut', Data.l_mva_cut)
+def test_scan_scales(mva_cut : str):
+    '''
+    Tests retrieval of scales between signal and PRec yields
+    '''
+    process  = 'bdkskpiee'
+    q2bin    = 'central'
+    signal   = 'bpkpee'
+    d_cut    = {'mva' : mva_cut}
+
+    obj      = PrecScales(proc=process, q2bin=q2bin, d_cut=d_cut)
+    val, err = obj.get_scale(signal=signal)
+
+    ScalesData.collect_mva_wp(mva_cut, val, err)
 #-------------------------------
