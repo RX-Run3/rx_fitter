@@ -4,6 +4,7 @@ Script used to fit the rare mode
 from importlib.resources import files
 
 import yaml
+import ROOT
 import zfit
 from zfit.core.data         import Data       as zdata
 from zfit.core.basepdf      import BasePDF    as zpdf
@@ -69,6 +70,8 @@ def _add_pdf_leak(sample : str) -> None:
 # --------------------------
 def _add_pdf_sig() -> None:
     cfg  = _load_config(component='signal')
+    cfg['input']['q2bin'] = Data.q2bin
+
     pdf  = cmp.get_mc_reparametrized(obs=Data.obs, component_name='Signal', cfg=cfg, nbrem=None)
     pdf  = pdf.create_extended(Data.nsig)
 
