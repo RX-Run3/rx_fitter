@@ -202,7 +202,6 @@ def test_combinatorial(q2bin : str):
     log.info('')
 
     cfg            = _load_config(test='combinatorial')
-    cfg['name']    = 'Combinatorial'
     out_dir        = cfg['out_dir']
     cfg['out_dir'] = f'{out_dir}/{q2bin}'
 

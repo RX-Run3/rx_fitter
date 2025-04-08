@@ -215,6 +215,7 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
     Returns fit component for combinatorial fit
     '''
     kind = cfg['q2'][q2bin]['model']
+    cfg['name'] = 'Combinatorial'
 
     d_fix= None
     if 'fix' in cfg['q2'][q2bin]:
