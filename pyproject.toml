@@ -27,6 +27,7 @@ model_tester='rx_fitter_scripts.model_tester:main'
 rx_fit_mm='rx_fitter_scripts.rx_fit_mm:main'
 rx_fit_ee='rx_fitter_scripts.rx_fit_ee:main'
 rx_reso_ee='rx_fitter_scripts.rx_reso_ee:main'
+rx_rare_ee='rx_fitter_scripts.rx_rare_ee:main'
 
 [tool.setuptools.package-data]
 rx_fitter_data=['*/*/*/*/*/*.json']
