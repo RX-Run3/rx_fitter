@@ -1,3 +1,13 @@
+q2:
+  low  : 
+    model : hypexp 
+  central : 
+    model : modexp 
+  high : 
+    model : suj 
+    fix   :
+      dl_suj : 2.5
+      gm_suj : -10 
 plotting:
   nbins: 30
   stacked: true
