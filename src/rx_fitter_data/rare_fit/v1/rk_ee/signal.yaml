@@ -1,0 +1,71 @@
+brem:
+  0: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0
+  1: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1
+  2: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2
+components:
+  Signal:
+    0:
+      create: false 
+      fvers: v1
+      model:
+      - cbl
+      pfloat: []
+      reparametrize:
+        mu : scale
+        sg : reso
+      shared:
+      - mu
+      - sg
+      weights: weights
+    1:
+      create: false 
+      fvers: v1
+      model:
+      - gauss
+      - dscb
+      pfloat: []
+      shared:
+      - mu
+      - sg
+      reparametrize:
+        mu : scale
+        sg : reso
+        nl : reso
+      weights: weights
+    2:
+      create: false 
+      fvers: v1
+      model:
+      - gauss
+      - dscb
+      pfloat: []
+      shared:
+      - mu
+      - sg
+      reparametrize:
+        mu : scale
+        sg : reso
+        nr : reso
+        ar : reso
+      weights: weights
+fitting:
+  components:
+    Bu_Kee_eq_btosllball05_DPC : true
+  config:
+    Signal:
+      fitting:
+        error_method: minuit_hesse
+        ntries: 2
+        pvalue: 0.02
+      plotting:
+        nbins: 30
+        stacked: true
+      sample : Bu_Kee_eq_btosllball05_DPC
+  range:
+    B_M_brem_track_2:
+    - 4500
+    - 6000
+input:
+  trigger: Hlt2RD_BuToKpEE_MVA
+output:
+  fit_dir: /home/acampove/external_ssd/fits/data/
