@@ -210,14 +210,20 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
 
     return fcm
 # ------------------------------------
-def get_cb(obs : zobs, kind : str, cfg : dict) -> FitComponent:
+def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
     '''
     Returns fit component for combinatorial fit
     '''
-    mod = ModelFactory(preffix='cmb', obs=obs, l_pdf = [kind], l_shared = [], l_float= [])
-    pdf = mod.get_pdf()
+    kind = cfg['q2'][q2bin]['model']
 
-    obj = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
+    d_fix= None
+    if 'fix' in cfg['q2'][q2bin]:
+        d_fix= cfg['q2'][q2bin]['fix']
+
+    mod  = ModelFactory(preffix='cmb', obs=obs, l_pdf = [kind], l_shared = [], l_float= [], d_fix=d_fix)
+    pdf  = mod.get_pdf()
+
+    obj  = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
 
     return obj.get_pdf()
 # ------------------------------------

@@ -210,8 +210,8 @@ def test_prec_brem(mass : str, nbrem : int):
     cmp_prc        = cmp.get_prc(obs, nbrem, cfg)
     cmp_prc.run()
 # --------------------------------------------------------------
-@pytest.mark.parametrize('kind', ['exp', 'hypexp', 'modexp'])
-def test_combinatorial(kind : str):
+@pytest.mark.parametrize('q2bin', ['low', 'central', 'high'])
+def test_combinatorial(q2bin : str):
     '''
     Testing creation of PDF used for combinatorial
     '''
@@ -220,10 +220,10 @@ def test_combinatorial(kind : str):
     cfg            = _load_config(test='combinatorial')
     cfg['name']    = 'Combinatorial'
     out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{kind}'
+    cfg['out_dir'] = f'{out_dir}/{q2bin}'
 
     obs= zfit.Space('B_M', limits=[4500, 6000])
-    pdf= cmp.get_cb(obs=obs, kind=kind, cfg=cfg)
+    pdf= cmp.get_cb(obs=obs, q2bin=q2bin, cfg=cfg)
     print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2, None])
