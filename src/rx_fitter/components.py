@@ -5,6 +5,8 @@ Module with functions needed to provide fit components
 
 import os
 import copy
+
+import zfit
 import pandas as pnd
 from zfit.core.interfaces                        import ZfitSpace as zobs
 from zfit.core.basepdf                           import BasePDF   as zpdf
@@ -126,7 +128,13 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
     return obj.get_pdf()
 # ------------------------------------
 def _get_brem_reparametrization(pdf_z : zpdf, pdf_o : zpdf, pdf_t : zpdf) -> zpdf:
-    return pdf_z
+    frac_z = zfit.Parameter('frac_brem_000', 0.3, 0, 1)
+    frac_o = zfit.Parameter('frac_brem_001', 0.4, 0, 1)
+    frac_t = zfit.Parameter('frac_brem_002', 0.3, 0, 1)
+
+    pdf = zfit.pdf.SumPDF(pdfs=[pdf_z, pdf_o, pdf_t], fracs=[frac_z, frac_o, frac_t])
+
+    return pdf
 # ------------------------------------
 def get_mc_reparametrized(obs : zobs, component_name : str, cfg : dict, nbrem : int) -> zpdf:
     '''
