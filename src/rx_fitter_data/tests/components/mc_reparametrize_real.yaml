@@ -30,6 +30,7 @@ components:
       reparametrize:
         mu : scale
         sg : reso
+        nl : reso
       weights: weights
     2:
       create: false 
@@ -44,6 +45,8 @@ components:
       reparametrize:
         mu : scale
         sg : reso
+        nr : reso
+        ar : reso
       weights: weights
 fitting:
   components:
