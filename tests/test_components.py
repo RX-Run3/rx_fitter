@@ -177,16 +177,14 @@ def test_mc_reparametrized(nbrem : int, mass : str, name : str):
 # --------------------------------------------------------------
 @pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
 @pytest.mark.parametrize('name' , ['Signal'])
-def test_mc_brem_reparametrized(mass : str, name : str):
+@pytest.mark.parametrize('kind' , ['mc_reparametrize_real'])
+def test_mc_brem_reparametrized(mass : str, name : str, kind : str):
     '''
     Test building full signal PDF for electron channel with Brem reparametrization
     '''
     log.info('')
 
-    cfg                      = _load_config('mc_reparametrize')
-    out_dir                  = cfg['output']['out_dir']
-    cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
-
+    cfg = _load_config(kind)
     for nbrem in [0, 1, 2]:
         d_cmp_set            = cfg['components'][name][nbrem]
         d_cmp_set['fvers']   = 'v1'
