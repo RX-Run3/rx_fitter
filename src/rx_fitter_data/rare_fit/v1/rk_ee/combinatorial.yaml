@@ -1,4 +1,14 @@
+q2:
+  low  :
+    model : hypexp
+  central :
+    model : modexp
+  high :
+    model : suj
+    fix   :
+      dl_suj : 2.5
+      gm_suj : -10
 plotting:
   nbins: 30
   stacked: true
-out_dir : /home/acampove/external_ssd/fits/data/
+out_dir: /tmp/tests/rx_fitter/components/combinatorial
