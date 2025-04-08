@@ -259,7 +259,7 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
         rdf       = RDF.FromPandas(df)
         fcm       = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
 
-        return fcm.pdf
+        return fcm.get_pdf()
 
     d_cut = {}
     if nbrem is not None:
