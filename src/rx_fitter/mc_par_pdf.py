@@ -78,9 +78,11 @@ class MCParPdf:
         else:
             log.debug('Not reparametrizing PDF')
 
+        preffix = f'{self._component_name}_{self._nbrem:03}'
+
         mod   = ModelFactory(
                 obs     = self._obs,
-                preffix = self._component_name,
+                preffix = preffix,
                 l_pdf   = self._cfg['model' ],
                 d_rep   = d_rep,
                 l_shared= self._cfg['shared'],
