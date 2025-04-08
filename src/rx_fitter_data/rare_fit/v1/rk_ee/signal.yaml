@@ -68,4 +68,4 @@ fitting:
 input:
   trigger: Hlt2RD_BuToKpEE_MVA
 output:
-  fit_dir: /home/acampove/external_ssd/fits/data/
+  out_dir: /home/acampove/external_ssd/fits/data/
