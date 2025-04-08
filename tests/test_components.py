@@ -29,7 +29,7 @@ def _intiailize():
     LogStore.set_level('rx_calibration:fit_component', 10)
 # --------------------------------------------------------------
 def _load_config(test : str) -> dict:
-    cfg_path = files('rx_fitter_data').joinpath(f'tests/components/{test}.yaml')
+    cfg_path = files('rx_fitter_data').joinpath(f'rare_fit/v1/rk_ee/{test}.yaml')
     with open(cfg_path, encoding='utf-8') as ifile:
         cfg = yaml.safe_load(ifile)
 
@@ -220,6 +220,26 @@ def test_bxhsee(nbrem : int, q2bin : str, sample : str):
     log.info('')
 
     cfg                   = _load_config(test='bxhsee')
+    cfg['input']['q2bin'] = q2bin
+
+    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
+
+    if pdf is None:
+        return
+
+    print_pdf(pdf)
+# --------------------------------------------------------------
+@pytest.mark.parametrize('nbrem', [0, 1, 2, None])
+@pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
+@pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC', 'Bu_psi2SK_ee_eq_DPC'])
+def test_cc_leakage(nbrem : int, q2bin : str, sample : str):
+    '''
+    Builds KDE for leaked ccbar component
+    '''
+    log.info('')
+
+    cfg                   = _load_config(test='ccbar_leak')
     cfg['input']['q2bin'] = q2bin
 
     obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
