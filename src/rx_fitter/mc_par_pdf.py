@@ -39,27 +39,29 @@ class MCParPdf:
         self._nbrem       = self._cfg['nbrem'  ]
         self._model       = self._cfg['model'  ]
 
-        self._out_dir        = cfg['output' ]['out_dir']
-        self._cfg['out_dir'] = self._get_pars_dir()
+        out_dir              = cfg['output' ]['out_dir']
+        log.debug(f'Found output directory: {out_dir}')
+        out_dir              = self._get_output_dir(out_dir)
+        log.debug(f'Using updated output directory: {out_dir}')
+        self._cfg['out_dir'] = out_dir
         self._cfg['name'   ] = self._component_name
     # ---------------------------------------
-    def _get_pars_dir(self, version : str = None) -> str:
+    def _get_output_dir(self, out_dir : str, version : str = None) -> str:
         model_name = '_'.join(self._model)
-        init_dir   = f'{self._out_dir}/{self._q2bin}'
         fnal_dir   = f'{self._component_name}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
 
         if version is not None:
-            pars_dir = f'{init_dir}/{version}/{fnal_dir}'
+            pars_dir = f'{out_dir}/{version}/{fnal_dir}'
             log.debug(f'Using user defined version of fit in: {pars_dir}')
             return pars_dir
 
-        if not os.path.isdir(init_dir):
-            init_dir = f'{init_dir}/v1'
+        if not os.path.isdir(out_dir):
+            init_dir = f'{out_dir}/v1'
             log.info(f'No output directory found, making first version of fit directory in: {init_dir}')
             return f'{init_dir}/{fnal_dir}'
 
-        log.debug(f'Looking for latest version in: {init_dir}')
-        init_dir = vman.get_last_version(dir_path=init_dir, version_only=False)
+        log.debug(f'Looking for latest version in: {out_dir}')
+        init_dir = vman.get_last_version(dir_path=out_dir, version_only=False)
         log.info(f'Will fit and save to: {init_dir}')
 
         return f'{init_dir}/{fnal_dir}'
