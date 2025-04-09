@@ -76,7 +76,7 @@ def _get_df_fit(kind : str, brem : int) -> pnd.DataFrame:
 
     inp_path = f'{Data.fit_dir}/{kind}/jpsi'
     inp_path = vman.get_last_version(dir_path=inp_path, version_only=False)
-    inp_wc   = f'{inp_path}/{sample}_{Data.trigger}/{Data.mass}_{brem}/*/fit.json'
+    inp_wc   = f'{inp_path}/{sample}_{Data.trigger}/{Data.mass}_{brem}/*/parameters.json'
     l_path   = glob.glob(inp_wc)
     npath    = len(l_path)
     if npath != 1:
@@ -87,6 +87,9 @@ def _get_df_fit(kind : str, brem : int) -> pnd.DataFrame:
         d_par = json.load(ifile)
 
     df = _df_from_pars(d_par)
+
+    log.debug(f'Parameters for kind {kind}, brem {brem}')
+    log.debug(df)
 
     return df
 #------------------------------------------
@@ -131,7 +134,7 @@ def _frac_from_yield(df : pnd.DataFrame) -> pnd.DataFrame:
 #------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to calculate mass scales and resolution from fit results')
-    parser.add_argument('-l', '--log_level' , type=int, help='Logging level', choices=[10, 20, 30])
+    parser.add_argument('-l', '--log_level' , type=int, help='Logging level', choices=[10, 20, 30], default=20)
     args = parser.parse_args()
 
     _set_log_level(args.log_level)
