@@ -75,7 +75,7 @@ def test_brem_definitions(nbrem : int, kind : str, mass : str):
     '''
     log.info('')
 
-    cfg                      = _load_config('mc_create')
+    cfg                      = _load_config('signal')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_brem_definitions'
 
@@ -83,6 +83,7 @@ def test_brem_definitions(nbrem : int, kind : str, mass : str):
     d_cmp_set['create']      = False
     cfg['brem'][nbrem]       = _get_brem_cut(nbrem, kind)
     cfg['fitting']['range']  = _get_fitting_range(kind)
+    cfg['input']['q2bin']    = 'central'
 
     obs = _get_obs(mass, cfg)
     pdf = cmp.get_mc(obs=obs, component_name='Signal', nbrem=nbrem, cfg=cfg)
@@ -98,9 +99,10 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     '''
     log.info('')
 
-    cfg                      = _load_config('mc_create')
+    cfg                      = _load_config('signal')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
+    cfg['input']['q2bin']    = 'central'
 
     obs = _get_obs(mass, cfg)
     pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
@@ -116,11 +118,12 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     '''
     log.info('')
 
-    cfg                      = _load_config('mc_reuse')
+    cfg                      = _load_config('signal')
     out_dir                  = cfg['output']['out_dir']
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
     d_cmp_set                = cfg['components'][name][nbrem]
     d_cmp_set['create']      = False
+    cfg['input']['q2bin']    = 'central'
 
     obs = _get_obs(mass, cfg)
     pdf = cmp.get_mc(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
@@ -136,8 +139,9 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
     '''
     log.info('')
 
-    cfg                      = _load_config('mc_reuse')
+    cfg                      = _load_config('signal')
     out_dir                  = cfg['output']['out_dir']
+    cfg['input']['q2bin']    = 'central'
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
     obs = _get_obs(mass, cfg)
@@ -154,8 +158,9 @@ def test_mc_reparametrized(nbrem : int, mass : str, name : str):
     '''
     log.info('')
 
-    cfg                      = _load_config('mc_reparametrize')
+    cfg                      = _load_config('signal')
     out_dir                  = cfg['output']['out_dir']
+    cfg['input']['q2bin']    = 'central'
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
     obs  = _get_obs(mass, cfg)
@@ -172,7 +177,7 @@ def test_mc_brem_reparametrized(mass : str, name : str, kind : str):
     '''
     log.info('')
 
-    cfg          = _load_config(kind)
+    cfg                   = _load_config(kind)
     cfg['input']['q2bin'] = 'central'
 
     obs  = _get_obs(mass, cfg)
@@ -190,6 +195,7 @@ def test_prec_brem(mass : str, nbrem : int):
 
     cfg                      = _load_config('prec')
     out_dir                  = cfg['output']['out_dir']
+    cfg['input']['q2bin']    = 'central'
     cfg['output']['out_dir'] = f'{out_dir}/test_prec_brem/{mass}_{nbrem:03}/v1'
 
     obs            = _get_obs(mass, cfg)
@@ -203,9 +209,10 @@ def test_combinatorial(q2bin : str):
     '''
     log.info('')
 
-    cfg            = _load_config(test='combinatorial')
-    out_dir        = cfg['out_dir']
-    cfg['out_dir'] = f'{out_dir}/{q2bin}'
+    cfg                   = _load_config(test='combinatorial')
+    out_dir               = cfg['out_dir']
+    cfg['out_dir']        = f'{out_dir}/{q2bin}'
+    cfg['input']['q2bin'] = 'central'
 
     obs= zfit.Space('B_M', limits=[4500, 6000])
     pdf= cmp.get_cb(obs=obs, q2bin=q2bin, cfg=cfg)
