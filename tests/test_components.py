@@ -195,7 +195,7 @@ def test_prec_brem(mass : str, nbrem : int):
 
     cfg                      = _load_config('prec')
     out_dir                  = cfg['output']['out_dir']
-    cfg['input']['q2bin']    = 'central'
+    cfg['input']['q2bin']    = 'jpsi'
     cfg['output']['out_dir'] = f'{out_dir}/test_prec_brem/{mass}_{nbrem:03}/v1'
 
     obs            = _get_obs(mass, cfg)
