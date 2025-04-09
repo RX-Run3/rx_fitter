@@ -73,7 +73,7 @@ def test_all_datasets(q2bin : str, process : str):
     '''
     signal   = 'bpkpee'
 
-    obj      = PrecScales(proc=process, q2bin=q2bin)
+    obj      = PrecScales(proc=process, q2bin=q2bin, d_cut = {'mva' : 'mva_cmb > 0.900 && mva_prc > 0.850'})
     val, err = obj.get_scale(signal=signal)
 
     if process != signal:
