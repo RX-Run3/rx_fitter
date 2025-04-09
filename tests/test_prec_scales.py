@@ -102,7 +102,7 @@ def test_sim_scan_scales(mva_cmb : str, mva_prc : str):
 #-------------------------------
 @pytest.mark.parametrize('process', ['bdkskpiee', 'bpkskpiee', 'bsphiee'])
 @pytest.mark.parametrize('q2bin'  , ['low', 'central', 'high'])
-@pytest.mark.parametrize('mva_cut', Data.get_seq_wp(min_cmb=0.9, min_prc=0.6, step=0.02))
+@pytest.mark.parametrize('mva_cut', Data.get_seq_wp(min_cmb=0.8, min_prc=0.6, step=0.02))
 def test_seq_scan_scales(mva_cut : str, q2bin : str, process : str) -> None:
     '''
     Tests retrieval of scales between signal and PRec yields, by cutting first on combinatorial and then on PRec
