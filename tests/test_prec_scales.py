@@ -66,7 +66,7 @@ def test_all_datasets(q2bin : str, process : str):
     if val > 0:          # If no events pass selection, error will be zero, as well as value
         assert err < val # Error smaller than value
 
-    ScalesData.collect(process, q2bin, val, err)
+    ScalesData.collect_def_wp(process, q2bin, val, err)
 #-------------------------------
 @pytest.mark.parametrize('mva_cut', Data.l_mva_cut)
 def test_scan_scales(mva_cut : str):
@@ -81,5 +81,5 @@ def test_scan_scales(mva_cut : str):
     obj      = PrecScales(proc=process, q2bin=q2bin, d_cut=d_cut)
     val, err = obj.get_scale(signal=signal)
 
-    ScalesData.collect_mva_wp(mva_cut, val, err)
+    ScalesData.collect_mva_wp(mva_cut, q2bin, val, err)
 #-------------------------------
