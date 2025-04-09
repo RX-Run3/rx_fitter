@@ -262,6 +262,10 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
         return fcm.get_pdf()
 
     d_cut = {}
+    if 'selection' in cfg:
+        d_sel = cfg['selection']
+        d_cut.update(d_sel)
+
     if nbrem is not None:
         brem_cut = cfg['brem'][nbrem]
         d_cut['nbrem'] = brem_cut
