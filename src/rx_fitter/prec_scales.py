@@ -24,7 +24,7 @@ class PrecScales:
     Class used to calculate scale factor between yields of partially reconstructed component and signal
     '''
     #------------------------------------------
-    def __init__(self, proc : str, q2bin : str, d_cut : dict[str,str]):
+    def __init__(self, proc : str, q2bin : str, d_cut : dict[str,str] = None):
         '''
         proc : Nickname of decay process, nicknames are in the DecayNames class
         q2bin: Needed to apply correct selection to get correct efficiencies and scales
