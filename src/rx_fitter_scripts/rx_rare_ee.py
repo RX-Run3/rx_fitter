@@ -28,7 +28,7 @@ class Data:
     Data class
     '''
     cache_dir: str = '/tmp/rx_fitter/cache'
-    mva_cut : str  = '(mva_cmb > 0.8) && (mva_prc > 0.8)'
+    mva_cut : str  = '(mva_cmb > 0.90) && (mva_prc > 0.85)'
     sample  : str  = 'DATA*'
     trigger : str  = 'Hlt2RD_BuToKpEE_MVA'
     version : str  = 'v1'
@@ -119,12 +119,13 @@ def _get_data() -> zdata:
     if os.path.isfile(data_cache_path):
         log.warning(f'Caching data from: {data_cache_path}')
         l_mass   = gut.load_json(data_cache_path)
-        arr_mass = numpy.ndarray(l_mass)
+        arr_mass = numpy.array(l_mass)
         data = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
 
         return data
 
     for cut_name, cut_expr in d_sel.items():
+        log.debug(f'{cut_name:<20}{cut_expr}')
         rdf = rdf.Filter(cut_expr, cut_name)
 
     arr_mass = rdf.AsNumpy([Data.mass])[Data.mass]
