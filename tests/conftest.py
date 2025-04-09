@@ -79,7 +79,7 @@ class ScalesData:
         plt.legend()
         plt.title(q2bin)
         plt.grid()
-        plt.ylim(0.0, 0.60)
+        plt.ylim(0.0, 0.40)
         plt.xlabel('')
         plt.xticks(rotation=70)
         plt.ylabel(r'$N_{PRec}/N_{Signal}$')
