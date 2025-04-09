@@ -103,18 +103,18 @@ def test_sim_scan_scales(mva_cmb : str, mva_prc : str):
 
     ScalesData.collect_mva_wp(mva_cut, q2bin, val, err)
 #-------------------------------
+@pytest.mark.parametrize('process', ['bdkskpiee', 'bpkskpiee', 'bsphiee'])
 @pytest.mark.parametrize('q2bin'  , ['low', 'central', 'high'])
-@pytest.mark.parametrize('mva_cut', Data.get_seq_wp(min_cmb=0.8, min_prc=0.8, step=0.02))
-def test_seq_scan_scales(mva_cut : str, q2bin : str) -> None:
+@pytest.mark.parametrize('mva_cut', Data.get_seq_wp(min_cmb=0.5, min_prc=0.8, step=0.02))
+def test_seq_scan_scales(mva_cut : str, q2bin : str, process : str) -> None:
     '''
     Tests retrieval of scales between signal and PRec yields, by cutting first on combinatorial and then on PRec
     '''
-    process  = 'bdkskpiee'
     signal   = 'bpkpee'
     d_cut    = {'mva' : mva_cut}
 
     obj      = PrecScales(proc=process, q2bin=q2bin, d_cut=d_cut)
     val, err = obj.get_scale(signal=signal)
 
-    ScalesData.collect_mva_wp(mva_cut, q2bin, val, err)
+    ScalesData.collect_mva_wp(process, mva_cut, q2bin, val, err)
 #-------------------------------
