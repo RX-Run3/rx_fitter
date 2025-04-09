@@ -42,10 +42,11 @@ class ScalesData:
         '''
         print(ScalesData.df_def_wp)
 
-        ax = None
+        plt.figure(figsize=(20,20))
         for proc, df_proc in ScalesData.df_def_wp.groupby('Process'):
             decay = dn.tex_from_decay(proc)
-            ax = df_proc.plot(x='Q2', y='Value', yerr='Error', label=decay, ax=ax, figsize=(13, 10))
+            plt.plot(df_proc.Q2, df_proc.Value, label=decay, color='blue')
+            plt.fill_between(df_proc.Q2, df_proc.Value - df_proc.Error, df_proc.Value + df_proc.Error, color='blue', alpha=0.2)
 
         out_dir = 'plots/prec_scales'
         os.makedirs(out_dir, exist_ok=True)
@@ -62,15 +63,23 @@ class ScalesData:
         Plots scales from dataframe with scanned MVA WP
         '''
         print(ScalesData.df_mva_wp)
+        df_mva            = ScalesData.df_mva_wp
+        df_mva['mva_cut'] = df_mva.mva_cut.str.replace('mva_', '')
+        df_mva['mva_cut'] = df_mva.mva_cut.str.replace('&&'  , '')
+        df_mva['mva_cut'] = df_mva.mva_cut.str.replace('('   , '')
+        df_mva['mva_cut'] = df_mva.mva_cut.str.replace(')'   , '')
 
-        ax = None
-        for q2bin, df_q2bin in ScalesData.df_mva_wp.groupby('Q2'):
-            ax = df_q2bin.plot(x='mva_cut', y='Value', yerr='Error', label=q2bin, ax=ax, figsize=(20, 10))
+        plt.figure(figsize=(30,20))
+        for q2bin, df in df_mva.groupby('Q2'):
+            plt.plot(df.mva_cut, df.Value, label=q2bin, color='blue')
+            plt.fill_between(df.mva_cut, df.Value - df.Error, df.Value + df.Error, color='blue', alpha=0.2)
 
         out_dir = 'plots/prec_scales'
         os.makedirs(out_dir, exist_ok=True)
 
-        plt.ylim(0, 1)
+        plt.legend()
+        plt.grid()
+        plt.ylim(0.0, 0.4)
         plt.xlabel('')
         plt.xticks(rotation=70)
         plt.ylabel(r'$N_{PRec}/N_{Signal}$')
