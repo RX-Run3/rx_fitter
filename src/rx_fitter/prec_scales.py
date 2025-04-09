@@ -10,9 +10,9 @@ import yaml
 import numpy
 import pandas                   as pnd
 import jacobi                   as jac
-import dmu.pdataframe.utilities as put
 
 from dmu.logging.log_store                 import LogStore
+from dmu.generic                           import hashing
 from dmu.generic.version_management        import get_last_version
 from rx_efficiencies.decay_names           import DecayNames as dn
 from rx_efficiencies.efficiency_calculator import EfficiencyCalculator
@@ -32,7 +32,8 @@ class PrecScales:
         '''
         self._proc   = proc
         self._q2bin  = q2bin
-        self._d_cut  = d_cut
+        self._d_cut  = {} if d_cut is None else d_cut
+        self._hash   = hashing.hash_object(d_cut)
 
         self._d_frbf : dict
         self._df_eff : pnd.DataFrame
@@ -73,15 +74,18 @@ class PrecScales:
         obj         = EfficiencyCalculator(q2bin=self._q2bin, d_cut=self._d_cut)
         obj.out_dir = out_dir
         df          = obj.get_stats()
+        d_data      = df.to_dict()
 
-        put.to_yaml(df, yaml_path)
+        d_data['cuts'] = self._d_cut
+        with open(yaml_path, 'w', encoding='utf-8') as ofile:
+            yaml.safe_dump(d_data, ofile)
     #------------------------------------------
     def _load_efficiencies(self):
         log.debug('Getting efficiencies')
 
         eff_dir  = files('rx_efficiencies_data').joinpath('prec_sf')
         eff_path = get_last_version(dir_path=eff_dir, version_only=False)
-        eff_path = f'{eff_path}/efficiencies_{self._q2bin}.yaml'
+        eff_path = f'{eff_path}/efficiencies_{self._q2bin}_{self._hash}.yaml'
 
         if not os.path.isfile(eff_path):
             self._calculate_efficiencies(yaml_path=eff_path)
@@ -89,6 +93,7 @@ class PrecScales:
         with open(eff_path, encoding='utf-8') as ifile:
             data = yaml.safe_load(ifile)
 
+        del data['cuts']
         df = pnd.DataFrame(data)
 
         self._df_eff = df
