@@ -3,6 +3,7 @@ Module used to test PrecScales class
 '''
 
 import os
+import numpy
 import pytest
 import matplotlib.pyplot as plt
 
@@ -17,12 +18,8 @@ class Data:
     '''
     Data class
     '''
-    l_mva_cut = [
-            'mva_prc > 0.2',
-            'mva_prc > 0.4',
-            'mva_prc > 0.6',
-            'mva_prc > 0.8',
-            ]
+    l_mva_cmb = [ f'mva_cmb > {wp:.3f}' for wp in numpy.arange(0.5, 1.0, 0.05) ]
+    l_mva_prc = [ f'mva_prc > {wp:.3f}' for wp in numpy.arange(0.5, 1.0, 0.05) ]
 # -----------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _initialize():
@@ -69,14 +66,16 @@ def test_all_datasets(q2bin : str, process : str):
 
     ScalesData.collect_def_wp(process, q2bin, val, err)
 #-------------------------------
-@pytest.mark.parametrize('mva_cut', Data.l_mva_cut)
-def test_scan_scales(mva_cut : str):
+@pytest.mark.parametrize('mva_cmb', Data.l_mva_cmb)
+@pytest.mark.parametrize('mva_prc', Data.l_mva_prc)
+def test_scan_scales(mva_cmb : str, mva_prc : str):
     '''
     Tests retrieval of scales between signal and PRec yields
     '''
     process  = 'bdkskpiee'
     q2bin    = 'central'
     signal   = 'bpkpee'
+    mva_cut  = f'({mva_cmb}) && ({mva_prc})'
     d_cut    = {'mva' : mva_cut}
 
     obj      = PrecScales(proc=process, q2bin=q2bin, d_cut=d_cut)
