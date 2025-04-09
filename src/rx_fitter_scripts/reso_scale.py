@@ -38,13 +38,13 @@ def _name_from_parname(name : str) -> str:
     if name.startswith('sg_'):
         return r'$\sigma$'
 
-    if name == 'nSignal':
+    if name.startswith('nSignal'):
         return 'yield'
 
     raise ValueError(f'Invalid parameter name {name}')
 #------------------------------------------
 def _is_par_needed(name : str) -> str:
-    if name == 'nSignal':
+    if name.startswith('nSignal'):
         return True
 
     if name.startswith('mu_'):
