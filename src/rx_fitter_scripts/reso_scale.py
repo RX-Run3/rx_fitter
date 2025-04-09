@@ -41,27 +41,26 @@ def _name_from_parname(name : str) -> str:
     if name.startswith('nSignal'):
         return 'yield'
 
-    raise ValueError(f'Invalid parameter name {name}')
-#------------------------------------------
-def _is_par_needed(name : str) -> str:
-    if name.startswith('nSignal'):
-        return True
+    if name.startswith('nl_'):
+        return 'nl' 
 
-    if name.startswith('mu_'):
-        return True
+    if name.startswith('nr_'):
+        return 'nr' 
 
-    if name.startswith('sg_'):
-        return True
+    if name.startswith('al_'):
+        return 'al' 
 
-    return False
+    if name.startswith('ar_'):
+        return 'ar' 
+
+    return None
 #------------------------------------------
 def _df_from_pars(d_par : dict[str,list[str]]) -> pnd.DataFrame:
     d_data = {'Parameter' : [], 'Value' : [], 'Error' : []}
     for name, [val, err] in d_par.items():
-        if not _is_par_needed(name):
-            continue
-
         name = _name_from_parname(name)
+        if name is None:
+            continue
 
         d_data['Parameter'].append(name)
         d_data['Value'    ].append(val)
@@ -93,6 +92,16 @@ def _get_df_fit(kind : str, brem : int) -> pnd.DataFrame:
 
     return df
 #------------------------------------------
+def _pick_common_parameters(df_dt : pnd.DataFrame, df_mc : pnd.DataFrame) -> tuple[pnd.DataFrame, pnd.DataFrame]:
+    l_par_dt = df_dt.Parameter.unique().tolist()
+    l_par_mc = df_mc.Parameter.unique().tolist()
+    l_common = [ par_dt for par_dt in l_par_dt if par_dt in l_par_mc ]
+
+    df_dt = df_dt[df_dt.Parameter.isin(l_common)]
+    df_mc = df_mc[df_mc.Parameter.isin(l_common)]
+
+    return df_dt, df_mc
+#------------------------------------------
 def _get_df() -> pnd.DataFrame:
     l_df_brem = []
     for brem in Data.l_brem:
@@ -101,9 +110,13 @@ def _get_df() -> pnd.DataFrame:
             log.debug(f'Extracting parameters for {kind}/{brem}')
             df         = _get_df_fit(kind = kind, brem = brem)
             df['kind'] = kind
+
             l_df_kind.append(df)
 
-        df = pnd.concat(l_df_kind, axis=0)
+        [df_dt, df_mc] = l_df_kind
+        [df_dt, df_mc] = _pick_common_parameters(df_dt, df_mc)
+
+        df = pnd.concat([df_dt, df_mc], axis=0)
         df['brem'] = brem
 
         l_df_brem.append(df)
@@ -190,7 +203,7 @@ def _path_from_par(parameter : str) -> str:
     if 'frac'  in parameter:
         return 'brem_fraction.png'
 
-    raise ValueError(f'Parameter not a scale or resolution: {parameter}')
+    return f'{parameter}.png'
 #------------------------------------------
 def _ylim_from_par(parameter : str) -> tuple[float,float]:
     if 'mu'    in parameter:
@@ -202,7 +215,7 @@ def _ylim_from_par(parameter : str) -> tuple[float,float]:
     if 'frac'  in parameter:
         return 0.7, 1.3
 
-    raise NotImplementedError(f'Invalid parameter {parameter}')
+    return None
 #------------------------------------------
 def _ylabel_from_par(parameter : str) -> str:
     if 'mu'    in parameter:
@@ -214,19 +227,13 @@ def _ylabel_from_par(parameter : str) -> str:
     if 'frac'  in parameter:
         return r'$frac_{Data}/frac_{MC}$'
 
-    raise NotImplementedError(f'Invalid parameter {parameter}')
+    return f'$s_{{{parameter}}}$'
 #------------------------------------------
 def _caption_from_par(parameter : str) -> str:
-    if 'mu'    in parameter:
-        return r'$\mu$'
-
-    if 'sigma' in parameter:
-        return r'$\sigma$'
-
     if 'frac'  in parameter:
         return r'$f_{brem}$'
 
-    raise NotImplementedError(f'Invalid parameter {parameter}')
+    return parameter
 #------------------------------------------
 def _format_float(val : float) -> str:
     if val < 10:
