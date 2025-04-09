@@ -27,6 +27,7 @@ class Data:
 @pytest.fixture(scope='session', autouse=True)
 def _initialize():
     LogStore.set_level('rx_fitter:prec_scales', 10)
+    LogStore.set_level('rx_efficiencies:efficiency_calculator', 10)
 #-------------------------------
 def _plot_df(df, trig):
     df = df[df.trig == trig]
