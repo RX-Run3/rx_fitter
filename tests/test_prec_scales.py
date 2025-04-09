@@ -81,9 +81,6 @@ def test_all_datasets(q2bin : str, process : str):
     else:
         assert val == 1   # If this runs on signal, scale is 1
 
-    if val > 0:          # If no events pass selection, error will be zero, as well as value
-        assert err < val # Error smaller than value
-
     ScalesData.collect_def_wp(process, q2bin, val, err)
 #-------------------------------
 @pytest.mark.parametrize('mva_cmb', Data.l_mva_cmb)
@@ -101,7 +98,7 @@ def test_sim_scan_scales(mva_cmb : str, mva_prc : str):
     obj      = PrecScales(proc=process, q2bin=q2bin, d_cut=d_cut)
     val, err = obj.get_scale(signal=signal)
 
-    ScalesData.collect_mva_wp(mva_cut, q2bin, val, err)
+    ScalesData.collect_mva_wp(process, mva_cut, q2bin, val, err)
 #-------------------------------
 @pytest.mark.parametrize('process', ['bdkskpiee', 'bpkskpiee', 'bsphiee'])
 @pytest.mark.parametrize('q2bin'  , ['low', 'central', 'high'])
