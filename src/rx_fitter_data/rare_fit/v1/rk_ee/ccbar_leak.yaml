@@ -28,4 +28,4 @@ input:
   selection:
   trigger: Hlt2RD_BuToKpEE_MVA
 output:
-  fit_dir: /tmp/tests/rx_fitter/components/ccbar_leak
+  out_dir: /tmp/tests/rx_fitter/components/ccbar_leak
