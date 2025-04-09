@@ -85,7 +85,7 @@ class PrecScales:
 
         eff_dir  = files('rx_efficiencies_data').joinpath('prec_sf')
         eff_path = get_last_version(dir_path=eff_dir, version_only=False)
-        eff_path = f'{eff_path}/efficiencies_{self._q2bin}_{self._hash}.yaml'
+        eff_path = f'{eff_path}/efficiencies_{self._q2bin}/{self._hash}/data.yaml'
 
         if not os.path.isfile(eff_path):
             self._calculate_efficiencies(yaml_path=eff_path)
