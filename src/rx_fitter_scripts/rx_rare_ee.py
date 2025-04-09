@@ -2,6 +2,7 @@
 Script used to fit the rare mode
 '''
 import os
+import argparse
 from importlib.resources import files
 
 import yaml
@@ -14,7 +15,6 @@ from zfit.core.interfaces   import ZfitSpace  as zobs
 from zfit.core.parameter    import Parameter  as zpar
 from dmu.generic            import hashing
 from dmu.generic            import utilities  as gut
-from dmu.stats.fitter       import Fitter
 from dmu.logging.log_store  import LogStore
 from dmu.stats.utilities    import print_pdf
 from rx_data.rdf_getter     import RDFGetter
@@ -27,12 +27,13 @@ class Data:
     '''
     Data class
     '''
+    q2bin   : str
+
     cache_dir: str = '/tmp/rx_fitter/cache'
     mva_cut : str  = '(mva_cmb > 0.90) && (mva_prc > 0.85)'
     sample  : str  = 'DATA*'
     trigger : str  = 'Hlt2RD_BuToKpEE_MVA'
     version : str  = 'v1'
-    q2bin   : str  = 'central'
     mass    : str  = 'B_M_brem_track_2'
     minx    : int  = 4_500
     maxx    : int  = 6_000
@@ -41,6 +42,13 @@ class Data:
     gut.TIMER_ON   = True
 
     l_pdf   : list[zpdf] = []
+# --------------------------------------------------------------
+def _parse_args():
+    parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
+    parser.add_argument('-q', '--q2bin' , type=str, help='q2 bin', required=True, choices=['low', 'central', 'high'])
+    args = parser.parse_args()
+
+    Data.q2bin = args.q2bin
 # --------------------------------------------------------------
 def _load_config(component : str) -> dict:
     cfg_path = files('rx_fitter_data').joinpath(f'rare_fit/{Data.version}/rk_ee/{component}.yaml')
@@ -140,11 +148,12 @@ def main():
     '''
     Start here
     '''
+    _parse_args()
     pdf  = _get_pdf()
-    data = _get_data()
 
-    obj = Fitter(pdf=pdf, data=data)
-    res = obj.fit()
+    print_pdf(pdf)
+    #data = _get_data()
+    #d_cns= _get_constraints()
 # --------------------------
 if __name__ == '__main__':
     main()
