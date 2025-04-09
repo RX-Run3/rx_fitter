@@ -42,16 +42,21 @@ class ScalesData:
         '''
         print(ScalesData.df_def_wp)
 
-        plt.figure(figsize=(20,20))
+        plt.figure(figsize=(15,10))
         for proc, df_proc in ScalesData.df_def_wp.groupby('Process'):
+            if proc == 'bpkpee':
+                continue
+
             decay = dn.tex_from_decay(proc)
-            plt.plot(df_proc.Q2, df_proc.Value, label=decay, color='blue')
-            plt.fill_between(df_proc.Q2, df_proc.Value - df_proc.Error, df_proc.Value + df_proc.Error, color='blue', alpha=0.2)
+            plt.plot(df_proc.Q2, df_proc.Value, label=decay)
+            plt.fill_between(df_proc.Q2, df_proc.Value - df_proc.Error, df_proc.Value + df_proc.Error, alpha=0.2)
 
         out_dir = 'plots/prec_scales'
         os.makedirs(out_dir, exist_ok=True)
 
-        plt.ylim(0, 1)
+        plt.grid()
+        plt.legend()
+        plt.ylim(0.0, 0.40)
         plt.xlabel('')
         plt.ylabel(r'$N_{PRec}/N_{Signal}$')
         plt.savefig(f'{out_dir}/scales_def_wp.png')
