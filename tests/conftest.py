@@ -65,13 +65,14 @@ class ScalesData:
 
         ax = None
         for q2bin, df_q2bin in ScalesData.df_mva_wp.groupby('Q2'):
-            ax = df_q2bin.plot(x='mva_cut', y='Value', yerr='Error', label=q2bin, ax=ax, figsize=(13, 10))
+            ax = df_q2bin.plot(x='mva_cut', y='Value', yerr='Error', label=q2bin, ax=ax, figsize=(20, 10))
 
         out_dir = 'plots/prec_scales'
         os.makedirs(out_dir, exist_ok=True)
 
         plt.ylim(0, 1)
         plt.xlabel('')
+        plt.xticks(rotation=70)
         plt.ylabel(r'$N_{PRec}/N_{Signal}$')
         plt.savefig(f'{out_dir}/scales_mva_wp.png')
         plt.close()
