@@ -212,7 +212,6 @@ def test_combinatorial(q2bin : str):
     cfg                   = _load_config(test='combinatorial')
     out_dir               = cfg['out_dir']
     cfg['out_dir']        = f'{out_dir}/{q2bin}'
-    cfg['input']['q2bin'] = 'central'
 
     obs= zfit.Space('B_M', limits=[4500, 6000])
     pdf= cmp.get_cb(obs=obs, q2bin=q2bin, cfg=cfg)
