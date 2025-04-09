@@ -94,21 +94,21 @@ def _get_df_fit(kind : str, brem : int) -> pnd.DataFrame:
     return df
 #------------------------------------------
 def _get_df() -> pnd.DataFrame:
-    l_df_kind = []
-    for kind in Data.l_kind:
-        l_df_brem = []
-        for brem in Data.l_brem:
+    l_df_brem = []
+    for brem in Data.l_brem:
+        l_df_kind = []
+        for kind in Data.l_kind:
             log.debug(f'Extracting parameters for {kind}/{brem}')
             df         = _get_df_fit(kind = kind, brem = brem)
-            df['brem'] = brem
-            l_df_brem.append(df)
+            df['kind'] = kind
+            l_df_kind.append(df)
 
-        df = pnd.concat(l_df_brem, axis=0)
-        df['kind'] = kind
+        df = pnd.concat(l_df_kind, axis=0)
+        df['brem'] = brem
 
-        l_df_kind.append(df)
+        l_df_brem.append(df)
 
-    df = pnd.concat(l_df_kind, axis=0)
+    df = pnd.concat(l_df_brem, axis=0)
     df = df.reset_index(drop=True)
     df = _frac_from_yield(df)
 
