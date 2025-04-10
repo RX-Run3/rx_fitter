@@ -19,5 +19,7 @@ def test_get_data():
     obj = SignalScales()
     df  = obj.get_data()
 
-    print(df)
+    log.info(df)
+
+    assert len(df) > 0
 # ------------------------------------
