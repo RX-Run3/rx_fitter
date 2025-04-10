@@ -52,6 +52,12 @@ class ConstraintReader:
         d_cut    = {'mva' : self._mva_cut}
 
         for par in self._l_par:
+            if not par.startswith('s'): # PRec constraints are scales, starting with "s"
+                continue
+
+            if '_cmb_'  in par: # Skip parameters from combinatorial
+                continue
+
             if 'Signal' in par:
                 continue
 
