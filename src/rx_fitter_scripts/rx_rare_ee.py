@@ -9,17 +9,18 @@ import yaml
 import ROOT
 import numpy
 import zfit
-from zfit.core.data         import Data       as zdata
-from zfit.core.basepdf      import BasePDF    as zpdf
-from zfit.core.interfaces   import ZfitSpace  as zobs
-from zfit.core.parameter    import Parameter  as zpar
-from dmu.generic            import hashing
-from dmu.generic            import utilities  as gut
-from dmu.logging.log_store  import LogStore
-from dmu.stats.utilities    import print_pdf
-from rx_data.rdf_getter     import RDFGetter
-from rx_selection           import selection  as sel
-from rx_fitter              import components as cmp
+from zfit.core.data              import Data       as zdata
+from zfit.core.basepdf           import BasePDF    as zpdf
+from zfit.core.interfaces        import ZfitSpace  as zobs
+from zfit.core.parameter         import Parameter  as zpar
+from dmu.generic                 import hashing
+from dmu.generic                 import utilities  as gut
+from dmu.logging.log_store       import LogStore
+from dmu.stats.utilities         import print_pdf
+from rx_data.rdf_getter          import RDFGetter
+from rx_selection                import selection  as sel
+from rx_fitter                   import components as cmp
+from rx_fitter.constraint_reader import ConstraintReader
 
 log=LogStore.add_logger('rx_fitter:rx_rare_ee')
 # --------------------------
@@ -41,14 +42,17 @@ class Data:
     nsig    : zpar = zfit.Parameter('nsig', 0, 0, 10_000)
     gut.TIMER_ON   = True
 
-    l_pdf   : list[zpdf] = []
+    log_level : int        = 20
+    l_pdf     : list[zpdf] = []
 # --------------------------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
     parser.add_argument('-q', '--q2bin' , type=str, help='q2 bin', required=True, choices=['low', 'central', 'high'])
+    parser.add_argument('-l', '--loglv' , type=int, help='Logging level', default=Data.log_level, choices=[10, 20, 30])
     args = parser.parse_args()
 
-    Data.q2bin = args.q2bin
+    Data.q2bin     = args.q2bin
+    Data.log_level = args.loglv
 # --------------------------------------------------------------
 def _load_config(component : str) -> dict:
     cfg_path = files('rx_fitter_data').joinpath(f'rare_fit/{Data.version}/rk_ee/{component}.yaml')
@@ -64,6 +68,9 @@ def _add_pdf_cmb() -> None:
     pdf  = pdf.create_extended(ncmb)
 
     Data.l_pdf.append(pdf)
+# --------------------------
+def _set_logs() -> None:
+    LogStore.set_level('rx_fitter:constraint_reader', Data.log_level)
 # --------------------------
 def _add_pdf_prc(sample : str) -> None:
     cfg                   = _load_config(component='bxhsee')
@@ -144,16 +151,27 @@ def _get_data() -> zdata:
 
     return data
 # --------------------------
+def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
+    s_par  = pdf.get_params()
+    l_name = [par.name for par in s_par]
+
+    obj    = ConstraintReader(parameters = l_name, q2bin=Data.q2bin, mva_cut = Data.mva_cut)
+    d_cns  = obj.get_constraints()
+
+    return d_cns
+# --------------------------
 def main():
     '''
     Start here
     '''
     _parse_args()
-    pdf  = _get_pdf()
+    _set_logs()
 
-    print_pdf(pdf)
+    pdf  = _get_pdf()
+    d_cns= _get_constraints(pdf)
+
+    print_pdf(pdf, d_const=d_cns)
     #data = _get_data()
-    #d_cns= _get_constraints()
 # --------------------------
 if __name__ == '__main__':
     main()
