@@ -25,7 +25,6 @@ fitting:
         nbins: 30
         stacked: true
 input:
-  selection:
   trigger: Hlt2RD_BuToKpEE_MVA
 output:
   out_dir: /home/acampove/external_ssd/fits/data/
