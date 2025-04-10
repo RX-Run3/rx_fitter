@@ -3,7 +3,7 @@ brem:
   1: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1
   2: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2
 selection:
-  mva : (mva_cmb > 0) && (mva_prc > 0)
+  bdt : (mva_cmb > 0.90) && (mva_prc > 0.85)
 fitting:
   config:
     Bu_JpsiK_ee_eq_DPC:
