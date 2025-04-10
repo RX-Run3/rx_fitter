@@ -90,7 +90,6 @@ def _suffix_from_name(name : str) -> str:
 # --------------------------------
 def _get_rdf() ->  zdata:
     gtr = RDFGetter(sample=Data.sample, trigger=Data.trigger)
-    gtr.initialize()
     rdf = gtr.get_rdf()
     rdf = _apply_selection(rdf)
 
