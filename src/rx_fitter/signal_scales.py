@@ -13,7 +13,7 @@ from dmu.logging.log_store import LogStore
 
 log = LogStore.add_logger('rx_fitter:signal_scales')
 # ------------------------------------
-class SignalScales:
+class FitParameters:
     '''
     Class used to provide:
 
@@ -59,13 +59,14 @@ class SignalScales:
         return None
     #------------------------------------------
     def _df_from_pars(self, d_par : dict[str,list[str]]) -> pnd.DataFrame:
-        d_data = {'Parameter' : [], 'Value' : [], 'Error' : []}
+        d_data = {'Name' : [], 'Parameter' : [], 'Value' : [], 'Error' : []}
         for name, [val, err] in d_par.items():
-            name = self._name_from_parname(name)
-            if name is None:
+            nickname = self._name_from_parname(name)
+            if nickname is None:
                 continue
 
-            d_data['Parameter'].append(name)
+            d_data['Name'     ].append(name)
+            d_data['Parameter'].append(nickname)
             d_data['Value'    ].append(val)
             d_data['Error'    ].append(err)
 
