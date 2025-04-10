@@ -28,4 +28,4 @@ input:
   selection:
   trigger: Hlt2RD_BuToKpEE_MVA
 output:
-  out_dir: /tmp/tests/rx_fitter/components/ccbar_leak
+  out_dir: /home/acampove/external_ssd/fits/data/
