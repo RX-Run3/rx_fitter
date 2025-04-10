@@ -9,6 +9,7 @@ import pandas            as pnd
 import matplotlib.pyplot as plt
 from rx_efficiencies.decay_names import DecayNames as dn
 
+executed_tests = set()
 # -----------------------------------
 class ScalesData:
     '''
@@ -91,12 +92,21 @@ class ScalesData:
         plt.savefig(f'{out_dir}/scales_mva_wp_{q2bin}.png')
         plt.close()
 # -----------------------------------
+def pytest_runtest_logreport(report):
+    '''
+    Will collect the names (?) of the tests that were ran and passed
+    in the executed_tests set
+    '''
+    if report.when == "call" and report.passed:
+        executed_tests.add(report.nodeid)
+# -----------------------------------
 def pytest_sessionfinish():
     '''
     Runs at the end
     '''
-    ScalesData.plot_scales_def_wp()
+    if any('test_prec_scales' in test for test in executed_tests):
+        ScalesData.plot_scales_def_wp()
 
-    for q2bin, df_q2 in ScalesData.df_mva_wp.groupby('Q2'):
-        ScalesData.plot_scales_mva_wp(df_mva = df_q2, q2bin=q2bin)
+        for q2bin, df_q2 in ScalesData.df_mva_wp.groupby('Q2'):
+            ScalesData.plot_scales_mva_wp(df_mva = df_q2, q2bin=q2bin)
 # -----------------------------------
