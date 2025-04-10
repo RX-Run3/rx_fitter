@@ -66,3 +66,13 @@ def test_get_mass_scales(name : str):
     log.info(f'Value: {val:.3f}')
     log.info(f'Error: {err:.3f}')
 # ------------------------------------
+@pytest.mark.parametrize('name', Data.l_brem_frac)
+def test_get_brem_values(name : str):
+    '''
+    Tests retrieval of data brem fractions
+    '''
+    obj      = FitParameters()
+    val, err = obj.get_brem_fraction(name=name)
+
+    log.info(f'Value: {val:.3f}')
+    log.info(f'Error: {err:.3f}')

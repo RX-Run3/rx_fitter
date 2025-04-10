@@ -215,4 +215,18 @@ class FitParameters:
             raise ValueError(f'Neither a scale nor a resolution: {name}')
 
         return scl, math.sqrt(var)
+    # ------------------------------------
+    def get_brem_fraction(self, name : str, is_data : bool = True) -> tuple[float,float]:
+        '''
+        Takes name of brem fraction, returns tuple with value of scale and error for data, by default
+        is_data flag can override this
+        '''
+        if name not in ['frac_brem_000', 'frac_brem_001', 'frac_brem_002']:
+            raise ValueError(f'Parameter not a brem fraction: {name}')
+
+        [_, _, cat ] = name.split('_')
+
+        val, err = self._get_parameter_value(name=f'nSignal_{cat}', is_data=is_data)
+
+        return val, err
 # ------------------------------------
