@@ -15,18 +15,18 @@ class ScalesData:
     '''
     data class
     '''
-    df_def_wp = pnd.DataFrame(columns=['Process', 'Q2', 'Value', 'Error'])
+    df_def_wp = pnd.DataFrame(columns=['Process', 'mva_cut', 'Q2', 'Value', 'Error'])
     df_mva_wp = pnd.DataFrame(columns=['Process', 'mva_cut', 'Q2', 'Value', 'Error'])
 
     plt.style.use(mplhep.style.LHCb2)
     # ------------------
     @staticmethod
-    def collect_def_wp(proc : str, q2bin : str, value : float, error : float) -> None:
+    def collect_def_wp(proc : str, mvawp: str, q2bin : str, value : float, error : float) -> None:
         '''
         Picks test outputs and uses it to fill dataframe
         '''
         size                           = len(ScalesData.df_def_wp)
-        ScalesData.df_def_wp.loc[size] = [proc, q2bin, value, error]
+        ScalesData.df_def_wp.loc[size] = [proc, mvawp, q2bin, value, error]
     # ------------------
     @staticmethod
     def collect_mva_wp(proc : str, mvawp: str, q2bin : str, value : float, error : float) -> None:
@@ -41,10 +41,11 @@ class ScalesData:
         '''
         Plots scales from dataframe with default WP
         '''
-        print(ScalesData.df_def_wp)
+        df      = ScalesData.df_def_wp
+        mva_cut = df.mva_cut.iloc[0]
 
         plt.figure(figsize=(15,10))
-        for proc, df_proc in ScalesData.df_def_wp.groupby('Process'):
+        for proc, df_proc in df.groupby('Process'):
             if proc == 'bpkpee':
                 continue
 
@@ -56,6 +57,7 @@ class ScalesData:
         os.makedirs(out_dir, exist_ok=True)
 
         plt.grid()
+        plt.title(mva_cut)
         plt.legend()
         plt.ylim(0.0, 0.40)
         plt.xlabel('')
@@ -104,9 +106,10 @@ def pytest_sessionfinish():
     '''
     Runs at the end
     '''
-    if any('test_prec_scales' in test for test in executed_tests):
+    if any('test_all_datasets' in test for test in executed_tests):
         ScalesData.plot_scales_def_wp()
 
+    if any('test_seq_scan_scales' in test for test in executed_tests):
         for q2bin, df_q2 in ScalesData.df_mva_wp.groupby('Q2'):
             ScalesData.plot_scales_mva_wp(df_mva = df_q2, q2bin=q2bin)
 # -----------------------------------
