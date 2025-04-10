@@ -3,6 +3,7 @@ Module holding SignalScales class
 '''
 import os
 import glob
+import math
 import json
 import numpy
 import jacobi
@@ -33,6 +34,9 @@ class FitParameters:
         self._mc_sample = 'Signal'
         self._trigger   = 'Hlt2RD_BuToKpEE_MVA'
         self._mass      = 'B_M_brem_track_2'
+
+        self._df : pnd.DataFrame
+        self._is_initialized = False
     #------------------------------------------
     def _name_from_parname(self, name : str) -> str:
         if name.startswith('mu_'):
@@ -124,10 +128,10 @@ class FitParameters:
 
         return df_dt, df_mc
     # -----------------------------------
-    def get_data(self) -> pnd.DataFrame:
-        '''
-        Returns dataframe with parameter values from fits to data and MC
-        '''
+    def _initialize(self):
+        if self._is_initialized:
+            return
+
         l_df_brem = []
         for brem in self._l_brem:
             l_df_kind = []
@@ -150,5 +154,65 @@ class FitParameters:
         df = df.reset_index(drop=True)
         df = self._frac_from_yield(df)
 
-        return df
+        self._is_initialized = True
+
+        self._df = df
+    # -----------------------------------
+    def get_data(self) -> pnd.DataFrame:
+        '''
+        Returns dataframe with parameter values from fits to data and MC
+        '''
+        self._initialize()
+
+        return self._df
+    # -----------------------------------
+    def _get_parameter_value(self, name : str, is_data : bool) -> tuple[float,float]:
+        '''
+        Takes name of fitting parameter, returns its value and error
+        '''
+        self._initialize()
+
+        name = name.replace('scale_', '').replace('reso_', '')
+
+        kind = 'data' if is_data else 'mc'
+        df   = self._df.copy()
+        df   = df[df.kind == kind ]
+        df   = df[df.Name == name ]
+
+        if len(df) != 1:
+            log.info(self._df)
+            log.info('--->')
+            log.error(df)
+            raise ValueError(f'Not found one and only one row for: {name}')
+
+        log.debug('Using dataframe:\n')
+        log.debug(df)
+
+        val = df.Value.iloc[0]
+        err = df.Error.iloc[0]
+
+        return val, err
+    # ------------------------------------
+    def get_parameter_scale(self, name : str) -> tuple[float,float]:
+        '''
+        Takes name of scale parameter, returns tuple with value of scale and error
+        '''
+
+        if 'Signal' not in name:
+            raise ValueError(f'Not a signal parameter: {name}')
+
+        val_dt, err_dt = self._get_parameter_value(name=name, is_data= True)
+        val_mc, err_mc = self._get_parameter_value(name=name, is_data=False)
+
+        cov = [[err_dt ** 2,          0],
+               [          0, err_mc **2]]
+
+        if   'scale' in name:
+            scl, var = jacobi.propagate(lambda x : x[0] - x[1], [val_dt, val_mc], cov)
+        elif 'reso'  in name:
+            scl, var = jacobi.propagate(lambda x : x[0] / x[1], [val_dt, val_mc], cov)
+        else:
+            raise ValueError(f'Neither a scale nor a resolution: {name}')
+
+        return scl, math.sqrt(var)
 # ------------------------------------
