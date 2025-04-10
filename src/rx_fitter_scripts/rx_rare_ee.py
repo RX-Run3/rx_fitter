@@ -9,6 +9,8 @@ import yaml
 import ROOT
 import numpy
 import zfit
+import matplotlib.pyplot as plt
+from ROOT                        import EnableImplicitMT
 from zfit.core.data              import Data       as zdata
 from zfit.core.basepdf           import BasePDF    as zpdf
 from zfit.core.interfaces        import ZfitSpace  as zobs
@@ -16,7 +18,8 @@ from zfit.core.parameter         import Parameter  as zpar
 from dmu.generic                 import hashing
 from dmu.generic                 import utilities  as gut
 from dmu.logging.log_store       import LogStore
-from dmu.stats.utilities         import print_pdf
+from dmu.stats.zfit_plotter      import ZFitPlotter
+from dmu.stats.fitter            import Fitter
 from rx_data.rdf_getter          import RDFGetter
 from rx_selection                import selection  as sel
 from rx_fitter                   import components as cmp
@@ -31,13 +34,13 @@ class Data:
     q2bin   : str
 
     cache_dir: str = '/tmp/rx_fitter/cache'
-    mva_cut : str  = '(mva_cmb > 0.90) && (mva_prc > 0.85)'
+    mva_cut : str  = '(mva_cmb > 0.50) && (mva_prc > 0.85)'
     sample  : str  = 'DATA*'
     trigger : str  = 'Hlt2RD_BuToKpEE_MVA'
     version : str  = 'v1'
     mass    : str  = 'B_M_brem_track_2'
     minx    : int  = 4_500
-    maxx    : int  = 6_000
+    maxx    : int  = 6_100
     obs     : zobs = zfit.Space(mass, limits=(minx, maxx))
     nsig    : zpar = zfit.Parameter('nsig', 0, 0, 10_000)
     gut.TIMER_ON   = True
@@ -137,6 +140,9 @@ def _get_data() -> zdata:
         arr_mass = numpy.array(l_mass)
         data = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
 
+        #plt.hist(arr_mass, range=(4500, 6100), bins=50)
+        #plt.show()
+
         return data
 
     for cut_name, cut_expr in d_sel.items():
@@ -160,18 +166,36 @@ def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
 
     return d_cns
 # --------------------------
+@gut.timeit
+def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> None:
+
+    cfg = {
+            'constraints' : constraints,
+            #'strategy'    : {'retry' : {'ntries' : 10, 'pvalue_thresh' : 0.05, 'ignore_status' : False}},
+            }
+
+    obj = Fitter(pdf, data)
+    res = obj.fit(cfg=cfg)
+    log.info(res)
+
+    obj   = ZFitPlotter(data=data, model=pdf)
+    obj.plot(nbins=50, stacked=True)
+    plt.savefig(f'fit_{Data.q2bin}.png')
+    plt.close()
+# --------------------------
 def main():
     '''
     Start here
     '''
     _parse_args()
     _set_logs()
+    EnableImplicitMT(10)
 
+    data = _get_data()
     pdf  = _get_pdf()
     d_cns= _get_constraints(pdf)
 
-    print_pdf(pdf, d_const=d_cns)
-    #data = _get_data()
+    _fit(pdf=pdf, data=data, constraints=d_cns)
 # --------------------------
 if __name__ == '__main__':
     main()
