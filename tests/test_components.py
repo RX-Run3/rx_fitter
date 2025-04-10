@@ -22,7 +22,7 @@ class Data:
     mass = 'B_M_brem_track_2'
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
-def _intiailize():
+def _intialize():
     LogStore.set_level('rx_fitter:prec'              , 10)
     LogStore.set_level('rx_fitter:components'        , 10)
     LogStore.set_level('rx_fitter:mc_par_pdf'        , 10)
