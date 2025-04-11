@@ -228,18 +228,27 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
 
     return obj.get_pdf()
 # ------------------------------------
-def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
+def _get_brem_cut(cfg : dict, l_nbrem : list[int]) -> str:
+    l_cut = [ cfg['brem'][nbrem] for nbrem in l_nbrem ]
+    cut   = '||'.join(l_cut)
+
+    log.info(f'Using brem cut: {cut}')
+
+    return cut
+# ------------------------------------
+def get_kde(obs : zobs, sample : str, l_nbrem : list[int], cfg : dict) -> zpdf:
     '''
     Function returning zfit PDF object for Samples that need to be modelled with a KDE
 
     obs    : zfit observable
     sample : Sample name, e.g.
-    nbrem  : Brem category, e.g. 0, 1, 2. None will put all the categories together
+    l_nbrem: Brem category list e.g. [0, 1, 2]
     cfg    : Dictionary with configuration
     '''
 
-    hsh = hashing.hash_object(obj=[obs.to_json(), sample, nbrem, cfg])
+    hsh = hashing.hash_object(obj=[obs.to_json(), sample, l_nbrem, cfg])
 
+    nbrem    = '_'.join(map(str, l_nbrem))
     mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
     trigger  = cfg['input']['trigger']
@@ -247,6 +256,7 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
     out_dir  = cfg['output']['out_dir']
     out_dir  = f'{out_dir}/{sample}/{q2bin}/{mass}_{nbrem}/{hsh}'
 
+    d_plt['title'] = f'{sample}; {l_nbrem}'
     cfg['name']    = sample
     cfg['plotting']= d_plt
     cfg['out_dir'] = out_dir
@@ -266,9 +276,7 @@ def get_kde(obs : zobs, sample : str, nbrem : int, cfg : dict) -> zpdf:
         d_sel = cfg['selection']
         d_cut.update(d_sel)
 
-    if nbrem is not None:
-        brem_cut = cfg['brem'][nbrem]
-        d_cut['nbrem'] = brem_cut
+    d_cut['nbrem'] = _get_brem_cut(cfg=cfg, l_nbrem=l_nbrem)
 
     rdf = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
     fcm = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
