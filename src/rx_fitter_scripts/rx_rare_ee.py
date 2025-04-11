@@ -33,7 +33,9 @@ class Data:
     Data class
     '''
     q2bin   : str
+    l_nbrem : list[int] = [1, 2]
 
+    brem_def : str = 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)'
     cache_dir: str = '/tmp/rx_fitter/cache'
     mva_cut : str  = '(mva_cmb > 0.80) && (mva_prc > 0.80)'
     sample  : str  = 'DATA*'
@@ -81,7 +83,7 @@ def _add_pdf_prc(sample : str) -> None:
     cfg['input']['q2bin'] = Data.q2bin
     cfg['selection']      = {'mva' : Data.mva_cut}
 
-    pdf  = cmp.get_kde(obs=Data.obs, sample=sample, nbrem=None, cfg=cfg)
+    pdf  = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
     scale= zfit.Parameter(f's{sample}', 0, 0, 10)
     nprc = zfit.ComposedParameter(f'n{sample}', lambda x : x['nsig'] * x['scale'], params={'nsig' : Data.nsig, 'scale' : scale})
     pdf.set_yield(nprc)
@@ -126,14 +128,22 @@ def _get_pdf() -> zpdf:
 
     return pdf
 # --------------------------
+def _get_brem_cut() -> str:
+    l_cut = [ f'(nbrem == {nbrem})' for nbrem in Data.l_nbrem ]
+    cut   = '||'.join(l_cut)
+
+    return cut
+# --------------------------
 @gut.timeit
 def _get_data() -> zdata:
     gtr = RDFGetter(sample=Data.sample, trigger=Data.trigger)
     rdf = gtr.get_rdf()
+    rdf = rdf.Define('nbrem', Data.brem_def)
 
     d_sel        = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
     d_sel['mva'] = Data.mva_cut
     d_sel['mass']= '(1)'
+    d_sel['brem']= _get_brem_cut()
 
     hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger, Data.mass, Data.mva_cut])
     data_cache_path = f'{Data.cache_dir}/{hsh}.json'
