@@ -127,33 +127,8 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
 
     return obj.get_pdf()
 # ------------------------------------
-def _get_brem_reparametrization(pdf_z : zpdf, pdf_o : zpdf, pdf_t : zpdf) -> zpdf:
-    frac_z = zfit.Parameter('frac_brem_000', 0.3, 0, 1)
-    frac_o = zfit.Parameter('frac_brem_001', 0.4, 0, 1)
-    frac_t = zfit.Parameter('frac_brem_002', 0.3, 0, 1)
-
-    pdf = zfit.pdf.SumPDF(pdfs=[pdf_z, pdf_o, pdf_t], fracs=[frac_z, frac_o, frac_t])
-
-    return pdf
-# ------------------------------------
-def get_mc_reparametrized(obs : zobs, component_name : str, cfg : dict, nbrem : int) -> zpdf:
-    '''
-    Will return reparametrized fit component. The MC fit is expected to have been done already and this
-    will only load those parameters:
-
-    - No RDF needed
-    - No plotting needed
-    '''
-    if nbrem is None:
-        pdf_z = get_mc_reparametrized(obs, component_name, cfg, 0)
-        pdf_o = get_mc_reparametrized(obs, component_name, cfg, 1)
-        pdf_t = get_mc_reparametrized(obs, component_name, cfg, 2)
-        pdf   = _get_brem_reparametrization(pdf_z=pdf_z, pdf_o=pdf_o, pdf_t=pdf_t)
-
-        return pdf
-
+def _get_mc_reparametrized_brem(obs : zobs, component_name : str, cfg : dict, nbrem : int) -> zpdf:
     cfg     = copy.deepcopy(cfg)
-
     d_inp   = cfg['input']
     trigger = d_inp['trigger']
     q2bin   = d_inp['q2bin'  ]
@@ -181,6 +156,24 @@ def get_mc_reparametrized(obs : zobs, component_name : str, cfg : dict, nbrem : 
 
     obj = MCParPdf(rdf=None, obs=obs, cfg=cfg)
     pdf = obj.get_pdf()
+
+    return pdf
+# ------------------------------------
+def get_mc_reparametrized(obs : zobs, component_name : str, cfg : dict, l_nbrem : list[int]) -> zpdf:
+    '''
+    Will return reparametrized fit component. The MC fit is expected to have been done already and this
+    will only load those parameters:
+
+    - No RDF needed
+    - No plotting needed
+    '''
+
+    l_pdf = [ _get_mc_reparametrized_brem(obs, component_name, cfg, nbrem) for nbrem in l_nbrem ]
+    if len(l_pdf) == 1:
+        return l_pdf[0]
+
+    l_frc = [       zfit.Parameter(f'frac_brem_{nbrem:03}', 0.3, 0, 1)     for nbrem in l_nbrem ]
+    pdf   = zfit.pdf.SumPDF(pdfs=l_pdf, fracs=l_frc)
 
     return pdf
 # ------------------------------------
