@@ -28,7 +28,7 @@ class Data:
     Dataclass
     '''
     minx = 4500
-    maxx = 6500
+    maxx = 7000
     obs  = zfit.Space('mass', limits=(minx, maxx))
 
     cfg    : dict
