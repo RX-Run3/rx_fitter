@@ -111,7 +111,6 @@ def _add_pdf_sig() -> None:
 @gut.timeit
 def _get_pdf() -> zpdf:
     _add_pdf_cmb()
-    _add_pdf_sig()
     _add_pdf_prc(sample='Bu_Kstee_Kpi0_eq_btosllball05_DPC')
     _add_pdf_prc(sample='Bd_Kstee_eq_btosllball05_DPC')
 
@@ -120,6 +119,8 @@ def _get_pdf() -> zpdf:
 
     if Data.q2bin == 'high':
         _add_pdf_prc(sample='Bs_phiee_eq_Ball_DPC')
+
+    _add_pdf_sig()
 
     pdf = zfit.pdf.SumPDF(Data.l_pdf)
 
