@@ -95,7 +95,7 @@ def _add_pdf_leak(sample : str) -> None:
     cfg['input']['q2bin'] = Data.q2bin
     cfg['selection']      = {'mva' : Data.mva_cut}
 
-    pdf   = cmp.get_kde(obs=Data.obs, sample=sample, nbrem=None, cfg=cfg)
+    pdf   = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
     nleak = zfit.Parameter(f'n{sample}', 0, 0, 10_000)
     pdf.set_yield(nleak)
 
@@ -105,7 +105,7 @@ def _add_pdf_sig() -> None:
     cfg  = _load_config(component='signal')
     cfg['input']['q2bin'] = Data.q2bin
 
-    pdf  = cmp.get_mc_reparametrized(obs=Data.obs, component_name='Signal', cfg=cfg, nbrem=None)
+    pdf  = cmp.get_mc_reparametrized(obs=Data.obs, component_name='Signal', cfg=cfg, l_nbrem=Data.l_nbrem)
     pdf  = pdf.create_extended(Data.nsig)
 
     Data.l_pdf.append(pdf)
