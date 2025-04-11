@@ -19,7 +19,8 @@ class Data:
     '''
     Data class
     '''
-    mass = 'B_M_brem_track_2'
+    mass    = 'B_M_brem_track_2'
+    out_dir = '/tmp/test/rx_fitter/components'
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _intialize():
@@ -168,10 +169,11 @@ def test_mc_reparametrized(nbrem : int, mass : str, name : str):
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
-@pytest.mark.parametrize('name' , ['Signal'])
-@pytest.mark.parametrize('kind' , ['signal'])
-def test_mc_brem_reparametrized(mass : str, name : str, kind : str):
+@pytest.mark.parametrize('mass'   , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('name'   , ['Signal'])
+@pytest.mark.parametrize('kind'   , ['signal'])
+@pytest.mark.parametrize('l_nbrem', [[0], [1], [2], [1,2], [0,1,2]])
+def test_mc_brem_reparametrized(mass : str, name : str, kind : str, l_nbrem : list[str]):
     '''
     Test building full signal PDF for electron channel with Brem reparametrization
     '''
@@ -181,9 +183,10 @@ def test_mc_brem_reparametrized(mass : str, name : str, kind : str):
     cfg['input']['q2bin'] = 'central'
 
     obs  = _get_obs(mass, cfg)
-    pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, cfg=cfg, nbrem=None)
+    pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, cfg=cfg, l_nbrem=l_nbrem)
 
-    print_pdf(pdf)
+    brem = '_'.join(map(str, l_nbrem))
+    print_pdf(pdf, txt_path=f'{Data.out_dir}/mc_brem_reparametrized/pdf_{brem}.txt')
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem',                 [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M_brem_track_2'])
