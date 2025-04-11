@@ -2,7 +2,7 @@ q2:
   low  :
     model : hypexp
   central :
-    model : modexp
+    model : exp 
   high :
     model : suj
     fix   :
