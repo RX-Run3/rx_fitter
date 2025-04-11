@@ -133,6 +133,7 @@ def _get_data() -> zdata:
 
     d_sel        = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
     d_sel['mva'] = Data.mva_cut
+    d_sel['mass']= '(1)'
 
     hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger, Data.mass, Data.mva_cut])
     data_cache_path = f'{Data.cache_dir}/{hsh}.json'
@@ -168,6 +169,11 @@ def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
 
     return d_cns
 # --------------------------
+def _get_title() -> str:
+    title = Data.mva_cut
+
+    return title
+# --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> None:
     cfg = {
@@ -179,8 +185,11 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     res = obj.fit(cfg=cfg)
     log.info(res)
 
+    title = _get_title()
+
     obj   = ZFitPlotter(data=data, model=pdf)
-    obj.plot(nbins=50, stacked=True)
+    obj.plot(nbins=50, stacked=True, title=title)
+    obj.axs[1].set_xlabel(Data.mass)
     plt.savefig(f'fit_{Data.q2bin}.png')
     plt.close()
 # --------------------------
