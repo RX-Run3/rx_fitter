@@ -188,7 +188,6 @@ def _get_title() -> str:
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> None:
     cfg = {
             'constraints' : constraints,
-            #'strategy'    : {'retry' : {'ntries' : 10, 'pvalue_thresh' : 0.05, 'ignore_status' : False}},
             }
 
     obj = Fitter(pdf, data)
