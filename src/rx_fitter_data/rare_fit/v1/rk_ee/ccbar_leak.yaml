@@ -8,9 +8,9 @@ fitting:
   config:
     Bu_JpsiK_ee_eq_DPC:
       cfg_kde:
-        bandwidth: null 
+        bandwidth: 40 
         padding:
-          lowermirror: 0.5
+          lowermirror: 1.0
           uppermirror: 0.5
       plotting:
         nbins: 30
