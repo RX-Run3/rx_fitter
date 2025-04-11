@@ -35,13 +35,13 @@ class Data:
     q2bin   : str
 
     cache_dir: str = '/tmp/rx_fitter/cache'
-    mva_cut : str  = '(mva_cmb > 0.50) && (mva_prc > 0.85)'
+    mva_cut : str  = '(mva_cmb > 0.80) && (mva_prc > 0.80)'
     sample  : str  = 'DATA*'
     trigger : str  = 'Hlt2RD_BuToKpEE_MVA'
     version : str  = 'v1'
     mass    : str  = 'B_M_brem_track_2'
     minx    : int  = 4_500
-    maxx    : int  = 6_100
+    maxx    : int  = 6_500
     obs     : zobs = zfit.Space(mass, limits=(minx, maxx))
     nsig    : zpar = zfit.Parameter('nsig', 0, 0, 10_000)
     gut.TIMER_ON   = True
