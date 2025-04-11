@@ -246,11 +246,16 @@ def test_cc_leakage(nbrem : int, q2bin : str, sample : str):
     '''
     log.info('')
 
-    cfg                   = _load_config(test='ccbar_leak')
-    cfg['input']['q2bin'] = q2bin
+    cfg                      = _load_config(test='ccbar_leak')
+    cfg['input']['q2bin']    = q2bin
+
+    if nbrem is None:
+        l_nbrem = [0, 1, 2]
+    else:
+        l_nbrem = [nbrem]
 
     obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
+    pdf = cmp.get_kde(obs=obs, sample=sample, l_nbrem=l_nbrem, cfg=cfg)
 
     if pdf is None:
         return
