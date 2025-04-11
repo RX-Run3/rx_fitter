@@ -43,7 +43,7 @@ class Data:
     version : str  = 'v1'
     mass    : str  = 'B_M_brem_track_2'
     minx    : int  = 4_500
-    maxx    : int  = 6_500
+    maxx    : int  = 7_000
     obs     : zobs = zfit.Space(mass, limits=(minx, maxx))
     nsig    : zpar = zfit.Parameter('nsig', 0, 0, 10_000)
     gut.TIMER_ON   = True
@@ -153,14 +153,14 @@ def _get_data() -> zdata:
         arr_mass = numpy.array(l_mass)
         data = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
 
-        #plt.hist(arr_mass, range=(4500, 6100), bins=50)
-        #plt.show()
-
         return data
 
     for cut_name, cut_expr in d_sel.items():
-        log.debug(f'{cut_name:<20}{cut_expr}')
+        log.info(f'{cut_name:<20}{cut_expr}')
         rdf = rdf.Filter(cut_expr, cut_name)
+
+    rep = rdf.Report()
+    rep.Print()
 
     arr_mass = rdf.AsNumpy([Data.mass])[Data.mass]
     log.info(f'Caching data to: {data_cache_path}')
