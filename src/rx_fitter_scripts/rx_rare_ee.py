@@ -20,6 +20,7 @@ from dmu.generic                 import utilities  as gut
 from dmu.logging.log_store       import LogStore
 from dmu.stats.zfit_plotter      import ZFitPlotter
 from dmu.stats.fitter            import Fitter
+from dmu.stats.utilities         import print_pdf
 from rx_data.rdf_getter          import RDFGetter
 from rx_selection                import selection  as sel
 from rx_fitter                   import components as cmp
@@ -168,7 +169,6 @@ def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> None:
-
     cfg = {
             'constraints' : constraints,
             #'strategy'    : {'retry' : {'ntries' : 10, 'pvalue_thresh' : 0.05, 'ignore_status' : False}},
@@ -194,6 +194,7 @@ def main():
     data = _get_data()
     pdf  = _get_pdf()
     d_cns= _get_constraints(pdf)
+    print_pdf(pdf=pdf, d_const=d_cns, txt_path=f'./pdf_{Data.q2bin}.txt')
 
     _fit(pdf=pdf, data=data, constraints=d_cns)
 # --------------------------
