@@ -134,7 +134,7 @@ def _get_data() -> zdata:
     d_sel        = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
     d_sel['mva'] = Data.mva_cut
 
-    hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger])
+    hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger, Data.mass, Data.mva_cut])
     data_cache_path = f'{Data.cache_dir}/{hsh}.json'
     if os.path.isfile(data_cache_path):
         log.warning(f'Caching data from: {data_cache_path}')
