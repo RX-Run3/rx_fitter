@@ -134,6 +134,13 @@ def _get_brem_cut() -> str:
 
     return cut
 # --------------------------
+def _get_q2_cut(d_sel : dict[str,str]) -> str:
+    if Data.q2bin != 'high':
+        cut = d_sel['q2']
+        return cut
+
+    return Data.high_q2_cut
+# --------------------------
 @gut.timeit
 def _get_data() -> zdata:
     gtr = RDFGetter(sample=Data.sample, trigger=Data.trigger)
@@ -141,11 +148,12 @@ def _get_data() -> zdata:
     rdf = rdf.Define('nbrem', Data.brem_def)
 
     d_sel        = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
+    d_sel['q2']  = _get_q2_cut(d_sel)
     d_sel['mva'] = Data.mva_cut
     d_sel['mass']= '(1)'
     d_sel['brem']= _get_brem_cut()
 
-    hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger, Data.mass, Data.mva_cut])
+    hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger, Data.mass])
     data_cache_path = f'{Data.cache_dir}/{hsh}.json'
     if os.path.isfile(data_cache_path):
         log.warning(f'Caching data from: {data_cache_path}')
