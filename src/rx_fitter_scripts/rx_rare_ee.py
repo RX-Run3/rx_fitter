@@ -180,7 +180,7 @@ def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
     return d_cns
 # --------------------------
 def _get_title() -> str:
-    title = Data.mva_cut
+    title = f'{Data.mva_cut}; Brem:{Data.l_nbrem}'
 
     return title
 # --------------------------
