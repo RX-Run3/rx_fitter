@@ -33,7 +33,7 @@ class Data:
     Data class
     '''
     q2bin   : str
-    high_q2_trk : str  = '(q2_track > 15500000)'
+    high_q2_trk : str  = '(q2_track > 15000000)'
     high_q2_nom : str  = '(q2       > 15500000) && (q2       < 22000000)'
     high_q2_cut : str  = f'{high_q2_trk} && {high_q2_nom}'
 
