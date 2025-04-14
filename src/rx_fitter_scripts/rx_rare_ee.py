@@ -33,7 +33,7 @@ class Data:
     Data class
     '''
     q2bin   : str
-    high_q2_trk : str  = '(q2_track > 10000000) && (q2_track < 22000000)'
+    high_q2_trk : str  = '(q2_track > 15500000)'
     high_q2_nom : str  = '(q2       > 15500000) && (q2       < 22000000)'
     high_q2_cut : str  = f'{high_q2_trk} && {high_q2_nom}'
 
@@ -41,7 +41,7 @@ class Data:
 
     brem_def    : str  = 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)'
     cache_dir   : str  = '/tmp/rx_fitter/cache'
-    mva_cut     : str  = '(mva_cmb > 0.80) && (mva_prc > 0.80)'
+    mva_cut     : str  = '(mva_cmb > 0.60) && (mva_prc > 0.80)'
     sample      : str  = 'DATA*'
     trigger     : str  = 'Hlt2RD_BuToKpEE_MVA'
     version     : str  = 'v1'
