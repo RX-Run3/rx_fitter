@@ -6,7 +6,7 @@ fitting:
   config:
     Bd_Kstee_eq_btosllball05_DPC:
       cfg_kde:
-        bandwidth: 20
+        bandwidth: isj 
         padding:
           lowermirror: 0.5
           uppermirror: 0.5
@@ -15,7 +15,7 @@ fitting:
         stacked: true
     Bu_Kstee_Kpi0_eq_btosllball05_DPC:
       cfg_kde:
-        bandwidth: 20
+        bandwidth: isj 
         padding:
           lowermirror: 0.5
           uppermirror: 0.5
@@ -24,7 +24,7 @@ fitting:
         stacked: true
     Bs_phiee_eq_Ball_DPC:
       cfg_kde:
-        bandwidth: 20
+        bandwidth: isj 
         padding:
           lowermirror: 0.5
           uppermirror: 0.5
