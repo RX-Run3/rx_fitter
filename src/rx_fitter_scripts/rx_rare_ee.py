@@ -206,6 +206,11 @@ def _get_title() -> str:
 
     return title
 # --------------------------
+def _get_extra_text(data : zdata) -> str:
+    nentries = data.weights.numpy().sum()
+
+    return f'Entries={nentries:.0f}\n{Data.high_q2_trk}'
+# --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> None:
     cfg = {
@@ -216,10 +221,11 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     res = obj.fit(cfg=cfg)
     log.info(res)
 
-    title = _get_title()
+    title    = _get_title()
+    ext_text = _get_extra_text(data)
 
     obj   = ZFitPlotter(data=data, model=pdf)
-    obj.plot(nbins=50, stacked=True, title=title)
+    obj.plot(nbins=50, stacked=True, title=title, ext_text=ext_text)
     obj.axs[1].set_xlabel(Data.mass)
     obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
