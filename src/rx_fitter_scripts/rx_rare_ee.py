@@ -33,20 +33,24 @@ class Data:
     Data class
     '''
     q2bin   : str
-    l_nbrem : list[int] = [1, 2]
+    high_q2_trk : str  = '(q2_track > 10000000) && (q2_track < 22000000)'
+    high_q2_nom : str  = '(q2       > 15500000) && (q2       < 22000000)'
+    high_q2_cut : str  = f'{high_q2_trk} && {high_q2_nom}'
 
-    brem_def : str = 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)'
-    cache_dir: str = '/tmp/rx_fitter/cache'
-    mva_cut : str  = '(mva_cmb > 0.80) && (mva_prc > 0.80)'
-    sample  : str  = 'DATA*'
-    trigger : str  = 'Hlt2RD_BuToKpEE_MVA'
-    version : str  = 'v1'
-    mass    : str  = 'B_M_brem_track_2'
-    minx    : int  = 4_500
-    maxx    : int  = 7_000
-    obs     : zobs = zfit.Space(mass, limits=(minx, maxx))
-    nsig    : zpar = zfit.Parameter('nsig', 0, 0, 10_000)
-    gut.TIMER_ON   = True
+    l_nbrem     : list[int] = [0, 1, 2]
+
+    brem_def    : str  = 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)'
+    cache_dir   : str  = '/tmp/rx_fitter/cache'
+    mva_cut     : str  = '(mva_cmb > 0.80) && (mva_prc > 0.80)'
+    sample      : str  = 'DATA*'
+    trigger     : str  = 'Hlt2RD_BuToKpEE_MVA'
+    version     : str  = 'v1'
+    mass        : str  = 'B_M_brem_track_2'
+    minx        : int  = 4_500
+    maxx        : int  = 7_000
+    obs         : zobs = zfit.Space(mass, limits=(minx, maxx))
+    nsig        : zpar = zfit.Parameter('nsig', 0, 0, 10_000)
+    gut.TIMER_ON: bool = True
 
     log_level : int        = 20
     l_pdf     : list[zpdf] = []
