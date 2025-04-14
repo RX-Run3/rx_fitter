@@ -85,7 +85,7 @@ def _set_logs() -> None:
 def _add_pdf_prc(sample : str) -> None:
     cfg                   = _load_config(component='bxhsee')
     cfg['input']['q2bin'] = Data.q2bin
-    cfg['selection']      = {'mva' : Data.mva_cut}
+    cfg['selection']      = {'bdt' : Data.mva_cut}
     if Data.q2bin == 'high':
         cfg['selection']['q2'] = Data.high_q2_cut
 
