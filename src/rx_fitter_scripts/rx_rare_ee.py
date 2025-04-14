@@ -84,6 +84,10 @@ def _add_pdf_prc(sample : str) -> None:
     cfg['selection']      = {'mva' : Data.mva_cut}
 
     pdf  = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
+    if pdf is None:
+        log.warning(f'No data found for leakage sample {sample}, skipping')
+        return
+
     scale= zfit.Parameter(f's{sample}', 0, 0, 10)
     nprc = zfit.ComposedParameter(f'n{sample}', lambda x : x['nsig'] * x['scale'], params={'nsig' : Data.nsig, 'scale' : scale})
     pdf.set_yield(nprc)
@@ -96,6 +100,10 @@ def _add_pdf_leak(sample : str) -> None:
     cfg['selection']      = {'mva' : Data.mva_cut}
 
     pdf   = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
+    if pdf is None:
+        log.warning(f'No data found for leakage sample {sample}, skipping')
+        return
+
     nleak = zfit.Parameter(f'n{sample}', 0, 0, 10_000)
     pdf.set_yield(nleak)
 
@@ -115,12 +123,10 @@ def _get_pdf() -> zpdf:
     _add_pdf_cmb()
     _add_pdf_prc(sample='Bu_Kstee_Kpi0_eq_btosllball05_DPC')
     _add_pdf_prc(sample='Bd_Kstee_eq_btosllball05_DPC')
+    _add_pdf_prc(sample='Bs_phiee_eq_Ball_DPC')
 
-    if Data.q2bin == 'central':
-        _add_pdf_leak(sample='Bu_JpsiK_ee_eq_DPC')
-
-    if Data.q2bin == 'high':
-        _add_pdf_prc(sample='Bs_phiee_eq_Ball_DPC')
+    _add_pdf_leak(sample='Bu_JpsiK_ee_eq_DPC')
+    _add_pdf_leak(sample='Bu_psi2SK_ee_eq_DPC')
 
     _add_pdf_sig()
 
