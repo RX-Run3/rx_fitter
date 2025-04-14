@@ -221,6 +221,12 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     obj   = ZFitPlotter(data=data, model=pdf)
     obj.plot(nbins=50, stacked=True, title=title)
     obj.axs[1].set_xlabel(Data.mass)
+    obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
+
+    obj.axs[1].set_ylim([-5, +5])
+    obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
+    obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
+
     plt.savefig(f'fit_{Data.q2bin}.png')
     plt.close()
 # --------------------------
