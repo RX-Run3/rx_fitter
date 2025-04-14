@@ -7,6 +7,7 @@ cutflow:
   $BDT_{prc} > 0.50$ && $BDT_{cmb} > 0.50$ : mva_prc > 0.50 && mva_cmb > 0.50
   $BDT_{prc} > 0.70$ && $BDT_{cmb} > 0.50$ : mva_prc > 0.70 && mva_cmb > 0.50
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.50$ : mva_prc > 0.80 && mva_cmb > 0.50
+  $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.60$ : mva_prc > 0.80 && mva_cmb > 0.60
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.70$ : mva_prc > 0.80 && mva_cmb > 0.70
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.80$ : mva_prc > 0.80 && mva_cmb > 0.80
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.85$ : mva_prc > 0.80 && mva_cmb > 0.85
