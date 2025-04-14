@@ -207,9 +207,13 @@ def _get_title() -> str:
     return title
 # --------------------------
 def _get_extra_text(data : zdata) -> str:
-    nentries = data.weights.numpy().sum()
+    arr_mass = data.to_numpy()
+    nentries = numpy.sum(arr_mass)
 
-    return f'Entries={nentries:.0f}\n{Data.high_q2_trk}'
+    if Data.q2bin == 'high':
+        return f'Entries={nentries:.0f}\n{Data.high_q2_trk}'
+
+    return f'Entries={nentries:.0f}'
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> None:
