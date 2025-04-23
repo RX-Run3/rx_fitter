@@ -236,8 +236,16 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     title    = _get_title()
     ext_text = _get_extra_text(data)
 
+    d_leg = {
+            'SumPDF_ext'                        : 'Signal',
+            'exp_1_ext'                         : 'Combinatorial',
+            'Bu_JpsiK_ee_eq_DPC'                : r'$B^+\to J/\psi(\to ee) K^+$',
+            'Bu_Kstee_Kpi0_eq_btosllball05_DPC' : r'$B^+\to K^{*+}ee$',
+            'Bd_Kstee_eq_btosllball05_DPC'      : r'$B^0\to K^{*0}ee$',
+            }
+
     obj   = ZFitPlotter(data=data, model=pdf)
-    obj.plot(nbins=50, stacked=True, title=title, ext_text=ext_text)
+    obj.plot(nbins=50, d_leg=d_leg, stacked=True, title=title, ext_text=ext_text)
     obj.axs[1].set_xlabel(Data.mass)
     obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
