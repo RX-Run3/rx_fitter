@@ -224,9 +224,12 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
             'constraints' : constraints,
             }
 
-    obj = Fitter(pdf, data)
-    res = obj.fit(cfg=cfg)
-    log.info(res)
+    if Data.dry_run:
+        log.warning('Running dry run')
+    else:
+        obj = Fitter(pdf, data)
+        res = obj.fit(cfg=cfg)
+        log.info(res)
 
     title    = _get_title()
     ext_text = _get_extra_text(data)
