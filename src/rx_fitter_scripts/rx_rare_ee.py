@@ -32,6 +32,7 @@ class Data:
     '''
     Data class
     '''
+    dry_run : bool
     q2bin   : str
     high_q2_trk : str  = '(q2_track > 15000000)'
     high_q2_nom : str  = '(q2       > 15500000) && (q2       < 22000000)'
@@ -57,11 +58,13 @@ class Data:
 # --------------------------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
-    parser.add_argument('-q', '--q2bin' , type=str, help='q2 bin', required=True, choices=['low', 'central', 'high'])
-    parser.add_argument('-l', '--loglv' , type=int, help='Logging level', default=Data.log_level, choices=[10, 20, 30])
+    parser.add_argument('-q', '--q2bin'  , type=str, help='q2 bin', required=True, choices=['low', 'central', 'high'])
+    parser.add_argument('-l', '--loglv'  , type=int, help='Logging level', default=Data.log_level, choices=[10, 20, 30])
+    parser.add_argument('-d', '--dry_run', action='store_true', help='If used, will skip fit') 
     args = parser.parse_args()
 
     Data.q2bin     = args.q2bin
+    Data.dry_run   = args.dry_run
     Data.log_level = args.loglv
 # --------------------------------------------------------------
 def _load_config(component : str) -> dict:
