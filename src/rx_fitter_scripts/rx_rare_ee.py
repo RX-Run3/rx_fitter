@@ -211,7 +211,9 @@ def _get_title() -> str:
 # --------------------------
 def _get_extra_text(data : zdata) -> str:
     arr_mass = data.to_numpy()
-    nentries = numpy.sum(arr_mass)
+    mask     = (arr_mass > Data.minx) & (arr_mass < Data.maxx)
+    arr_mass = arr_mass[mask]
+    nentries = len(arr_mass)
 
     if Data.q2bin == 'high':
         return f'Entries={nentries:.0f}\n{Data.high_q2_trk}'
