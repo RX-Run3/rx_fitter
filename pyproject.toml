@@ -20,6 +20,7 @@ dev  = ['pytest']
 where   = ['src']
 
 [project.scripts]
+tabulate_pdfs='rx_fitter_scripts.tabulate_pdfs:main'
 validate_cmb='rx_fitter_scripts.validate_cmb:main'
 reso_scale='rx_fitter_scripts.reso_scale:main'
 rx_data_no_tail='rx_fitter_scripts.rx_data_no_tail:main'
