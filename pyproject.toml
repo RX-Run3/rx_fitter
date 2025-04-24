@@ -31,6 +31,6 @@ rx_reso_ee='rx_fitter_scripts.rx_reso_ee:main'
 rx_rare_ee='rx_fitter_scripts.rx_rare_ee:main'
 
 [tool.setuptools.package-data]
-rx_fitter_data=['*/*/*/*/*/*.json']
+rx_fitter_data=['*/*/*/*/*/*.json', 'names/*.yaml']
 
 [tool.setuptools]
