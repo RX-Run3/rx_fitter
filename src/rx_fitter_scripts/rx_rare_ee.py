@@ -242,6 +242,8 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
             'Bu_JpsiK_ee_eq_DPC'                : r'$B^+\to J/\psi(\to ee) K^+$',
             'Bu_Kstee_Kpi0_eq_btosllball05_DPC' : r'$B^+\to K^{*+}ee$',
             'Bd_Kstee_eq_btosllball05_DPC'      : r'$B^0\to K^{*0}ee$',
+            'Bs_phiee_eq_Ball_DPC'              : r'$B_s\to \phi(\to KK)ee$',
+            'suj_1_ext'                         : 'Combinatorial',
             }
 
     obj   = ZFitPlotter(data=data, model=pdf)
