@@ -1,0 +1,34 @@
+central:
+  ar_dscb_Signal_002_1_reso_flt      : $\alpha_{DSCB}^{Brem 2}$
+  c_exp_cmb_1                        : $c_{Exp}$
+  frac_brem_001                      : $f_{Brem 1}$
+  mu_Signal_001_scale_flt            : $\mu^{Brem 1}$
+  mu_Signal_002_scale_flt            : $\mu^{Brem 2}$
+  nl_dscb_Signal_001_1_reso_flt      : $n_L^{Brem 1}$
+  nr_dscb_Signal_002_1_reso_flt      : $n_R^{Brem 2}$
+  nBu_JpsiK_ee_eq_DPC                : $N_{Leak}$
+  ncmb                               : $N_{Combinatorial}$
+  nsig                               : $N_{Signal}$
+  sBd_Kstee_eq_btosllball05_DPC      : $s_{B_d\to K^{*0}ee}^{PRec}$
+  sBu_Kstee_Kpi0_eq_btosllball05_DPC : $s_{B_u\to K^{*+}ee}^{PRec}$
+  sg_Signal_001_reso_flt             : $s_{\mu}^{Brem 1}$
+  sg_Signal_002_reso_flt             : $s_{\mu}^{Brem 2}$
+high :
+  ar_dscb_Signal_002_1_reso_flt      : $\alpha_{DSCB}^{Brem 2}$
+  frac_brem_000                      : $f_{Brem 0}$
+  frac_brem_001                      : $f_{Brem 1}$
+  mu_Signal_000_scale_flt            : $\mu^{Brem 0}$
+  mu_Signal_001_scale_flt            : $\mu^{Brem 1}$
+  mu_Signal_002_scale_flt            : $\mu^{Brem 2}$
+  nl_dscb_Signal_001_1_reso_flt      : $n_L^{Brem 1}$
+  nr_dscb_Signal_002_1_reso_flt      : $n_R^{Brem 2}$
+  ncmb                               : $N_{Combinatorial}$
+  nsig                               : $N_{Signal}$
+  sBd_Kstee_eq_btosllball05_DPC      : $s_{B_d\to K^{*0}ee}^{PRec}$
+  sBu_Kstee_Kpi0_eq_btosllball05_DPC : $s_{B_u\to K^{*+}ee}^{PRec}$
+  sBs_phiee_eq_Ball_DPC              : $s_{B_s\to \phi(\to KK) ee}^{PRec}$
+  sg_Signal_000_reso_flt             : $s_{\mu}^{Brem 0}$
+  sg_Signal_001_reso_flt             : $s_{\mu}^{Brem 1}$
+  sg_Signal_002_reso_flt             : $s_{\mu}^{Brem 2}$
+  mu_suj_cmb_1                       : $\mu_{Combinatorial}$
+  sg_suj_cmb_1                       : $\sigma_{Combinatorial}$
