@@ -150,10 +150,9 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
 @pytest.mark.parametrize('name' , ['Signal'])
-def test_mc_reparametrized(nbrem : int, mass : str, name : str):
+def test_mc_reparametrized(mass : str, name : str):
     '''
     Testing creation of PDF from MC sample with tails fixed from other version
     '''
@@ -165,7 +164,7 @@ def test_mc_reparametrized(nbrem : int, mass : str, name : str):
     cfg['output']['out_dir'] = f'{out_dir}/test_mc_create'
 
     obs  = _get_obs(mass, cfg)
-    pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, nbrem=nbrem, cfg=cfg)
+    pdf  = cmp.get_mc_reparametrized(obs=obs, component_name=name, l_nbrem=[0, 1, 2], cfg=cfg)
 
     print_pdf(pdf)
 # --------------------------------------------------------------
