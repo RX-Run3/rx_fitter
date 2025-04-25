@@ -148,7 +148,6 @@ class PRec:
         d_df = {}
         for sample in self._l_sample:
             gtr        = RDFGetter(sample=sample, trigger=self._trig)
-            gtr.initialize()
             rdf        = gtr.get_rdf()
             rdf        = self._add_columns(rdf)
             rdf        = self._filter_rdf(rdf, sample)
