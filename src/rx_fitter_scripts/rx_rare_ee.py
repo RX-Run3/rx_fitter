@@ -9,18 +9,20 @@ import yaml
 import ROOT
 import numpy
 import zfit
-import matplotlib.pyplot as plt
-from ROOT                        import EnableImplicitMT
+
 from zfit.core.data              import Data       as zdata
 from zfit.core.basepdf           import BasePDF    as zpdf
 from zfit.core.interfaces        import ZfitSpace  as zobs
 from zfit.core.parameter         import Parameter  as zpar
+from zfit.result                 import FitResult  as zres
+
 from dmu.generic                 import hashing
 from dmu.generic                 import utilities  as gut
 from dmu.logging.log_store       import LogStore
 from dmu.stats.zfit_plotter      import ZFitPlotter
 from dmu.stats.fitter            import Fitter
-from dmu.stats.utilities         import print_pdf
+from dmu.stats                   import utilities  as stat_utilities
+
 from rx_data.rdf_getter          import RDFGetter
 from rx_selection                import selection  as sel
 from rx_fitter                   import components as cmp
