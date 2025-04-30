@@ -84,9 +84,6 @@ def _add_pdf_cmb() -> None:
 
     Data.l_pdf.append(pdf)
 # --------------------------
-def _set_logs() -> None:
-    LogStore.set_level('rx_fitter:constraint_reader', Data.log_level)
-# --------------------------
 def _add_pdf_prc(sample : str) -> None:
     cfg                   = _load_config(component='bxhsee')
     cfg['input']['q2bin'] = Data.q2bin
@@ -222,8 +219,15 @@ def _get_extra_text(data : zdata) -> str:
 
     return f'Entries={nentries:.0f}'
 # --------------------------
+def _initialize() -> None:
+    LogStore.set_level('rx_fitter:constraint_reader', Data.log_level)
+
+    fit_dir      = os.environ['FITDIR']
+    sample       = Data.sample.replace('*', 'p')
+    Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}'
+# --------------------------
 @gut.timeit
-def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> None:
+def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> zres:
     cfg = {
             'constraints' : constraints,
             }
@@ -257,23 +261,28 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
     obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
-    plt.savefig(f'fit_{Data.q2bin}.png')
-    plt.close()
+    return res
 # --------------------------
 def main():
     '''
     Start here
     '''
     _parse_args()
-    _set_logs()
-    EnableImplicitMT(10)
+    _initialize()
 
     data = _get_data()
     pdf  = _get_pdf()
     d_cns= _get_constraints(pdf)
-    print_pdf(pdf=pdf, d_const=d_cns, txt_path=f'./pdf_{Data.q2bin}.txt')
 
-    _fit(pdf=pdf, data=data, constraints=d_cns)
+    stat_utilities.print_pdf(pdf=pdf, d_const=d_cns, txt_path=f'{Data.fit_dir}/pre_fit.txt')
+    fit_result = _fit(pdf=pdf, data=data, constraints=d_cns)
+
+    stat_utilities.save_fit(
+            data   =data,
+            model  =pdf,
+            res    =fit_result,
+            fit_dir=Data.fit_dir,
+            d_const=d_cns)
 # --------------------------
 if __name__ == '__main__':
     main()
