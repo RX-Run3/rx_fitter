@@ -4,6 +4,7 @@ Module holding PChain class
 # pylint: disable=invalid-name
 # pylint: disable=missing-function-docstring
 
+# TODO: Add a logger!!!
 #----------------------------------
 class PChain:
     '''

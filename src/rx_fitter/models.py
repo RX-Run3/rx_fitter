@@ -1,5 +1,5 @@
 '''
-Module with fitting models 
+Module with fitting models
 '''
 
 import zfit
@@ -9,6 +9,7 @@ from dmu.stats.zfit_models  import ModExp
 from zfit.core.interfaces   import ZfitSpace as zobs
 from zfit.core.basepdf      import BasePDF   as zpdf
 
+# TODO: Add a logger!!!
 # ---------------------------------------------
 def _get_suj(obs : zobs) -> zpdf:
     mu  = zfit.Parameter('mu', 5000, 4000, 6000)

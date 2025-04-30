@@ -6,6 +6,7 @@ Module with Reader class
 import pandas as pnd
 from rx_fitter.pchain import PChain
 
+# TODO: add a logger !!!
 #---------------------------
 class Reader:
     '''
