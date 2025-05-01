@@ -5,6 +5,7 @@ Module with functions needed to provide fit components
 
 import os
 import copy
+from typing import Union
 
 import zfit
 import pandas as pnd
@@ -75,11 +76,14 @@ def _get_mc_rdf(cfg : dict, component_name : str, nbrem : int) -> RDataFrame:
     d_inp   = cfg['input']
     trigger = d_inp['trigger']
     q2bin   = d_inp['q2bin'  ]
+    brem_cut= cfg['brem'][nbrem]
 
     d_cmp   = cfg['fitting']['config'][component_name]
     sample  = d_cmp['sample']
-    cuts    = _get_cuts(nbrem, cfg)
-    rdf     = get_rdf(sample, q2bin, trigger, cuts)
+    rdf     = get_rdf(sample, q2bin, trigger)
+    # This is needed to get fit per-brem category
+    # It does not override analysis selection
+    rdf     = rdf.Filter(brem_cut, f'Brem {nbrem}')
     rdf     = rdf.Define('weights', '1')
 
     if 'max_entries' in cfg['input']:
