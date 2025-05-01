@@ -55,11 +55,10 @@ def test_signal():
     '''
     Tests getting constraints for signal parameters
     '''
-    mva_cut   = '(1)'
     q2bin     = 'central'
     l_sig_par = Data.l_sig_par + Data.l_brem_frac
 
-    obj     = ConstraintReader(parameters = l_sig_par, mva_cut = mva_cut, q2bin=q2bin)
+    obj     = ConstraintReader(parameters = l_sig_par, q2bin=q2bin)
     d_cns   = obj.get_constraints()
     _print_constraints(d_cns)
 
@@ -69,10 +68,9 @@ def test_prec():
     '''
     Tests getting constraints for prec parameters
     '''
-    mva_cut   = '(1)'
     q2bin     = 'central'
 
-    obj     = ConstraintReader(parameters = Data.l_prec_par, mva_cut = mva_cut, q2bin=q2bin)
+    obj     = ConstraintReader(parameters = Data.l_prec_par, q2bin=q2bin)
     d_cns   = obj.get_constraints()
     _print_constraints(d_cns)
 
@@ -82,11 +80,10 @@ def test_all():
     '''
     Tests getting constraints all model parameters
     '''
-    mva_cut   = '(1)'
     q2bin     = 'central'
     l_sig_par = Data.l_sig_par + Data.l_brem_frac + Data.l_prec_par
 
-    obj     = ConstraintReader(parameters = l_sig_par, mva_cut = mva_cut, q2bin=q2bin)
+    obj     = ConstraintReader(parameters = l_sig_par, q2bin=q2bin)
     d_cns   = obj.get_constraints()
     _print_constraints(d_cns)
 
