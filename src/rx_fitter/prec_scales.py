@@ -77,12 +77,10 @@ class PrecScales:
     def _calculate_efficiencies(self, yaml_path : str) -> None:
         log.debug('Efficiencies not found, calculating them')
         out_dir     = os.path.dirname(yaml_path)
-        obj         = EfficiencyCalculator(q2bin=self._q2bin, d_cut=self._d_cut)
+        obj         = EfficiencyCalculator(q2bin=self._q2bin)
         obj.out_dir = out_dir
         df          = obj.get_stats()
         d_data      = df.to_dict()
-
-        d_data['cuts'] = self._d_cut
         with open(yaml_path, 'w', encoding='utf-8') as ofile:
             yaml.safe_dump(d_data, ofile)
     #------------------------------------------
