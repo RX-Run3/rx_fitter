@@ -105,9 +105,8 @@ def test_seq_scan_scales(mva_cut : str, q2bin : str, process : str) -> None:
     Tests retrieval of scales between signal and PRec yields, by cutting first on combinatorial and then on PRec
     '''
     signal   = 'bpkpee'
-    d_cut    = {'mva' : mva_cut}
 
-    obj      = PrecScales(proc=process, q2bin=q2bin, d_cut=d_cut)
+    obj      = PrecScales(proc=process, q2bin=q2bin)
     val, err = obj.get_scale(signal=signal)
 
     ScalesData.collect_mva_wp(process, mva_cut, q2bin, val, err)
