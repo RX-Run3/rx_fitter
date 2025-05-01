@@ -207,7 +207,7 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
 
     return obj.get_pdf()
 # ------------------------------------
-def get_kde(obs : zobs, sample : str, l_nbrem : list[int], cfg : dict) -> zpdf:
+def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
     '''
     Function returning zfit PDF object for Samples that need to be modelled with a KDE
 
@@ -217,16 +217,17 @@ def get_kde(obs : zobs, sample : str, l_nbrem : list[int], cfg : dict) -> zpdf:
     cfg    : Dictionary with configuration
     '''
 
-    hsh      = hashing.hash_object(obj=[obs.to_json(), sample, l_nbrem, cfg])
-    nbrem    = '_'.join(map(str, l_nbrem))
     mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
     trigger  = cfg['input']['trigger']
+    d_cut    = sel.selection(trigger=trigger, q2bin=q2bin, process=sample)
+    hsh      = hashing.hash_object(obj=[obs.to_json(), sample, cfg, d_cut])
+
     d_plt    = cfg['fitting']['config'][sample]['plotting']
     out_dir  = cfg['output']['out_dir']
-    out_dir  = f'{out_dir}/{sample}/{q2bin}/{mass}_{nbrem}/{hsh}'
+    out_dir  = f'{out_dir}/{sample}/{q2bin}/{mass}/{hsh}'
 
-    d_plt['title'] = f'{sample}; {l_nbrem}'
+    d_plt['title'] = sample
     cfg['name']    = sample
     cfg['plotting']= d_plt
     cfg['out_dir'] = out_dir
