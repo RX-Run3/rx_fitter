@@ -9,7 +9,6 @@ import mplhep
 import pytest
 import matplotlib.pyplot as plt
 
-from ROOT                   import EnableImplicitMT
 from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
@@ -29,8 +28,6 @@ def _initialize():
     LogStore.set_level('rx_fitter:inclusive_decay_weights' , 10)
     LogStore.set_level('rx_fitter:inclusive_sample_weights', 10)
     LogStore.set_level('rx_fitter:prec'                    , 10)
-
-    EnableImplicitMT(10)
 
     plt.style.use(mplhep.style.LHCb2)
 
