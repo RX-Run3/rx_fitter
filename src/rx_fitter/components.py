@@ -207,14 +207,6 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
 
     return obj.get_pdf()
 # ------------------------------------
-def _get_brem_cut(cfg : dict, l_nbrem : list[int]) -> str:
-    l_cut = [ cfg['brem'][nbrem] for nbrem in l_nbrem ]
-    cut   = '||'.join(l_cut)
-
-    log.info(f'Using brem cut: {cut}')
-
-    return cut
-# ------------------------------------
 def get_kde(obs : zobs, sample : str, l_nbrem : list[int], cfg : dict) -> zpdf:
     '''
     Function returning zfit PDF object for Samples that need to be modelled with a KDE
