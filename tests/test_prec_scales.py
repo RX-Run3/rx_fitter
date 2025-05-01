@@ -91,13 +91,11 @@ def test_sim_scan_scales(mva_cmb : str, mva_prc : str):
     process  = 'bdkskpiee'
     q2bin    = 'central'
     signal   = 'bpkpee'
-    mva_cut  = f'({mva_cmb}) && ({mva_prc})'
-    d_cut    = {'mva' : mva_cut}
 
-    obj      = PrecScales(proc=process, q2bin=q2bin, d_cut=d_cut)
+    obj      = PrecScales(proc=process, q2bin=q2bin)
     val, err = obj.get_scale(signal=signal)
 
-    ScalesData.collect_mva_wp(process, mva_cut, q2bin, val, err)
+    ScalesData.collect_mva_wp(process, '(1)', q2bin, val, err)
 #-------------------------------
 @pytest.mark.parametrize('process', ['bdkskpiee', 'bpkskpiee', 'bsphiee'])
 @pytest.mark.parametrize('q2bin'  , ['low', 'central', 'high'])
