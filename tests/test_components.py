@@ -12,6 +12,7 @@ from zfit.core.interfaces   import ZfitSpace as zobs
 from dmu.logging.log_store  import LogStore
 from dmu.stats.utilities    import print_pdf
 from rx_fitter              import components as cmp
+from rx_selection           import selection  as sel
 
 log=LogStore.add_logger('rx_fitter:test_components')
 # --------------------------------------------------------------
@@ -245,7 +246,7 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [[0], [1], [2], [0,1,2], [1,2]])
+@pytest.mark.parametrize('nbrem' , [[0], [1], [2], [0,1,2], [1,2]])
 @pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
 @pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC', 'Bu_psi2SK_ee_eq_DPC'])
 def test_cc_leakage(nbrem : list[int], q2bin : str, sample : str):
@@ -253,17 +254,32 @@ def test_cc_leakage(nbrem : list[int], q2bin : str, sample : str):
     Builds KDE for leaked ccbar component
     '''
     log.info('')
-
     cfg                      = _load_config(test='ccbar_leak')
+    _set_brem_category(l_brem=nbrem, cfg=cfg)
+
+    nbrem     = [ str(elm) for elm in nbrem ]
+    brem_name = '_'.join(nbrem)
+
     cfg['input']['q2bin']    = q2bin
-    cfg['output']['out_dir'] = Data.out_dir
+    cfg['output']['out_dir'] = f'{Data.out_dir}/leakage_{brem_name}'
 
     obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    pdf = cmp.get_kde(obs=obs, sample=sample, l_nbrem=nbrem, cfg=cfg)
+    pdf = cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
 
     if pdf is None:
-        log.warning(f'No KDE can be built for {nbrem}/{q2bin}{sample}')
+        log.warning(f'No KDE can be built for {nbrem}/{q2bin}/{sample}')
         return
 
     print_pdf(pdf)
+# --------------------------------------------------------------
+def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
+    sel.reset_custom_selection()
+
+    l_cut    = [ cfg['brem'][nbrem] for nbrem in l_brem ]
+    l_cut    = [ f'({cut})'         for cut   in l_cut  ]
+    brem_cut = ' && '.join(l_cut)
+
+    log.info(f'Overriding selection with: {brem_cut}')
+
+    sel.set_custom_selection(d_cut = {'brem' : brem_cut})
 # --------------------------------------------------------------
