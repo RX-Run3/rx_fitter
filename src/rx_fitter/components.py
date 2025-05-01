@@ -217,8 +217,7 @@ def get_kde(obs : zobs, sample : str, l_nbrem : list[int], cfg : dict) -> zpdf:
     cfg    : Dictionary with configuration
     '''
 
-    hsh = hashing.hash_object(obj=[obs.to_json(), sample, l_nbrem, cfg])
-
+    hsh      = hashing.hash_object(obj=[obs.to_json(), sample, l_nbrem, cfg])
     nbrem    = '_'.join(map(str, l_nbrem))
     mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
