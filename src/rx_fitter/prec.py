@@ -5,6 +5,7 @@ import os
 import copy
 import json
 import hashlib
+from typing   import Union
 
 from ROOT     import RDataFrame
 import zfit
@@ -53,8 +54,8 @@ class PRec:
                 'nbrem'            : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)',
                 'B_M_brem_track_2' : 'brem_track_2.B_M_brem_track_2'
                 }
-
-        self._initialized = False
+        self._nentries_threshold = 100
+        self._initialized        = False
     #-----------------------------------------------------------
     def _initialize(self):
         if self._initialized:
@@ -384,7 +385,7 @@ class PRec:
 
         return df
     #-----------------------------------------------------------
-    def _get_pdf(self, mass : str, cut : str, **kwargs) -> zpdf:
+    def _get_pdf(self, mass : str, cut : str, **kwargs) -> Union[zpdf,None]:
         '''
         Will take the mass, with values in:
 
@@ -400,6 +401,8 @@ class PRec:
         **kwargs: These are all arguments for KDE1DimFFT
 
         and it will return a KDE1DimFFT PDF.
+
+        IMPORTANT: If the number of entries is smaller than _nentries_threshold will return None
         '''
         identifier = self._get_identifier(mass, cut, **kwargs)
         cache_path = self._path_from_identifier(identifier)
@@ -418,6 +421,10 @@ class PRec:
             df.to_json(cache_path, indent=4)
 
         arr_mass = df[mass].to_numpy()
+        nentries = len(arr_mass)
+        if nentries < self._nentries_threshold:
+            log.warning('Will not build PDF, found {nentries} entries, threshold is {self._nentries_threshold}')
+            return None
 
         pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         pdf.arr_mass = arr_mass
@@ -449,6 +456,8 @@ class PRec:
         self._name = name
 
         d_pdf     = { name : self._get_pdf(mass, cut, name=name, **kwargs) for name, cut in self._d_match.items()}
+        d_pdf     = { name : pdf                                           for name, pdf in d_pdf.items() if pdf is not None}
+
         l_pdf     = list(d_pdf.values())
         l_wgt_yld = [ sum(pdf.arr_wgt) for pdf in l_pdf ]
         l_frc     = [ wgt_yld / sum(l_wgt_yld) for wgt_yld in l_wgt_yld ]
