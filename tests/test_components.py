@@ -256,35 +256,9 @@ def test_cc_leakage(nbrem : int, q2bin : str, sample : str):
     cfg                      = _load_config(test='ccbar_leak')
     cfg['input']['q2bin']    = q2bin
 
-    if nbrem is None:
-        l_nbrem = [0, 1, 2]
-    else:
-        l_nbrem = [nbrem]
-
-    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    pdf = cmp.get_kde(obs=obs, sample=sample, l_nbrem=l_nbrem, cfg=cfg)
-
-    if pdf is None:
-        return
-
-    print_pdf(pdf)
-# --------------------------------------------------------------
-@pytest.mark.parametrize('mva_wp', [0.5, 0.6, 0.7, 0.8])
-def test_mva_wp(mva_wp : str):
-    '''
-    Builds KDE with MVA WP overriden
-    '''
-    log.info('')
-
-    q2bin  = 'central'
-    sample = 'Bu_JpsiK_ee_eq_DPC'
-
-    cfg                   = _load_config(test='ccbar_leak')
-    cfg['input']['q2bin'] = q2bin
-    cfg['selection']      = {'mva' : f'mva_prc > {mva_wp:.3f}'}
-
-    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=None, cfg=cfg)
+    l_nbrem = [0, 1, 2] if nbrem is None else [nbrem]
+    obs     = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    pdf     = cmp.get_kde(obs=obs, sample=sample, l_nbrem=l_nbrem, cfg=cfg)
 
     if pdf is None:
         return
