@@ -277,7 +277,7 @@ def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
 
     l_cut    = [ cfg['brem'][nbrem] for nbrem in l_brem ]
     l_cut    = [ f'({cut})'         for cut   in l_cut  ]
-    brem_cut = ' && '.join(l_cut)
+    brem_cut = ' || '.join(l_cut)
 
     log.info(f'Overriding selection with: {brem_cut}')
 
