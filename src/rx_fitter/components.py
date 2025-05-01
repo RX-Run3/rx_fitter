@@ -81,12 +81,12 @@ def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComp
     cfg     = copy.deepcopy(cfg)
     rdf     = _get_mc_rdf(cfg, component_name, nbrem)
 
-    d_inp                 = cfg['input']
-    d_cmp                 = cfg['fitting']['config'][component_name]
-    d_fit                 = d_cmp['fitting']
-    d_plt                 = d_cmp['plotting']
-    trigger               = d_inp['trigger']
-    q2bin                 = d_inp['q2bin'  ]
+    d_inp   = cfg['input']
+    d_cmp   = cfg['fitting']['config'][component_name]
+    d_fit   = d_cmp['fitting']
+    d_plt   = d_cmp['plotting']
+    trigger = d_inp['trigger']
+    q2bin   = d_inp['q2bin'  ]
 
     cfg['component_name'] = f'{component_name}_{nbrem:03}'
     cfg['q2bin'  ]        = q2bin
