@@ -423,7 +423,7 @@ class PRec:
         arr_mass = df[mass].to_numpy()
         nentries = len(arr_mass)
         if nentries < self._nentries_threshold:
-            log.warning('Will not build PDF, found {nentries} entries, threshold is {self._nentries_threshold}')
+            log.warning(f'Will not build PDF, found {nentries} entries, threshold is {self._nentries_threshold}')
             return None
 
         pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
