@@ -13,15 +13,13 @@ class ConstraintReader:
     Class meant to provide constraints for fitting model
     '''
     # -------------------------------------------------------------
-    def __init__(self, parameters : list[str], mva_cut : str, q2bin : str):
+    def __init__(self, parameters : list[str], q2bin : str):
         '''
         Parameters: List of parameter names as in the PDF
-        mva_cut   : Needed to override default MVA selection
         q2bin     : q2 bin
         '''
 
         self._l_par   = parameters
-        self._mva_cut = mva_cut
         self._q2bin   = q2bin
 
         self._d_const = {}
@@ -49,8 +47,6 @@ class ConstraintReader:
         return decay
     # -------------------------------------------------------------
     def _add_prec_constraints(self) -> None:
-        d_cut    = {'mva' : self._mva_cut}
-
         for par in self._l_par:
             if not par.startswith('s'): # PRec constraints are scales, starting with "s"
                 continue
@@ -67,7 +63,7 @@ class ConstraintReader:
             log.debug(f'Adding constrint for: {par}')
 
             process  = self._proc_from_par(par)
-            obj      = PrecScales(proc=process, q2bin=self._q2bin, d_cut=d_cut)
+            obj      = PrecScales(proc=process, q2bin=self._q2bin)
             val, err = obj.get_scale(signal=self._signal)
 
             self._d_const[par] = val, err
