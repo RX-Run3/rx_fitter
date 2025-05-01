@@ -20,7 +20,7 @@ class Data:
     Data class
     '''
     mass    = 'B_M_brem_track_2'
-    out_dir = '/tmp/test/rx_fitter/components'
+    out_dir = '/tmp/tests/rx_fitter/components'
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
 def _intialize():
