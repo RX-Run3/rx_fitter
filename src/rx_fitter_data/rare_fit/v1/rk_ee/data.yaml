@@ -1,8 +1,9 @@
 input : 
+  sample     : DATA*
+  trigger    : Hlt2RD_BuToKpEE_MVA
   observable : B_M_brem_track_2
-  minx : 4500
-  maxx : 7000
-
+  minx       : 4500
+  maxx       : 7000
 nbrem:
   low :
     - 0
