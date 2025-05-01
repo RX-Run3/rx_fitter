@@ -1,6 +1,7 @@
 '''
 Module used to test PrecScales class
 '''
+# TODO: Scanning of rare prec scales over MVA WP needs to be tested properly, for now disabled.
 
 import os
 import numpy
