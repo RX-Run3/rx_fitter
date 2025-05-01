@@ -202,7 +202,12 @@ def test_prec_brem(mass : str, nbrem : int):
 
     obs            = _get_obs(mass, cfg)
     cmp_prc        = cmp.get_prc(obs, nbrem, cfg)
-    cmp_prc.run()
+
+    if cmp_prc is not None:
+        log.info(f'Component was built for mass/nbrem: {mass}/{nbrem}')
+        cmp_prc.run()
+    else:
+        log.warning(f'No component was built for mass/nbrem: {mass}/{nbrem}')
 # --------------------------------------------------------------
 @pytest.mark.parametrize('q2bin', ['low', 'central', 'high'])
 def test_combinatorial(q2bin : str):
