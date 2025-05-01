@@ -28,17 +28,14 @@ class Data:
     '''
     cache_dir = '/tmp/cache/rx_fits'
 # ---------------------------------
-def get_rdf(sample : str, q2bin : str, trigger : str, cuts : dict[str,str] = None) -> RDataFrame:
+def get_rdf(sample : str, q2bin : str, trigger : str) -> RDataFrame:
     '''
     Function that returns a ROOT dataframe for a given dataset, MC or real data
     '''
-    gtr = RDFGetter(sample=sample, trigger=trigger)
-    rdf = gtr.get_rdf()
+    gtr  = RDFGetter(sample=sample, trigger=trigger)
+    rdf  = gtr.get_rdf()
+    d_sel=sel.selection(trigger=trigger, q2bin=q2bin, process=sample)
 
-    analysis = 'MM' if 'MuMu' in trigger else 'EE'
-
-    d_sel=sel.selection(project='RK', analysis=analysis, q2bin=q2bin, process=sample)
-    d_sel.update(cuts)
     for cut_name, cut_value in d_sel.items():
         log.debug(f'{cut_name:<20}{cut_value}')
         rdf = rdf.Filter(cut_value, cut_name)
