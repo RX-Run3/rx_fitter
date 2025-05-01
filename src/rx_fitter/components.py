@@ -159,9 +159,10 @@ def get_mc_reparametrized(obs : zobs, component_name : str, cfg : dict, l_nbrem 
 
     return pdf
 # ------------------------------------
-def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
+def get_prc(obs : zobs, nbrem : int, cfg : dict) -> Union[FitComponent,None]:
     '''
     Function returning FitComponent object for Partially reconstructed background
+    build from cocktail charmonium MC, NOT the exclusive rare MC
     '''
     mass     = obs.obs[0]
     q2bin    = cfg['input']['q2bin']
@@ -173,9 +174,12 @@ def get_prc(obs : zobs, nbrem : int, cfg : dict) -> FitComponent:
     out_dir  = cfg['output']['out_dir']
 
     obj      = PRec(samples=l_samp, trig=trigger, q2bin=q2bin, d_weight=d_wgt)
-    obj.cuts = _get_cuts(nbrem, cfg)
+    obj.cuts = { 'nbrem' : cfg['brem'][nbrem] }
+    pdf      = obj.get_sum(mass=mass, name='PRec', obs=obs, **cfg_kde)
 
-    pdf=obj.get_sum(mass=mass, name='PRec', obs=obs, **cfg_kde)
+    if pdf is None:
+        log.warning('No PRec PDF can be built')
+        return None
 
     cfg['name']    = 'PRec'
     cfg['plotting']= d_plt
