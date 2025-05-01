@@ -14,6 +14,7 @@ import jacobi                   as jac
 from dmu.logging.log_store                 import LogStore
 from dmu.generic                           import hashing
 from dmu.generic.version_management        import get_last_version
+from rx_selection                          import selection  as sel
 from rx_efficiencies.decay_names           import DecayNames as dn
 from rx_efficiencies.efficiency_calculator import EfficiencyCalculator
 
@@ -24,16 +25,14 @@ class PrecScales:
     Class used to calculate scale factor between yields of partially reconstructed component and signal
     '''
     #------------------------------------------
-    def __init__(self, proc : str, q2bin : str, d_cut : dict[str,str] = None):
+    def __init__(self, proc : str, q2bin : str):
         '''
         proc : Nickname of decay process, nicknames are in the DecayNames class
         q2bin: Needed to apply correct selection to get correct efficiencies and scales
-        d_cut: Will be passed to EfficiencyCalculator in order to override default selection
         '''
         self._proc   = proc
         self._q2bin  = q2bin
-        self._d_cut  = {} if d_cut is None else d_cut
-        self._hash   = hashing.hash_object(d_cut)
+        self._hash   = self._get_hash()
 
         self._d_frbf : dict
         self._df_eff : pnd.DataFrame
