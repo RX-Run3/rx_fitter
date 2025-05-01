@@ -30,19 +30,21 @@ class PrecScales:
         proc : Nickname of decay process, nicknames are in the DecayNames class
         q2bin: Needed to apply correct selection to get correct efficiencies and scales
         '''
-        self._proc   = proc
-        self._q2bin  = q2bin
-        self._hash   = self._get_hash()
+        self._proc        = proc
+        self._q2bin       = q2bin
 
-        self._d_frbf : dict
-        self._df_eff : pnd.DataFrame
-
+        self._d_frbf      : dict
+        self._df_eff      : pnd.DataFrame
         self._trigger     = 'Hlt2RD_BuToKpEE_MVA'
         self._initialized = False
+
+        self._hash        = self._get_hash()
     #------------------------------------------
     def _get_hash(self) -> str:
         project = {'Hlt2RD_BuToKpEE_MVA' : 'RK'}[self._trigger]
-        d_sel   = sel.selection(project=project, trigger=self._trigger, q2bin=self._q2bin, process=self._proc)
+        process = dn.sample_from_decay(self._proc)
+
+        d_sel   = sel.selection(project=project, trigger=self._trigger, q2bin=self._q2bin, process=process)
         hsh     = hashing.hash_object([self._proc, self._q2bin, d_sel])
 
         return hsh
