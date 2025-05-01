@@ -242,14 +242,7 @@ def get_kde(obs : zobs, sample : str, l_nbrem : list[int], cfg : dict) -> zpdf:
 
         return fcm.get_pdf()
 
-    d_cut = {}
-    if 'selection' in cfg:
-        d_sel = cfg['selection']
-        d_cut.update(d_sel)
-
-    d_cut['nbrem'] = _get_brem_cut(cfg=cfg, l_nbrem=l_nbrem)
-
-    rdf = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger, cuts=d_cut)
+    rdf = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger)
     fcm = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
     pdf = fcm.get_pdf()
 
