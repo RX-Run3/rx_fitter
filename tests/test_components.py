@@ -216,38 +216,39 @@ def test_combinatorial(q2bin : str):
     '''
     log.info('')
 
-    cfg                   = _load_config(test='combinatorial')
-    out_dir               = cfg['out_dir']
-    cfg['out_dir']        = f'{out_dir}/{q2bin}'
+    cfg            = _load_config(test='combinatorial')
+    cfg['out_dir'] = f'{Data.out_dir}/combinatorial/{q2bin}'
 
     obs= zfit.Space('B_M', limits=[4500, 6000])
     pdf= cmp.get_cb(obs=obs, q2bin=q2bin, cfg=cfg)
     print_pdf(pdf)
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [0, 1, 2, None])
+@pytest.mark.parametrize('nbrem', [[0], [1], [2], [0,1,2], [1,2]])
 @pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
 @pytest.mark.parametrize('sample', ['Bu_Kstee_Kpi0_eq_btosllball05_DPC', 'Bd_Kstee_eq_btosllball05_DPC', 'Bs_phiee_eq_Ball_DPC'])
-def test_bxhsee(nbrem : int, q2bin : str, sample : str):
+def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
     '''
     Test B(u,d,s) -> K*ee
     '''
     log.info('')
 
-    cfg                   = _load_config(test='bxhsee')
-    cfg['input']['q2bin'] = q2bin
+    cfg                     = _load_config(test='bxhsee')
+    cfg['input']['q2bin']   = q2bin
+    cfg['output']['out_dir']= Data.out_dir
 
     obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    pdf = cmp.get_kde(obs=obs, sample=sample, nbrem=nbrem, cfg=cfg)
+    pdf = cmp.get_kde(obs=obs, sample=sample, l_nbrem=nbrem, cfg=cfg)
 
     if pdf is None:
+        log.warning(f'No KDE can be built for {nbrem}/{q2bin}{sample}')
         return
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem', [0, 1, 2, None])
+@pytest.mark.parametrize('nbrem', [[0], [1], [2], [0,1,2], [1,2]])
 @pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
 @pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC', 'Bu_psi2SK_ee_eq_DPC'])
-def test_cc_leakage(nbrem : int, q2bin : str, sample : str):
+def test_cc_leakage(nbrem : list[int], q2bin : str, sample : str):
     '''
     Builds KDE for leaked ccbar component
     '''
@@ -261,6 +262,7 @@ def test_cc_leakage(nbrem : int, q2bin : str, sample : str):
     pdf = cmp.get_kde(obs=obs, sample=sample, l_nbrem=nbrem, cfg=cfg)
 
     if pdf is None:
+        log.warning(f'No KDE can be built for {nbrem}/{q2bin}{sample}')
         return
 
     print_pdf(pdf)
