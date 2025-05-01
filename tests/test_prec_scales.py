@@ -72,8 +72,7 @@ def test_all_datasets(q2bin : str, process : str):
     Tests retrieval of scales between signal and PRec yields
     '''
     signal   = 'bpkpee'
-    mva_cut  = 'mva_cmb > 0.900 && mva_prc > 0.850'
-    obj      = PrecScales(proc=process, q2bin=q2bin, d_cut = {'mva' : mva_cut})
+    obj      = PrecScales(proc=process, q2bin=q2bin)
     val, err = obj.get_scale(signal=signal)
 
     if process != signal:
@@ -81,7 +80,7 @@ def test_all_datasets(q2bin : str, process : str):
     else:
         assert val == 1   # If this runs on signal, scale is 1
 
-    ScalesData.collect_def_wp(process, mva_cut, q2bin, val, err)
+    ScalesData.collect_def_wp(process, '(1)', q2bin, val, err)
 #-------------------------------
 @pytest.mark.parametrize('mva_cmb', Data.l_mva_cmb)
 @pytest.mark.parametrize('mva_prc', Data.l_mva_prc)
