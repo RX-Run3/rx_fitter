@@ -337,6 +337,7 @@ class PRec:
     #-----------------------------------------------------------
     def _filter_cut(self, cut : str) -> pnd.DataFrame:
         if cut is None:
+            log.debug('Not applying any cut')
             return self._df
 
         log.info(f'Applying cut: {cut}')
@@ -409,6 +410,7 @@ class PRec:
 
         if os.path.isfile(cache_path):
             log.info(f'Cached PDF found, loading: {cache_path}')
+            log.debug(f'Cut: {cut}')
             df = pnd.read_json(cache_path)
         else:
             self._initialize()
@@ -426,7 +428,7 @@ class PRec:
             log.warning(f'Will not build PDF, found {nentries} entries, threshold is {self._nentries_threshold}')
             return None
 
-        pdf          = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
+        pdf          = zfit.pdf.KDE1DimISJ(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         pdf.arr_mass = arr_mass
         pdf.arr_wgt  = df.wgt_br.to_numpy()
         pdf.arr_sam  = df.wgt_sam.to_numpy()
