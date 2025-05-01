@@ -40,6 +40,13 @@ class PrecScales:
         self._trigger     = 'Hlt2RD_BuToKpEE_MVA'
         self._initialized = False
     #------------------------------------------
+    def _get_hash(self) -> str:
+        project = {'Hlt2RD_BuToKpEE_MVA' : 'RK'}[self._trigger]
+        d_sel   = sel.selection(project=project, trigger=self._trigger, q2bin=self._q2bin, process=self._proc)
+        hsh     = hashing.hash_object([self._proc, self._q2bin, d_sel])
+
+        return hsh
+    #------------------------------------------
     def _check_arg(self, l_val, val, name):
         if val not in l_val:
             raise ValueError(f'{name} {val} not allowed')
