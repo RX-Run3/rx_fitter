@@ -47,25 +47,6 @@ def get_rdf(sample : str, q2bin : str, trigger : str) -> RDataFrame:
 
     return rdf
 # ------------------------------------
-def _get_cuts(nbrem : int, cfg : dict) -> dict[str,str]:
-    d_cut          = {}
-    d_cut['nbrem'] = cfg['brem'][nbrem]
-
-    if 'input'     not in cfg:
-        return d_cut
-
-    if 'selection' not in cfg['input']:
-        return d_cut
-
-    log.warning('Overriding default selection')
-    cuts= cfg['input']['selection']
-    for name, expr in cuts.items():
-        log.debug(f'{name:<20}{expr}')
-
-    cuts.update(d_cut)
-
-    return cuts
-# ------------------------------------
 def _get_mc_rdf(cfg : dict, component_name : str, nbrem : int) -> RDataFrame:
     d_cmp_set = cfg['components'][component_name][nbrem]
     if not d_cmp_set['create']:
