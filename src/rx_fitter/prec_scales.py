@@ -99,7 +99,6 @@ class PrecScales:
         with open(eff_path, encoding='utf-8') as ifile:
             data = yaml.safe_load(ifile)
 
-        del data['cuts']
         df = pnd.DataFrame(data)
 
         self._df_eff = df
