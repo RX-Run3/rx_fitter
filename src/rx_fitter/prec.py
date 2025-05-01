@@ -442,7 +442,7 @@ class PRec:
             log.debug(f'{cut:<30}{inum:<20}{fnum:<20}')
         log.debug('-' * 50)
     #-----------------------------------------------------------
-    def get_sum(self, mass : str, name='unnamed', **kwargs) -> zpdf:
+    def get_sum(self, mass : str, name='unnamed', **kwargs) -> Union[zpdf,None]:
         '''Provides extended PDF that is the sum of multiple KDEs representing PRec background
 
         Parameters:
@@ -465,7 +465,13 @@ class PRec:
         for yld in l_yld:
             yld.floating = False
 
-        pdf          = zfit.pdf.SumPDF(l_pdf, fracs=l_yld)
+        if   len(l_pdf) >= 2:
+            pdf   = zfit.pdf.SumPDF(l_pdf, fracs=l_yld)
+        elif len(l_pdf) == 1:
+            [pdf] = l_pdf
+        else:
+            log.warning('No PDF can be built with dataset')
+            return None
 
         l_arr_mass   = [ pdf.arr_mass for pdf in l_pdf ]
         l_arr_wgt    = [ pdf.arr_wgt  for pdf in l_pdf ]
