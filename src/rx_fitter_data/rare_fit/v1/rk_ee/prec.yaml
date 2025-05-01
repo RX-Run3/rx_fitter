@@ -8,10 +8,9 @@ fitting:
   config:
     PRec:
       cfg_kde:
-        bandwidth: 20
         padding:
-          lowermirror: 0.5
-          uppermirror: 0.5
+          lowermirror: 1.0
+          uppermirror: 1.0
       plotting:
         nbins: 30
         stacked: true
