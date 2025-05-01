@@ -1,0 +1,17 @@
+input : 
+  observable : B_M_brem_track_2
+  minx : 4500
+  maxx : 7000
+
+nbrem:
+  low :
+    - 0
+    - 1
+    - 2
+  central:
+    - 1
+    - 2
+  high:
+    - 0
+    - 1
+    - 2
