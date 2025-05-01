@@ -35,7 +35,7 @@ def get_rdf(sample : str, q2bin : str, trigger : str) -> RDataFrame:
     '''
     gtr  = RDFGetter(sample=sample, trigger=trigger)
     rdf  = gtr.get_rdf()
-    d_sel=sel.selection(trigger=trigger, q2bin=q2bin, process=sample)
+    d_sel= sel.selection(trigger=trigger, q2bin=q2bin, process=sample)
 
     for cut_name, cut_value in d_sel.items():
         log.debug(f'{cut_name:<20}{cut_value}')
@@ -193,7 +193,7 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
     '''
     Returns fit component for combinatorial fit
     '''
-    kind = cfg['q2'][q2bin]['model']
+    kind        = cfg['q2'][q2bin]['model']
     cfg['name'] = 'Combinatorial'
 
     d_fix= None
