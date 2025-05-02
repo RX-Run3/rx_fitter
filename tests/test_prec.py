@@ -95,33 +95,44 @@ def test_reso(q2bin : str):
             ]
 
     test = f'reso/{q2bin}'
+    q2   = {'jpsi' : r'$J/\psi$', 'psi2' : r'\psi(2S)'}[q2bin]
 
     d_wgt= {'dec' : 0, 'sam' : 0}
     obp_4=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_4=obp_4.get_sum(mass=mass, name='PRec_4', obs=obs)
-    _plot_pdf(pdf_4, test,'Uncorrected', maxy=maxy)
+
+    title=f'$q^2$: {q2}, uncorrected'
+    _plot_pdf(pdf_4, test, 'uncorrected', maxy=maxy, title=title)
 
     d_wgt= {'dec' : 0, 'sam' : 1}
     obp_3=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_3=obp_3.get_sum(mass=mass, name='PRec_3', obs=obs)
-    _plot_pdf(pdf_3, test,'Sample weights', maxy=maxy)
+
+    title=f'$q^2$: {q2}, sample weights'
+    _plot_pdf(pdf_3, test, 'sample_weights', maxy=maxy, title=title)
 
     d_wgt= {'dec' : 1, 'sam' : 0}
     obp_2=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_2=obp_2.get_sum(mass=mass, name='PRec_2', obs=obs)
-    _plot_pdf(pdf_2, test,'Decay weights', maxy=maxy)
+
+    title=f'$q^2$: {q2}, decay weights'
+    _plot_pdf(pdf_2, test, 'decay_weights', maxy=maxy, title=title)
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp_1=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf_1=obp_1.get_sum(mass=mass, name='PRec_1', obs=obs)
-    _plot_pdf(pdf_1, test,'Both weights', maxy=maxy)
+
+    title=f'$q^2$: {q2}, both weights'
+    _plot_pdf(pdf_1, test, 'both_weights', maxy=maxy, title=title)
 #-----------------------------------------------
 @pytest.mark.parametrize('bdt_cut, name', [
     ('mva.mva_prc > 0.0 && mva.mva_cmb > 0.0', '0p0'),
     ('mva.mva_prc > 0.2 && mva.mva_cmb > 0.2', '0p2'),
     ('mva.mva_prc > 0.3 && mva.mva_cmb > 0.3', '0p2'),
     ('mva.mva_prc > 0.4 && mva.mva_cmb > 0.4', '0p2'),
-    ('mva.mva_prc > 0.5 && mva.mva_cmb > 0.5', '0p5')])
+    ('mva.mva_prc > 0.5 && mva.mva_cmb > 0.5', '0p5'),
+    ('mva.mva_prc > 0.8 && mva.mva_cmb > 0.8', '0p8'),
+    ('mva.mva_prc > 0.9 && mva.mva_cmb > 0.9', '0p9')])
 @pytest.mark.parametrize('q2bin'  , ['jpsi', 'psi2'])
 def test_bdt(q2bin : str, bdt_cut : str, name : str):
     '''
