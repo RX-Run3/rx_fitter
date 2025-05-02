@@ -15,6 +15,7 @@ import pandas as pnd
 from zfit.core.basepdf     import BasePDF   as zpdf
 from rx_selection          import selection as sel
 from rx_data.rdf_getter    import RDFGetter
+from dmu.stats.utilities   import is_pdf_usable
 from dmu.logging.log_store import LogStore
 
 from rx_fitter.inclusive_decays_weights import Reader as inclusive_decays_weights
@@ -54,7 +55,6 @@ class PRec:
                 'nbrem'            : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)',
                 'B_M_brem_track_2' : 'brem_track_2.B_M_brem_track_2'
                 }
-        self._nentries_threshold = 30
         self._initialized        = False
     #-----------------------------------------------------------
     def _initialize(self):
@@ -402,8 +402,6 @@ class PRec:
         **kwargs: These are all arguments for KDE1DimFFT
 
         and it will return a KDE1DimFFT PDF.
-
-        IMPORTANT: If the number of entries is smaller than _nentries_threshold will return None
         '''
         identifier = self._get_identifier(mass, cut, **kwargs)
         cache_path = self._path_from_identifier(identifier)
@@ -422,17 +420,17 @@ class PRec:
             df=self._drop_before_saving(df)
             df.to_json(cache_path, indent=4)
 
-        arr_mass = df[mass].to_numpy()
-        nentries = len(arr_mass)
-        if nentries < self._nentries_threshold:
-            log.warning(f'Will not build PDF, found {nentries} entries, threshold is {self._nentries_threshold}')
-            return None
+        arr_mass     = df[mass].to_numpy()
+        nentries     = len(arr_mass)
 
         pdf          = zfit.pdf.KDE1DimISJ(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         pdf.arr_mass = arr_mass
         pdf.arr_wgt  = df.wgt_br.to_numpy()
         pdf.arr_sam  = df.wgt_sam.to_numpy()
         pdf.arr_dec  = df.wgt_dec.to_numpy()
+
+        if not is_pdf_usable(pdf):
+            return None
 
         return pdf
     #-----------------------------------------------------------
