@@ -241,7 +241,14 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     ext_text = _get_extra_text(data)
     title    = f'Brem:{Data.l_nbrem}'
     obj   = ZFitPlotter(data=data, model=pdf)
-    obj.plot(nbins=50, d_leg=d_leg, stacked=True, title=title, ext_text=ext_text)
+    obj.plot(
+            nbins   =50,
+            d_leg   =d_leg,
+            stacked =True,
+            title   =title,
+            leg_loc ='upper right',
+            ext_text=ext_text)
+
     obj.axs[1].set_xlabel(Data.mass)
     obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
