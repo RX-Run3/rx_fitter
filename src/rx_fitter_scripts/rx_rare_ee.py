@@ -230,6 +230,8 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
             'suj_1_ext'                         : 'Combinatorial',
             }
 
+    ext_text = _get_extra_text(data)
+    title    = f'Brem:{Data.l_nbrem}'
     obj   = ZFitPlotter(data=data, model=pdf)
     obj.plot(nbins=50, d_leg=d_leg, stacked=True, title=title, ext_text=ext_text)
     obj.axs[1].set_xlabel(Data.mass)
@@ -254,6 +256,9 @@ def main():
 
     stat_utilities.print_pdf(pdf=pdf, d_const=d_cns, txt_path=f'{Data.fit_dir}/pre_fit.txt')
     fit_result = _fit(pdf=pdf, data=data, constraints=d_cns)
+
+    if fit_result is None:
+        return
 
     stat_utilities.save_fit(
             data   =data,
