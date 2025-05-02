@@ -43,14 +43,14 @@ def _initialize():
 def _plot_weight(arr_wgt, label : str, linestyle : str):
     plt.hist(arr_wgt, bins=30, label=label, histtype='step', linestyle=linestyle)
 #-----------------------------------------------
-def _plot_pdf(pdf, test : str, name : str, maxy : str):
+def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
     arr_mass = pdf.arr_mass
     arr_wgt  = pdf.arr_wgt
     arr_sam  = pdf.arr_sam
     arr_dec  = pdf.arr_dec
 
     obj = ZFitPlotter(data=arr_mass, model=pdf, weights=arr_wgt)
-    obj.plot(stacked=True, ext_text=f'{name}\n#Entries: {arr_mass.size}')
+    obj.plot(stacked=True, ext_text=f'#Entries: {arr_mass.size}')
     obj.axs[0].set_ylim(bottom=0, top=maxy)
     obj.axs[0].axvline(x=5080, linestyle=':')
     obj.axs[0].axvline(x=5680, linestyle=':')
@@ -58,7 +58,6 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str):
     out_dir = f'{Data.out_dir}/{test}'
     os.makedirs(out_dir, exist_ok=True)
 
-    name      = name.replace(' ', '_')
     plot_path = f'{out_dir}/{name}.png'
     log.info(f'Saving to: {plot_path}')
     plt.savefig(plot_path)
@@ -69,6 +68,7 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str):
     _plot_weight(arr_wgt, 'Total' , ':' )
 
     plt.legend()
+    plt.title(title)
     plt.savefig(f'{out_dir}/{name}_wgt.png')
     plt.close('all')
 
