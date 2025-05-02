@@ -196,15 +196,10 @@ def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
     s_par  = pdf.get_params()
     l_name = [par.name for par in s_par]
 
-    obj    = ConstraintReader(parameters = l_name, q2bin=Data.q2bin, mva_cut = Data.mva_cut)
+    obj    = ConstraintReader(parameters = l_name, q2bin=Data.q2bin)
     d_cns  = obj.get_constraints()
 
     return d_cns
-# --------------------------
-def _get_title() -> str:
-    title = f'{Data.mva_cut}; Brem:{Data.l_nbrem}'
-
-    return title
 # --------------------------
 def _get_extra_text(data : zdata) -> str:
     arr_mass = data.to_numpy()
@@ -223,6 +218,9 @@ def _initialize() -> None:
     fit_dir      = os.environ['FITDIR']
     sample       = Data.sample.replace('*', 'p')
     Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}'
+
+    cfg = _load_config(component='data')
+    _initialize_settings(cfg=cfg)
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> zres:
