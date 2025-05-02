@@ -110,7 +110,7 @@ class PRec:
         return needed
     #-----------------------------------------------------------
     def _filter_rdf(self, rdf : RDataFrame, sample : str) -> RDataFrame:
-        d_sel = sel.selection(project='RK', analysis='EE', q2bin=self._q2bin, process=sample)
+        d_sel = sel.selection(trigger=self._trig, q2bin=self._q2bin, process=sample)
         if self._d_cut is not None:
             log.warning('Overriding default selection with:')
             for name, expr in self._d_cut.items():
