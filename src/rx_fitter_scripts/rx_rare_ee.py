@@ -40,6 +40,7 @@ class Data:
     sample       : str
     mass         : str
     l_nbrem      : list[int]
+    d_sel        : dict[str,str]
     minx         : int
     maxx         : int
     obs          : zobs
@@ -59,6 +60,7 @@ def _initialize_settings(cfg : dict) -> None:
     Data.maxx    = cfg['input']['maxx']
     Data.trigger = cfg['input']['trigger']
     Data.sample  = cfg['input']['sample']
+    Data.d_sel   = cfg['input']['selection']
 
     Data.obs     = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------------------------------------
@@ -202,13 +204,14 @@ def _get_extra_text(data : zdata) -> str:
 # --------------------------
 def _initialize() -> None:
     LogStore.set_level('rx_fitter:constraint_reader', Data.log_level)
+    cfg = _load_config(component='data')
+    _initialize_settings(cfg=cfg)
 
     fit_dir      = os.environ['FITDIR']
     sample       = Data.sample.replace('*', 'p')
     Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}'
 
-    cfg = _load_config(component='data')
-    _initialize_settings(cfg=cfg)
+    sel.set_custom_selection(d_cut=Data.d_sel)
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> zres:
