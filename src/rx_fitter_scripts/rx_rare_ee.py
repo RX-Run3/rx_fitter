@@ -206,19 +206,17 @@ def _initialize() -> None:
     sel.set_custom_selection(d_cut=Data.d_sel)
 # --------------------------
 @gut.timeit
-def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> zres:
+def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> Union[zres,None]:
     cfg = {
             'constraints' : constraints,
             }
 
     if Data.dry_run:
         log.warning('Running dry run')
-    else:
-        obj = Fitter(pdf, data)
-        res = obj.fit(cfg=cfg)
+        return None
 
-    title    = f'Brem:{Data.l_nbrem}'
-    ext_text = _get_extra_text(data)
+    obj = Fitter(pdf, data)
+    res = obj.fit(cfg=cfg)
 
     d_leg = {
             'SumPDF_ext'                        : 'Signal',
