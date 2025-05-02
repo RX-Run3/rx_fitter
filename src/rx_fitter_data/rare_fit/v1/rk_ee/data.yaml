@@ -6,6 +6,7 @@ input :
   maxx       : 7000
   selection :
     mva : mva_cmb > 0.6 && mva_prc > 0.8
+    brem: nbrem == 1 || nbrem == 2
 nbrem:
   low :
     - 0
