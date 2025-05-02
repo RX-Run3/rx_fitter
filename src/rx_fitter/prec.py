@@ -50,7 +50,6 @@ class PRec:
         self._df       : pnd.DataFrame
         self._d_fstat  = {}
 
-        self._d_cut       = {}
         self._d_match     = self._get_match_str()
         self._l_mass      = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
         self._d_def       = {
@@ -69,20 +68,6 @@ class PRec:
         self._df      = self._get_df()
 
         self._initialized = True
-    #-----------------------------------------------------------
-    @property
-    def cuts(self) -> dict[str,str]:
-        '''
-        Getter for cuts
-        '''
-        return self._d_cut
-
-    @cuts.setter
-    def cuts(self, value : dict[str,str]):
-        '''
-        These cuts will override whatever is taken from the selection module
-        '''
-        self._d_cut = value
     #-----------------------------------------------------------
     def _get_df(self) -> pnd.DataFrame:
         '''
@@ -113,13 +98,6 @@ class PRec:
     #-----------------------------------------------------------
     def _filter_rdf(self, rdf : RDataFrame, sample : str) -> RDataFrame:
         d_sel = sel.selection(trigger=self._trig, q2bin=self._q2bin, process=sample)
-        if self._d_cut is not None:
-            log.warning('Overriding default selection with:')
-            for name, expr in self._d_cut.items():
-                log.info(f'{name:<20}{expr}')
-
-            d_sel.update(self._d_cut)
-
         for name, expr in d_sel.items():
             if name == 'mass':
                 continue
@@ -355,14 +333,11 @@ class PRec:
         cwargs = copy.deepcopy(kwargs)
         del cwargs['obs']
 
-        scut = json.dumps(self._d_cut, sort_keys=True)
         swgt = json.dumps(self._d_wg , sort_keys=True)
         scwg = json.dumps(cwargs     , sort_keys=True)
 
         l_d_sel   = [ sel.selection(trigger=self._trig, q2bin=self._q2bin, process=sample) for sample in self._l_sample ]
-
         l_element = [
-                scut,
                 swgt,
                 self._trig,
                 self._q2bin,
