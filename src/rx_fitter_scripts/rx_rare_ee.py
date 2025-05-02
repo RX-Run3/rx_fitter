@@ -124,6 +124,8 @@ def _add_pdf_sig() -> None:
     cfg  = _load_config(component='signal')
     cfg['input']['q2bin'] = Data.q2bin
 
+    # l_nbrem parameter will not determine a selection of data
+    # It will select which components to use to build the PDF
     pdf  = cmp.get_mc_reparametrized(obs=Data.obs, component_name='Signal', cfg=cfg, l_nbrem=Data.l_nbrem)
     pdf  = pdf.create_extended(Data.nsig)
 
