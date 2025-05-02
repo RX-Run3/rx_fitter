@@ -216,7 +216,7 @@ class PRec:
             log.error(f'Value for {name}, {var}, is not valid')
             raise ValueError
     #-----------------------------------------------------------
-    def _get_match_str(self):
+    def _get_match_str(self) -> dict[str,str]:
         if   self._q2bin == 'jpsi':
             d_match = self._get_match_str_jpsi()
         elif self._q2bin == 'psi2':
@@ -226,7 +226,7 @@ class PRec:
 
         return d_match
     #-----------------------------------------------------------
-    def _get_match_str_jpsi(self):
+    def _get_match_str_jpsi(self) -> dict[str,str]:
         bd          = '(abs(B_TRUEID) == 511)'
         bp          = '(abs(B_TRUEID) == 521)'
         bs          = '(abs(B_TRUEID) == 531)'
@@ -238,7 +238,7 @@ class PRec:
 
         return d_cut
     #-----------------------------------------------------------
-    def _get_match_str_psi2(self):
+    def _get_match_str_psi2(self) -> dict[str,str]:
         bd          = '(abs(B_TRUEID) == 511)'
         bp_psjp     = '(abs(B_TRUEID) == 521) & (abs(Jpsi_TRUEID) == 443) & (abs(Jpsi_MC_MOTHER_ID) == 100443) & (abs(Jpsi_MC_GD_MOTHER_ID) == 521) & (abs(H_MC_MOTHER_ID) == 521)'
         bs          = '(abs(B_TRUEID) == 531)'
