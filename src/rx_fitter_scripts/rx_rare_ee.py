@@ -91,11 +91,8 @@ def _add_pdf_cmb() -> None:
 def _add_pdf_prc(sample : str) -> None:
     cfg                   = _load_config(component='bxhsee')
     cfg['input']['q2bin'] = Data.q2bin
-    cfg['selection']      = {'bdt' : Data.mva_cut}
-    if Data.q2bin == 'high':
-        cfg['selection']['q2'] = Data.high_q2_cut
+    pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
 
-    pdf  = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
     if pdf is None:
         log.warning(f'No data found for leakage sample {sample}, skipping')
         return
