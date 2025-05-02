@@ -225,12 +225,12 @@ def _initialize() -> None:
     cfg = _load_config(component='data')
     _initialize_settings(cfg=cfg)
 
+    sel.set_custom_selection(d_cut=Data.d_sel)
+    RDFGetter.set_custom_columns(d_def = {'nbrem' : Data.brem_def})
+
     fit_dir      = os.environ['FITDIR']
     sample       = Data.sample.replace('*', 'p')
     Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}'
-
-    sel.set_custom_selection(d_cut=Data.d_sel)
-    RDFGetter.set_custom_columns(d_def = {'nbrem' : Data.brem_def})
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> Union[zres,None]:
