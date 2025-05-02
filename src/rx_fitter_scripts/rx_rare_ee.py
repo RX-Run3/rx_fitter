@@ -198,8 +198,8 @@ def _get_extra_text(data : zdata) -> str:
     nentries = len(arr_mass)
 
     text     = f'Entries={nentries:.0f}'
-    for cut in Data.d_sel.values():
-        text += f'\n{cut}'
+    for name, cut in Data.d_sel.items():
+        text += f'\n{name}: {cut}'
 
     return text
 # --------------------------
