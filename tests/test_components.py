@@ -189,7 +189,7 @@ def test_mc_brem_reparametrized(mass : str, name : str, kind : str, l_nbrem : li
     print_pdf(pdf, txt_path=f'{Data.out_dir}/mc_brem_reparametrized/pdf_{brem}.txt')
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [[0], [1], [2], [0,1,2], [1,2]])
-@pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M_brem_track_2'])
+@pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2'])
 @pytest.mark.parametrize('q2bin', ['jpsi', 'psi2'])
 def test_prec_brem(mass : str, nbrem : list[int], q2bin : str):
     '''
