@@ -422,6 +422,9 @@ class PRec:
 
         arr_mass     = df[mass].to_numpy()
         nentries     = len(arr_mass)
+        if nentries == 0:
+            log.warning('No entries found, not making any KDE PDF')
+            return None
 
         pdf          = zfit.pdf.KDE1DimISJ(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         pdf.arr_mass = arr_mass
