@@ -3,6 +3,7 @@ Script used to fit the rare mode
 '''
 import os
 import argparse
+from typing              import Union
 from importlib.resources import files
 
 import yaml
@@ -93,7 +94,7 @@ def _add_pdf_cmb() -> None:
 def _add_pdf_prc(sample : str) -> None:
     cfg                   = _load_config(component='bxhsee')
     cfg['input']['q2bin'] = Data.q2bin
-    pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
+    pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
 
     if pdf is None:
         log.warning(f'No data found for leakage sample {sample}, skipping')
@@ -108,7 +109,7 @@ def _add_pdf_prc(sample : str) -> None:
 def _add_pdf_leak(sample : str) -> None:
     cfg                   = _load_config(component='ccbar_leak')
     cfg['input']['q2bin'] = Data.q2bin
-    pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, l_nbrem=Data.l_nbrem, cfg=cfg)
+    pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
 
     if pdf is None:
         log.warning(f'No data found for leakage sample {sample}, skipping')
@@ -143,12 +144,6 @@ def _get_pdf() -> zpdf:
     pdf = zfit.pdf.SumPDF(Data.l_pdf)
 
     return pdf
-# --------------------------
-def _get_brem_cut() -> str:
-    l_cut = [ f'(nbrem == {nbrem})' for nbrem in Data.l_nbrem ]
-    cut   = '||'.join(l_cut)
-
-    return cut
 # --------------------------
 @gut.timeit
 def _get_data() -> zdata:
@@ -196,9 +191,6 @@ def _get_extra_text(data : zdata) -> str:
     mask     = (arr_mass > Data.minx) & (arr_mass < Data.maxx)
     arr_mass = arr_mass[mask]
     nentries = len(arr_mass)
-
-    if Data.q2bin == 'high':
-        return f'Entries={nentries:.0f}\n{Data.high_q2_trk}'
 
     return f'Entries={nentries:.0f}'
 # --------------------------
