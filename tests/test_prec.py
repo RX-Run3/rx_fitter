@@ -54,6 +54,12 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
     obj.axs[0].set_ylim(bottom=0, top=maxy)
     obj.axs[0].axvline(x=5080, linestyle=':')
     obj.axs[0].axvline(x=5680, linestyle=':')
+    obj.axs[0].axvline(x=5280, label=r'$B^+$', color='gray', linestyle='--')
+
+    obj.axs[1].set_ylim(-5, +5)
+    obj.axs[1].axhline(y=-3, color='red')
+    obj.axs[1].axhline(y=+3, color='red')
+    obj.axs[1].set_label('M$(B^+)$[MeV/${}_{c^2}$]')
 
     out_dir = f'{Data.out_dir}/{test}'
     os.makedirs(out_dir, exist_ok=True)
@@ -68,7 +74,6 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
     _plot_weight(arr_wgt, 'Total' , ':' )
 
     plt.legend()
-    plt.axvline(x=5280, label=r'$B^+$', color='gray', style=':')
     plt.title(title)
     plt.savefig(f'{out_dir}/{name}_wgt.png')
     plt.close('all')
