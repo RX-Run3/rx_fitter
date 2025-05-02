@@ -135,9 +135,8 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-    obp.cuts = {'bdt' : bdt_cut}
-
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
+
     _plot_pdf(pdf, test, f'bdt_{name}', maxy=maxy)
 #-----------------------------------------------
 @pytest.mark.parametrize('brem_cut, name', [
@@ -161,11 +160,8 @@ def test_brem(brem_cut : str, name : str):
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-    obp.cuts = {
-            'bdt' : 'mva.mva_prc > 0.5 && mva.mva_cmb > 0.5',
-            'brm' : brem_cut}
-
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
+
     _plot_pdf(pdf, test, f'bdt_{name}', maxy=3_000)
 #-----------------------------------------------
 def test_cache():
@@ -189,7 +185,6 @@ def test_cache():
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-    obp.cuts = {'bdt' : bdt_cut}
 
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
     _plot_pdf(pdf, test, 'cache', maxy=maxy)
