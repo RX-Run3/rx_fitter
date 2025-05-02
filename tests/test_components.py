@@ -188,21 +188,24 @@ def test_mc_brem_reparametrized(mass : str, name : str, kind : str, l_nbrem : li
     brem = '_'.join(map(str, l_nbrem))
     print_pdf(pdf, txt_path=f'{Data.out_dir}/mc_brem_reparametrized/pdf_{brem}.txt')
 # --------------------------------------------------------------
-@pytest.mark.parametrize('nbrem',                 [0, 1, 2])
+@pytest.mark.parametrize('nbrem', [[0], [1], [2], [0,1,2], [1,2]])
 @pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M_brem_track_2'])
-def test_prec_brem(mass : str, nbrem : int):
+def test_prec_brem(mass : str, nbrem : list[int]):
     '''
     Testing creation of PDF from MC sample with brem cut
     '''
     log.info('')
 
     cfg                      = _load_config('prec')
-    out_dir                  = cfg['output']['out_dir']
-    cfg['input']['q2bin']    = 'jpsi'
-    cfg['output']['out_dir'] = f'{out_dir}/test_prec_brem/{mass}_{nbrem:03}/v1'
+    _set_brem_category(l_brem=nbrem, cfg=cfg)
+    nbrem     = [ str(elm) for elm in nbrem ]
+    brem_name = '_'.join(nbrem)
 
-    obs            = _get_obs(mass, cfg)
-    cmp_prc        = cmp.get_prc(obs, nbrem, cfg)
+    cfg['input']['q2bin']    = 'jpsi'
+    cfg['output']['out_dir'] = f'{Data.out_dir}/bxhsee_{brem_name}'
+
+    obs     = _get_obs(mass, cfg)
+    cmp_prc = cmp.get_prc(obs, cfg)
 
     if cmp_prc is not None:
         log.info(f'Component was built for mass/nbrem: {mass}/{nbrem}')
