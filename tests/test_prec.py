@@ -68,6 +68,7 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
     _plot_weight(arr_wgt, 'Total' , ':' )
 
     plt.legend()
+    plt.axvline(x=5280, label=r'$B^+$', color='gray', style=':')
     plt.title(title)
     plt.savefig(f'{out_dir}/{name}_wgt.png')
     plt.close('all')
