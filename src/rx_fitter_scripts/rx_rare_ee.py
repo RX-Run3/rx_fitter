@@ -36,6 +36,7 @@ class Data:
     Data class
     '''
     dry_run      : bool
+    brem_def     : str
     q2bin        : str
     trigger      : str
     sample       : str
@@ -46,7 +47,6 @@ class Data:
     maxx         : int
     obs          : zobs
 
-    brem_def     : str        = 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)'
     cache_dir    : str        = '/tmp/rx_fitter/cache'
     gut.TIMER_ON : bool       = True
     log_level    : int        = 20
@@ -62,6 +62,7 @@ def _initialize_settings(cfg : dict) -> None:
     Data.trigger = cfg['input']['trigger']
     Data.sample  = cfg['input']['sample']
     Data.d_sel   = cfg['input']['selection']
+    Data.brem_def= cfg['input']['definitions']['nbrem']
 
     Data.obs     = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------------------------------------

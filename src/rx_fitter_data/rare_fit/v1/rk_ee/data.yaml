@@ -4,6 +4,8 @@ input :
   observable : B_M_brem_track_2
   minx       : 4500
   maxx       : 7000
+  definitions:
+    nbrem : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)
   selection :
     mva : mva_cmb > 0.6 && mva_prc > 0.8
     brem: nbrem == 1 || nbrem == 2
