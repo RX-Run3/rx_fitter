@@ -61,8 +61,11 @@ def _initialize_settings(cfg : dict) -> None:
     Data.maxx    = cfg['input']['maxx']
     Data.trigger = cfg['input']['trigger']
     Data.sample  = cfg['input']['sample']
-    Data.d_sel   = cfg['input']['selection']
     Data.brem_def= cfg['input']['definitions']['nbrem']
+    if 'selection' in cfg['input']:
+        Data.d_sel = cfg['input']['selection']
+    else:
+        Data.d_sel = {}
 
     Data.obs     = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------------------------------------
@@ -194,7 +197,11 @@ def _get_extra_text(data : zdata) -> str:
     arr_mass = arr_mass[mask]
     nentries = len(arr_mass)
 
-    return f'Entries={nentries:.0f}'
+    text     = f'Entries={nentries:.0f}'
+    for cut in Data.d_sel.values():
+        text += f'\n{cut}'
+
+    return text
 # --------------------------
 def _initialize() -> None:
     LogStore.set_level('rx_fitter:constraint_reader', Data.log_level)
