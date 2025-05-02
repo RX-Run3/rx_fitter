@@ -7,8 +7,9 @@ input :
   definitions:
     nbrem : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)
   selection :
-    mva : mva_cmb > 0.6 && mva_prc > 0.8
-    brem: nbrem == 1 || nbrem == 2
+    bdt : mva_cmb > 0.6 && mva_prc > 0.8
+    #q2  : q2_track > 14500000 && q2 < 22000000
+    mass: (1)
 nbrem:
   low :
     - 0
