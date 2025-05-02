@@ -202,7 +202,7 @@ def test_prec_brem(mass : str, nbrem : list[int]):
     brem_name = '_'.join(nbrem)
 
     cfg['input']['q2bin']    = 'jpsi'
-    cfg['output']['out_dir'] = f'{Data.out_dir}/bxhsee_{brem_name}'
+    cfg['output']['out_dir'] = f'{Data.out_dir}/prec_{brem_name}'
 
     obs     = _get_obs(mass, cfg)
     cmp_prc = cmp.get_prc(obs, cfg)
