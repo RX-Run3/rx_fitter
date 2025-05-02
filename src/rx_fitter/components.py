@@ -207,6 +207,16 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
 
     return obj.get_pdf()
 # ------------------------------------
+def _rdf_from_pandas(df : pnd.DataFrame) -> RDataFrame:
+    if len(df) > 0:
+        rdf = RDF.FromPandas(df)
+
+    rdf = RDataFrame(0)
+    for column in df.columns:
+        rdf = rdf.Define(column, '1')
+
+    return rdf
+# ------------------------------------
 def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
     '''
     Function returning zfit PDF object for Samples that need to be modelled with a KDE
@@ -237,7 +247,7 @@ def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
         log.debug(f'JSON file with data found, loading: {data_path}')
 
         df        = pnd.read_json(data_path)
-        rdf       = RDF.FromPandas(df)
+        rdf       = _rdf_from_pandas(df=df)
         fcm       = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
 
         return fcm.get_pdf()
