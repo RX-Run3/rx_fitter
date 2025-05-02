@@ -112,7 +112,7 @@ def _add_pdf_prc(sample : str) -> None:
     pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
 
     if pdf is None:
-        log.warning(f'No data found for leakage sample {sample}, skipping')
+        log.warning(f'No PDF found for PRec sample {sample}, skipping')
         return
 
     scale= zfit.Parameter(f's{sample}', 0, 0, 10)
