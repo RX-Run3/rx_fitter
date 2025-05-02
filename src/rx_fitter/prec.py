@@ -458,6 +458,8 @@ class PRec:
         '''
         self._name = name
 
+        # These cuts are not meant to override the selection, they are used to classify the fully selected data
+        # into physically meaningful categories, such that they can be used later, together
         d_pdf     = { name : self._get_pdf(mass, cut, name=name, **kwargs) for name, cut in self._d_match.items()}
         d_pdf     = { name : pdf                                           for name, pdf in d_pdf.items() if pdf is not None}
 
