@@ -7,6 +7,7 @@ import json
 import hashlib
 from typing   import Union
 
+
 from ROOT     import RDataFrame
 import zfit
 import numpy
@@ -15,6 +16,7 @@ import pandas as pnd
 from zfit.core.basepdf     import BasePDF   as zpdf
 from rx_selection          import selection as sel
 from rx_data.rdf_getter    import RDFGetter
+from dmu.generic           import hashing
 from dmu.stats.utilities   import is_pdf_usable
 from dmu.logging.log_store import LogStore
 
@@ -357,21 +359,22 @@ class PRec:
         swgt = json.dumps(self._d_wg , sort_keys=True)
         scwg = json.dumps(cwargs     , sort_keys=True)
 
-        lstr = str(scut) + str(swgt) + str(scwg) + str(self._l_sample) + self._trig + self._q2bin
-        lstr = ''.join(lstr)
-        val  = mass + cut + lstr
+        l_d_sel   = [ sel.selection(trigger=self._trig, q2bin=self._q2bin, process=sample) for sample in self._l_sample ]
 
-        return self._stable_hash(val)
-    #-----------------------------------------------------------
-    def _stable_hash(self, inval : str) -> str:
-        value = inval.encode()
-        value = hashlib.sha256(value)
+        l_element = [
+                scut,
+                swgt,
+                self._trig,
+                self._q2bin,
+                mass,
+                scwg,           # Stringified keyword arguments
+                self._l_sample, # ccbar cocktail sample names
+                l_d_sel,        # list of selections, one for each ccbar cocktail sample
+                cut]
 
-        hval  = value.hexdigest()
+        hsh  = hashing.hash_object(l_element)
 
-        log.debug('Hashing')
-
-        return hval
+        return hsh
     #-----------------------------------------------------------
     def _path_from_identifier(self, identifier : str) -> str:
         dir_path = '/tmp/cache/prec'
