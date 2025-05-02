@@ -155,7 +155,10 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
 
-    _plot_pdf(pdf, test, f'bdt_{name}', maxy=maxy)
+    wp    = name.replace('p', '.')
+    title = f'$MVA_{{cmb}} > {wp}$ && $MVA_{{prc}} > {wp}$'
+
+    _plot_pdf(pdf, test, name, maxy=maxy, title=title)
 #-----------------------------------------------
 @pytest.mark.parametrize('brem_cut, name', [
     ('nbrem == 0', 'z'),
@@ -182,14 +185,15 @@ def test_brem(brem_cut : str, name : str):
     obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
 
-    _plot_pdf(pdf, test, f'bdt_{name}', maxy=3_000)
+    brem  = {'z' : 0, 'o' : 1, 't' : 2}[name]
+    title = f'Brem: {brem}'
+    _plot_pdf(pdf, test, f'bdt_{name}', maxy=3_000, title=title)
 #-----------------------------------------------
 def test_cache():
     '''
     Testing caching of PDF
     '''
     q2bin  = 'jpsi'
-    bdt_cut= 'mva.mva_prc > 0.5'
 
     obs=zfit.Space('mass', limits=(4500, 6000))
     trig   = 'Hlt2RD_BuToKpEE_MVA'
@@ -205,9 +209,9 @@ def test_cache():
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
-
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
-    _plot_pdf(pdf, test, 'cache', maxy=maxy)
+
+    _plot_pdf(pdf, test, 'cache', maxy=maxy, title='cache test')
 #-----------------------------------------------
 def test_extended():
     '''
