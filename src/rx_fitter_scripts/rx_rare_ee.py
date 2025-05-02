@@ -34,29 +34,33 @@ class Data:
     '''
     Data class
     '''
-    dry_run : bool
-    q2bin   : str
-    high_q2_trk : str  = '(q2_track > 15000000)'
-    high_q2_nom : str  = '(q2       > 15500000) && (q2       < 22000000)'
-    high_q2_cut : str  = f'{high_q2_trk} && {high_q2_nom}'
+    dry_run      : bool
+    q2bin        : str
+    trigger      : str
+    sample       : str
+    mass         : str
+    l_nbrem      : list[int]
+    minx         : int
+    maxx         : int
+    obs          : zobs
 
-    l_nbrem     : list[int] = [0, 1, 2]
+    brem_def     : str        = 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)'
+    cache_dir    : str        = '/tmp/rx_fitter/cache'
+    gut.TIMER_ON : bool       = True
+    log_level    : int        = 20
+    version      : str        = 'v1'
+    nsig         : zpar       = zfit.Parameter('nsig', 0, 0, 10_000)
+    l_pdf        : list[zpdf] = []
+# --------------------------
+def _initialize_settings(cfg : dict) -> None:
+    Data.l_nbrem = cfg['nbrem'][Data.q2bin]
+    Data.mass    = cfg['input']['observable']
+    Data.minx    = cfg['input']['minx']
+    Data.maxx    = cfg['input']['maxx']
+    Data.trigger = cfg['input']['trigger']
+    Data.sample  = cfg['input']['sample']
 
-    brem_def    : str  = 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)'
-    cache_dir   : str  = '/tmp/rx_fitter/cache'
-    mva_cut     : str  = '(mva_cmb > 0.60) && (mva_prc > 0.80)'
-    sample      : str  = 'DATA*'
-    trigger     : str  = 'Hlt2RD_BuToKpEE_MVA'
-    version     : str  = 'v1'
-    mass        : str  = 'B_M_brem_track_2'
-    minx        : int  = 4_500
-    maxx        : int  = 7_000
-    obs         : zobs = zfit.Space(mass, limits=(minx, maxx))
-    nsig        : zpar = zfit.Parameter('nsig', 0, 0, 10_000)
-    gut.TIMER_ON: bool = True
-
-    log_level : int        = 20
-    l_pdf     : list[zpdf] = []
+    Data.obs     = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
