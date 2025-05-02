@@ -54,7 +54,7 @@ class PRec:
                 'nbrem'            : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)',
                 'B_M_brem_track_2' : 'brem_track_2.B_M_brem_track_2'
                 }
-        self._nentries_threshold = 100
+        self._nentries_threshold = 30
         self._initialized        = False
     #-----------------------------------------------------------
     def _initialize(self):
