@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
+from rx_selection           import selection as sel
 from rx_data.rdf_getter     import RDFGetter
 from rx_fitter.prec         import PRec
 
@@ -74,6 +75,10 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str):
     text_path = plot_path.replace('png', 'txt')
     print_pdf(pdf, txt_path=text_path)
 #-----------------------------------------------
+def _set_selection(d_cut : dict[str,str]) -> None:
+    sel.reset_custom_selection()
+    sel.set_custom_selection(d_cut = d_cut) 
+#-----------------------------------------------
 @pytest.mark.parametrize('q2bin', ['jpsi', 'psi2'])
 def test_reso(q2bin : str):
     '''
@@ -122,6 +127,8 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     '''
     Testing application of BDT cuts
     '''
+    _set_selection(d_cut = {'bdt' : bdt_cut})
+
     obs=zfit.Space('mass', limits=(4500, 6000))
     trig   = 'Hlt2RD_BuToKpEE_MVA'
     mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
@@ -147,6 +154,8 @@ def test_brem(brem_cut : str, name : str):
     '''
     Testing by brem category 
     '''
+    _set_selection(d_cut = {'brem' : brem_cut})
+
     q2bin  = 'jpsi'
     obs=zfit.Space('mass', limits=(4500, 6000))
     trig   = 'Hlt2RD_BuToKpEE_MVA'
