@@ -11,8 +11,8 @@ import pytest
 from zfit.core.interfaces   import ZfitSpace as zobs
 from dmu.logging.log_store  import LogStore
 from dmu.stats.utilities    import print_pdf
-from rx_fitter              import components as cmp
 from rx_selection           import selection  as sel
+from rx_fitter              import components as cmp
 
 log=LogStore.add_logger('rx_fitter:test_components')
 # --------------------------------------------------------------
@@ -232,16 +232,19 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
     Test B(u,d,s) -> K*ee
     '''
     log.info('')
-
     cfg                     = _load_config(test='bxhsee')
+    _set_brem_category(l_brem=nbrem, cfg=cfg)
+    nbrem     = [ str(elm) for elm in nbrem ]
+    brem_name = '_'.join(nbrem)
+
     cfg['input']['q2bin']   = q2bin
-    cfg['output']['out_dir']= Data.out_dir
+    cfg['output']['out_dir']= f'{Data.out_dir}/bxhsee_{brem_name}'
 
     obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
-    pdf = cmp.get_kde(obs=obs, sample=sample, l_nbrem=nbrem, cfg=cfg)
+    pdf = cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
 
     if pdf is None:
-        log.warning(f'No KDE can be built for {nbrem}/{q2bin}{sample}')
+        log.warning(f'No KDE can be built for {nbrem}/{q2bin}/{sample}')
         return
 
     print_pdf(pdf)
