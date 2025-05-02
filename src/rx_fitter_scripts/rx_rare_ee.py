@@ -235,9 +235,8 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     else:
         obj = Fitter(pdf, data)
         res = obj.fit(cfg=cfg)
-        log.info(res)
 
-    title    = _get_title()
+    title    = f'Brem:{Data.l_nbrem}'
     ext_text = _get_extra_text(data)
 
     d_leg = {
