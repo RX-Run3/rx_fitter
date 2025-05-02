@@ -191,17 +191,19 @@ def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
 
     return d_cns
 # --------------------------
-def _get_extra_text(data : zdata) -> str:
+def _get_text(data : zdata) -> str:
     arr_mass = data.to_numpy()
     mask     = (arr_mass > Data.minx) & (arr_mass < Data.maxx)
     arr_mass = arr_mass[mask]
     nentries = len(arr_mass)
 
-    text     = f'Entries={nentries:.0f}'
+    text = ''
     for name, cut in Data.d_sel.items():
         text += f'\n{name}: {cut}'
 
-    return text
+    title = f'Entries={nentries:.0f}; Brem:{Data.l_nbrem}'
+
+    return text, title
 # --------------------------
 def _initialize() -> None:
     LogStore.set_level('rx_fitter:constraint_reader', Data.log_level)
@@ -238,8 +240,7 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
             'suj_1_ext'                         : 'Combinatorial',
             }
 
-    ext_text = _get_extra_text(data)
-    title    = f'Brem:{Data.l_nbrem}'
+    text, title = _get_text(data)
     obj   = ZFitPlotter(data=data, model=pdf)
     obj.plot(
             nbins   =50,
@@ -247,7 +248,7 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
             stacked =True,
             title   =title,
             leg_loc ='upper right',
-            ext_text=ext_text)
+            ext_text=text)
 
     obj.axs[1].set_xlabel(Data.mass)
     obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
