@@ -190,7 +190,8 @@ def test_mc_brem_reparametrized(mass : str, name : str, kind : str, l_nbrem : li
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [[0], [1], [2], [0,1,2], [1,2]])
 @pytest.mark.parametrize('mass' , ['B_const_mass_M', 'B_M_brem_track_2'])
-def test_prec_brem(mass : str, nbrem : list[int]):
+@pytest.mark.parametrize('q2bin', ['jpsi', 'psi2'])
+def test_prec_brem(mass : str, nbrem : list[int], q2bin : str):
     '''
     Testing creation of PDF from MC sample with brem cut
     '''
@@ -201,8 +202,8 @@ def test_prec_brem(mass : str, nbrem : list[int]):
     nbrem     = [ str(elm) for elm in nbrem ]
     brem_name = '_'.join(nbrem)
 
-    cfg['input']['q2bin']    = 'jpsi'
-    cfg['output']['out_dir'] = f'{Data.out_dir}/prec_{brem_name}'
+    cfg['input']['q2bin']    = q2bin
+    cfg['output']['out_dir'] = f'{Data.out_dir}/prec/{mass}/{q2bin}/{brem_name}'
 
     obs     = _get_obs(mass, cfg)
     cmp_prc = cmp.get_prc(obs, cfg)
