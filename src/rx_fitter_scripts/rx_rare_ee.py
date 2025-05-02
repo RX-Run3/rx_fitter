@@ -162,7 +162,6 @@ def _get_data() -> zdata:
 
     gtr = RDFGetter(sample=Data.sample, trigger=Data.trigger)
     rdf = gtr.get_rdf()
-    rdf = rdf.Define('nbrem', Data.brem_def)
 
     for cut_name, cut_expr in d_sel.items():
         log.info(f'{cut_name:<20}{cut_expr}')
@@ -206,6 +205,7 @@ def _initialize() -> None:
     Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}'
 
     sel.set_custom_selection(d_cut=Data.d_sel)
+    RDFGetter.set_custom_columns(d_def = {'nbrem' : Data.brem_def})
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> Union[zres,None]:
