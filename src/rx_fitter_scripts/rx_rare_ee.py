@@ -54,6 +54,15 @@ class Data:
     nsig         : zpar       = zfit.Parameter('nsig', 0, 0, 10_000)
     l_pdf        : list[zpdf] = []
 # --------------------------
+def _update_selection_with_brem() -> None:
+    if set(Data.l_nbrem) == {0, 1, 2}:
+        return
+
+    l_brem_cut = [ f'({Data.brem_def} == {brem})' for brem in Data.l_nbrem ]
+    brem_cut   = ' || '.join(l_brem_cut)
+
+    Data.d_sel['nbrem'] = brem_cut
+# --------------------------
 def _initialize_settings(cfg : dict) -> None:
     Data.l_nbrem = cfg['nbrem'][Data.q2bin]
     Data.mass    = cfg['input']['observable']
@@ -67,7 +76,9 @@ def _initialize_settings(cfg : dict) -> None:
     else:
         Data.d_sel = {}
 
-    Data.obs     = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
+    _update_selection_with_brem()
+
+    Data.obs = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
