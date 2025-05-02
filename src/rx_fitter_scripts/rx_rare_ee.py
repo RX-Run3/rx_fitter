@@ -210,6 +210,10 @@ def _get_text(data : zdata) -> str:
 
     text = ''
     for name, cut in Data.d_sel.items():
+        # Brem cut is too long and will be in title anyway
+        if name == 'nbrem':
+            continue
+
         text += f'\n{name}: {cut}'
 
     title = f'Entries={nentries:.0f}; Brem:{Data.l_nbrem}'
