@@ -11,6 +11,7 @@ import yaml
 import ROOT
 import numpy
 import zfit
+import matplotlib.pyplot as plt
 
 from zfit.core.data              import Data       as zdata
 from zfit.core.basepdf           import BasePDF    as zpdf
@@ -321,6 +322,9 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     obj = Fitter(pdf, data)
     res = obj.fit(cfg=cfg)
 
+    return res
+# --------------------------
+def _plot_fit(data : zdata, pdf : zpdf):
     d_leg = {
             'SumPDF_ext'                        : 'Signal',
             'exp_1_ext'                         : 'Combinatorial',
@@ -348,7 +352,8 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
     obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
     obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
-    return res
+    plt.savefig(f'{Data.fit_dir}/fit.png')
+    plt.close()
 # --------------------------
 def main():
     '''
@@ -373,6 +378,8 @@ def main():
             res    =fit_result,
             fit_dir=Data.fit_dir,
             d_const=d_cns)
+
+    _plot_fit(data=data, pdf=pdf)
 # --------------------------
 if __name__ == '__main__':
     main()
