@@ -2,6 +2,7 @@
 Script used to fit the rare mode
 '''
 import os
+import inspect
 import argparse
 from typing              import Union
 from importlib.resources import files
@@ -39,6 +40,7 @@ class Data:
     brem_def     : str
     q2bin        : str
     trigger      : str
+    hsh          : str
     sample       : str
     mass         : str
     l_nbrem      : list[int]
@@ -46,13 +48,49 @@ class Data:
     minx         : int
     maxx         : int
     obs          : zobs
+    l_pdf        : list[zpdf]
 
     cache_dir    : str        = '/tmp/rx_fitter/cache'
     gut.TIMER_ON : bool       = True
     log_level    : int        = 20
     version      : str        = 'v1'
     nsig         : zpar       = zfit.Parameter('nsig', 0, 0, 10_000)
-    l_pdf        : list[zpdf] = []
+    # --------------------------------
+    @staticmethod
+    def is_hashable(obj, name : str) -> bool:
+        '''
+        Will take an object and its name, the the object are attributes of the Data class.
+        It will return a bool indicating if the object is hashable
+        '''
+        if name.startswith('__'):
+            return False
+
+        if inspect.isroutine(obj) or inspect.ismethoddescriptor(obj):
+            return False
+
+        tp_obj=type(obj)
+        tp_str=str(tp_obj)
+
+        if 'zfit' in tp_str:
+            return False
+
+        log.warning(f'Will use {name} for hashing')
+
+        return True
+    # --------------------------------
+    @classmethod
+    def get_hash(cls) -> str:
+        '''
+        Creates hash from class attributes and returns it as a string
+        '''
+        data = {
+                k : v
+                for k, v in vars(cls).items()
+                if cls.is_hashable(obj=v, name=k)}
+
+        val = hashing.hash_object(data)
+
+        return val
 # --------------------------
 def _update_selection_with_brem() -> None:
     if set(Data.l_nbrem) == {0, 1, 2}:
