@@ -100,23 +100,6 @@ def _update_selection_with_brem() -> None:
     brem_cut   = ' || '.join(l_brem_cut)
 
     Data.d_sel['nbrem'] = brem_cut
-# --------------------------
-def _initialize_settings(cfg : dict) -> None:
-    Data.l_nbrem = cfg['nbrem'][Data.q2bin]
-    Data.mass    = cfg['input']['observable']
-    Data.minx    = cfg['input']['minx']
-    Data.maxx    = cfg['input']['maxx']
-    Data.trigger = cfg['input']['trigger']
-    Data.sample  = cfg['input']['sample']
-    Data.brem_def= cfg['input']['definitions']['nbrem']
-    if 'selection' in cfg['input']:
-        Data.d_sel = cfg['input']['selection']
-    else:
-        Data.d_sel = {}
-
-    _update_selection_with_brem()
-
-    Data.obs = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
@@ -272,6 +255,10 @@ def _get_text(data : zdata) -> str:
 
     return text, title
 # --------------------------
+def _set_hash(cfg : dict) -> None:
+    data_hash = Data.get_hash()
+    Data.hsh  = hashing.hash_object([data_hash, cfg])
+# --------------------------
 def _initialize() -> None:
     LogStore.set_level('rx_fitter:constraint_reader' , Data.log_level)
     LogStore.set_level('rx_fitter:components'        , Data.log_level)
@@ -286,7 +273,27 @@ def _initialize() -> None:
 
     fit_dir      = os.environ['FITDIR']
     sample       = Data.sample.replace('*', 'p')
-    Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}'
+
+    _set_hash(cfg=cfg)
+    Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}/{Data.hsh}'
+    Data.l_pdf   = []
+# --------------------------
+def _initialize_settings(cfg : dict) -> None:
+    Data.l_nbrem = cfg['nbrem'][Data.q2bin]
+    Data.mass    = cfg['input']['observable']
+    Data.minx    = cfg['input']['minx']
+    Data.maxx    = cfg['input']['maxx']
+    Data.trigger = cfg['input']['trigger']
+    Data.sample  = cfg['input']['sample']
+    Data.brem_def= cfg['input']['definitions']['nbrem']
+    if 'selection' in cfg['input']:
+        Data.d_sel = cfg['input']['selection']
+    else:
+        Data.d_sel = {}
+
+    _update_selection_with_brem()
+
+    Data.obs = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> Union[zres,None]:
