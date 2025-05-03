@@ -99,6 +99,10 @@ def _load_config(component : str) -> dict:
     return cfg
 # --------------------------
 def _add_pdf_cmb() -> None:
+    log.info(30 * '-')
+    log.info('Adding combinatorial')
+    log.info(30 * '-')
+
     cfg  = _load_config(component = 'combinatorial')
     pdf  = cmp.get_cb(obs=Data.obs, q2bin=Data.q2bin, cfg=cfg)
     ncmb = zfit.Parameter('ncmb', 0, 0, 20_000)
@@ -107,6 +111,9 @@ def _add_pdf_cmb() -> None:
     Data.l_pdf.append(pdf)
 # --------------------------
 def _add_pdf_prc(sample : str) -> None:
+    log.info(30 * '-')
+    log.info(f'Adding: {sample}')
+    log.info(30 * '-')
     cfg                   = _load_config(component='bxhsee')
     cfg['input']['q2bin'] = Data.q2bin
     pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
@@ -122,12 +129,15 @@ def _add_pdf_prc(sample : str) -> None:
     Data.l_pdf.append(pdf)
 # --------------------------
 def _add_pdf_leak(sample : str) -> None:
+    log.info(30 * '-')
+    log.info(f'Adding: {sample}')
+    log.info(30 * '-')
     cfg                   = _load_config(component='ccbar_leak')
     cfg['input']['q2bin'] = Data.q2bin
     pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
 
     if pdf is None:
-        log.warning(f'No data found for leakage sample {sample}, skipping')
+        log.warning(f'No PDF found for leakage sample {sample}, skipping')
         return
 
     nleak = zfit.Parameter(f'n{sample}', 0, 0, 10_000)
@@ -136,6 +146,10 @@ def _add_pdf_leak(sample : str) -> None:
     Data.l_pdf.append(pdf)
 # --------------------------
 def _add_pdf_sig() -> None:
+    log.info(30 * '-')
+    log.info('Adding signal component')
+    log.info(30 * '-')
+
     cfg  = _load_config(component='signal')
     cfg['input']['q2bin'] = Data.q2bin
 
@@ -221,7 +235,11 @@ def _get_text(data : zdata) -> str:
     return text, title
 # --------------------------
 def _initialize() -> None:
-    LogStore.set_level('rx_fitter:constraint_reader', Data.log_level)
+    LogStore.set_level('rx_fitter:constraint_reader' , Data.log_level)
+    LogStore.set_level('rx_fitter:components'        , Data.log_level)
+    LogStore.set_level('rx_fitter:rx_rare_ee'        , Data.log_level)
+    LogStore.set_level('rx_calibration:fit_component', Data.log_level)
+
     cfg = _load_config(component='data')
     _initialize_settings(cfg=cfg)
 
