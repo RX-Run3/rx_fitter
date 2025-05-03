@@ -263,7 +263,7 @@ def _get_text(data : zdata) -> str:
         text += f'\n{name}: {cut}'
 
     sensitivity = _get_sensitivity()
-    title       = f'$\delta={sensitivity:.2f}$%; Entries={nentries:.0f}; Brem:{Data.l_nbrem}'
+    title       = f'$\\delta={sensitivity:.2f}$%; Entries={nentries:.0f}; Brem:{Data.l_nbrem}'
 
     return text, title
 # --------------------------
