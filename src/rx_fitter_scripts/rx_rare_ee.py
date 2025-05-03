@@ -74,7 +74,7 @@ class Data:
         if 'zfit' in tp_str:
             return False
 
-        log.warning(f'Will use {name} for hashing')
+        log.debug(f'Will use {name} for hashing')
 
         return True
     # --------------------------------
