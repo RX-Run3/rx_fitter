@@ -246,6 +246,10 @@ def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
         log.debug(f'JSON file with data found, loading: {data_path}')
 
         df        = pnd.read_json(data_path)
+
+        nentries = len(df)
+        log.debug(f'Found {nentries} entries')
+
         rdf       = _rdf_from_pandas(df=df)
         fcm       = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
 
