@@ -251,6 +251,7 @@ def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
 
         return fcm.get_pdf()
 
+    log.info('JSON file with data not found, recreating JSON file')
     rdf = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger)
     fcm = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
     pdf = fcm.get_pdf()
