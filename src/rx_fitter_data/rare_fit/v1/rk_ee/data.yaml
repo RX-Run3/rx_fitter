@@ -10,6 +10,9 @@ input :
   selection :
     bdt : mva_cmb > 0.6 && mva_prc > 0.8
     mass: (1)
+fitting:
+  misid:
+    version : v1
 nbrem:
   low :
     - 0
