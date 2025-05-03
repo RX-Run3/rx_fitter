@@ -368,7 +368,6 @@ def main():
 
     stat_utilities.print_pdf(pdf=pdf, d_const=d_cns, txt_path=f'{Data.fit_dir}/pre_fit.txt')
     fit_result = _fit(pdf=pdf, data=data, constraints=d_cns)
-
     if fit_result is None:
         return
 
