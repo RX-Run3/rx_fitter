@@ -208,7 +208,7 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
 # ------------------------------------
 def _rdf_from_pandas(df : pnd.DataFrame) -> RDataFrame:
     if len(df) > 0:
-        rdf = RDF.FromPandas(df)
+        return RDF.FromPandas(df)
 
     rdf = RDataFrame(0)
     for column in df.columns:
