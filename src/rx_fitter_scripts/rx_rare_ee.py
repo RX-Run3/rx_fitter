@@ -27,6 +27,7 @@ from dmu.stats.fitter            import Fitter
 from dmu.stats.fit_stats         import FitStats
 from dmu.stats                   import utilities  as stat_utilities
 
+from rx_misid.misid_pdf          import MisIdPdf
 from rx_data.rdf_getter          import RDFGetter
 from rx_selection                import selection  as sel
 from rx_fitter                   import components as cmp
@@ -50,6 +51,7 @@ class Data:
     minx         : int
     maxx         : int
     nbins        : int
+    mid_vers     : str
     obs          : zobs
     l_pdf        : list[zpdf]
 
@@ -184,9 +186,16 @@ def _add_pdf_sig() -> None:
 
     Data.l_pdf.append(pdf)
 # --------------------------
+def _add_pdf_mid() -> None:
+    obj = MisIdPdf(obs=Data.obs, q2bin=Data.q2bin, version=Data.mid_vers)
+    pdf = obj.get_pdf()
+
+    Data.l_pdf.append(pdf)
+# --------------------------
 @gut.timeit
 def _get_pdf() -> zpdf:
     _add_pdf_cmb()
+    _add_pdf_mid()
     _add_pdf_prc(sample='Bu_Kstee_Kpi0_eq_btosllball05_DPC')
     _add_pdf_prc(sample='Bd_Kstee_eq_btosllball05_DPC')
     _add_pdf_prc(sample='Bs_phiee_eq_Ball_DPC')
@@ -306,6 +315,8 @@ def _initialize_settings(cfg : dict) -> None:
         Data.d_sel = cfg['input']['selection']
     else:
         Data.d_sel = {}
+
+    Data.mid_vers = cfg['fitting']['misid']['version']
 
     _update_selection_with_brem()
 
