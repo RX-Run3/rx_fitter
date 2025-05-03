@@ -23,6 +23,7 @@ from dmu.generic                 import utilities  as gut
 from dmu.logging.log_store       import LogStore
 from dmu.stats.zfit_plotter      import ZFitPlotter
 from dmu.stats.fitter            import Fitter
+from dmu.stats.fit_stats         import FitStats
 from dmu.stats                   import utilities  as stat_utilities
 
 from rx_data.rdf_getter          import RDFGetter
@@ -237,6 +238,16 @@ def _get_constraints(pdf : zpdf) -> dict[str,tuple[float,float]]:
 
     return d_cns
 # --------------------------
+def _get_sensitivity() -> float:
+    '''
+    Returns fit sensitivity in %
+    '''
+    obj = FitStats(fit_dir=Data.fit_dir)
+    val = obj.get_value(name='nsig', kind = 'value')
+    err = obj.get_value(name='nsig', kind = 'error')
+
+    return 100 * err/val
+# --------------------------
 def _get_text(data : zdata) -> str:
     arr_mass = data.to_numpy()
     mask     = (arr_mass > Data.minx) & (arr_mass < Data.maxx)
@@ -251,7 +262,8 @@ def _get_text(data : zdata) -> str:
 
         text += f'\n{name}: {cut}'
 
-    title = f'Entries={nentries:.0f}; Brem:{Data.l_nbrem}'
+    sensitivity = _get_sensitivity()
+    title       = f'$\delta={sensitivity:.2f}$%; Entries={nentries:.0f}; Brem:{Data.l_nbrem}'
 
     return text, title
 # --------------------------
