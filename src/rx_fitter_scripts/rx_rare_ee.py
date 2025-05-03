@@ -49,6 +49,7 @@ class Data:
     d_sel        : dict[str,str]
     minx         : int
     maxx         : int
+    nbins        : int
     obs          : zobs
     l_pdf        : list[zpdf]
 
@@ -297,6 +298,7 @@ def _initialize_settings(cfg : dict) -> None:
     Data.mass    = cfg['input']['observable']
     Data.minx    = cfg['input']['minx']
     Data.maxx    = cfg['input']['maxx']
+    Data.nbins   = cfg['input']['nbins']
     Data.trigger = cfg['input']['trigger']
     Data.sample  = cfg['input']['sample']
     Data.brem_def= cfg['input']['definitions']['nbrem']
@@ -333,12 +335,13 @@ def _plot_fit(data : zdata, pdf : zpdf):
             'Bd_Kstee_eq_btosllball05_DPC'      : r'$B^0\to K^{*0}ee$',
             'Bs_phiee_eq_Ball_DPC'              : r'$B_s\to \phi(\to KK)ee$',
             'suj_1_ext'                         : 'Combinatorial',
+            'hypexp_1_ext'                      : 'Combinatorial',
             }
 
     text, title = _get_text(data)
     obj   = ZFitPlotter(data=data, model=pdf)
     obj.plot(
-            nbins   =50,
+            nbins   =Data.nbins,
             d_leg   =d_leg,
             stacked =True,
             title   =title,
