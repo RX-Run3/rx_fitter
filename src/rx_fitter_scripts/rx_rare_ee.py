@@ -271,11 +271,12 @@ def _initialize() -> None:
     sel.set_custom_selection(d_cut=Data.d_sel)
     RDFGetter.set_custom_columns(d_def = {'nbrem' : Data.brem_def})
 
-    fit_dir      = os.environ['FITDIR']
-    sample       = Data.sample.replace('*', 'p')
+    fit_dir = os.environ['FITDIR']
+    sample  = Data.sample.replace('*', 'p')
 
     _set_hash(cfg=cfg)
     Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}/{Data.hsh}'
+    gut.dump_json(cfg, f'{Data.fit_dir}/config.yaml')
     Data.l_pdf   = []
 # --------------------------
 def _initialize_settings(cfg : dict) -> None:
