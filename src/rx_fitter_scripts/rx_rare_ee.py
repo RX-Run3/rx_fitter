@@ -40,7 +40,6 @@ class Data:
     Data class
     '''
     dry_run      : bool
-    brem_def     : str
     q2bin        : str
     trigger      : str
     hsh          : str
@@ -101,7 +100,7 @@ def _update_selection_with_brem() -> None:
     if set(Data.l_nbrem) == {0, 1, 2}:
         return
 
-    l_brem_cut = [ f'({Data.brem_def} == {brem})' for brem in Data.l_nbrem ]
+    l_brem_cut = [ f'(nbrem == {brem})' for brem in Data.l_nbrem ]
     brem_cut   = ' || '.join(l_brem_cut)
 
     Data.d_sel['nbrem'] = brem_cut
@@ -292,7 +291,6 @@ def _initialize() -> None:
     _initialize_settings(cfg=cfg)
 
     sel.set_custom_selection(d_cut=Data.d_sel)
-    RDFGetter.set_custom_columns(d_def = {'nbrem' : Data.brem_def})
 
     fit_dir = os.environ['FITDIR']
     sample  = Data.sample.replace('*', 'p')
@@ -310,7 +308,6 @@ def _initialize_settings(cfg : dict) -> None:
     Data.nbins   = cfg['input']['nbins']
     Data.trigger = cfg['input']['trigger']
     Data.sample  = cfg['input']['sample']
-    Data.brem_def= cfg['input']['definitions']['nbrem']
     if 'selection' in cfg['input']:
         Data.d_sel = cfg['input']['selection']
     else:
