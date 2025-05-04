@@ -5,8 +5,6 @@ input :
   minx       : 4500
   maxx       : 7060
   nbins      : 80
-  definitions:
-    nbrem : int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)
   selection :
     bdt : mva_cmb > 0.6 && mva_prc > 0.8
     mass: (1)
