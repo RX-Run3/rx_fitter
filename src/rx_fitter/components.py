@@ -29,13 +29,17 @@ class Data:
     '''
     cache_dir = '/tmp/cache/rx_fits'
 # ---------------------------------
-def get_rdf(sample : str, q2bin : str, trigger : str) -> RDataFrame:
+def get_rdf(sample : str, q2bin : str, trigger : str, smeared : bool = True) -> RDataFrame:
     '''
     Function that returns a ROOT dataframe for a given dataset, MC or real data
     '''
     gtr  = RDFGetter(sample=sample, trigger=trigger)
     rdf  = gtr.get_rdf()
-    d_sel= sel.selection(trigger=trigger, q2bin=q2bin, process=sample)
+    d_sel= sel.selection(
+            smeared=smeared,
+            trigger=trigger,
+            q2bin  =q2bin,
+            process=sample)
 
     for cut_name, cut_value in d_sel.items():
         log.debug(f'{cut_name:<20}{cut_value}')
@@ -227,9 +231,15 @@ def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
     '''
 
     mass     = obs.obs[0]
+    smeared  = '_smr_' in mass
     q2bin    = cfg['input']['q2bin']
     trigger  = cfg['input']['trigger']
-    d_cut    = sel.selection(trigger=trigger, q2bin=q2bin, process=sample)
+    d_cut    = sel.selection(
+            smeared=smeared,
+            trigger=trigger,
+            q2bin  =q2bin,
+            process=sample)
+
     hsh      = hashing.hash_object(obj=[obs.to_json(), sample, cfg, d_cut])
 
     d_plt    = cfg['fitting']['config'][sample]['plotting']
@@ -256,7 +266,12 @@ def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
         return fcm.get_pdf()
 
     log.info('JSON file with data not found, recreating JSON file')
-    rdf = get_rdf(sample=sample, q2bin=q2bin, trigger=trigger)
+    rdf = get_rdf(
+            smeared=smeared,
+            sample =sample,
+            q2bin  =q2bin,
+            trigger=trigger)
+
     fcm = FitComponent(cfg=cfg, rdf=rdf, pdf=None, obs=obs)
     pdf = fcm.get_pdf()
 
