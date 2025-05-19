@@ -213,6 +213,7 @@ def test_prec_brem(mass : str, nbrem : list[int], q2bin : str):
         cmp_prc.run()
     else:
         log.warning(f'No component was built for mass/nbrem: {mass}/{nbrem}')
+    sel.reset_custom_selection()
 # --------------------------------------------------------------
 @pytest.mark.parametrize('q2bin', ['low', 'central', 'high'])
 def test_combinatorial(q2bin : str):
@@ -252,6 +253,7 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
         return
 
     print_pdf(pdf)
+    sel.reset_custom_selection()
 # --------------------------------------------------------------
 @pytest.mark.parametrize('mass'  , ['B_M_smr_brem_track_2', 'B_M_brem_track_2'])
 @pytest.mark.parametrize('nbrem' , [[0], [1], [2], [0,1,2], [1,2]])
@@ -283,6 +285,7 @@ def test_cc_leakage(
         return
 
     print_pdf(pdf)
+    sel.reset_custom_selection()
 # --------------------------------------------------------------
 def test_jpsi_leakage():
     '''
@@ -302,8 +305,6 @@ def test_jpsi_leakage():
     cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
 # --------------------------------------------------------------
 def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
-    sel.reset_custom_selection()
-
     l_cut    = [ cfg['brem'][nbrem] for nbrem in l_brem ]
     l_cut    = [ f'({cut})'         for cut   in l_cut  ]
     brem_cut = ' || '.join(l_cut)
