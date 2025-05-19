@@ -253,10 +253,15 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
 
     print_pdf(pdf)
 # --------------------------------------------------------------
+@pytest.mark.parametrize('mass'  , ['B_M_smr_brem_track_2', 'B_M_brem_track_2'])
 @pytest.mark.parametrize('nbrem' , [[0], [1], [2], [0,1,2], [1,2]])
 @pytest.mark.parametrize('q2bin' , ['low', 'central', 'high'])
 @pytest.mark.parametrize('sample', ['Bu_JpsiK_ee_eq_DPC', 'Bu_psi2SK_ee_eq_DPC'])
-def test_cc_leakage(nbrem : list[int], q2bin : str, sample : str):
+def test_cc_leakage(
+        nbrem  : list[int],
+        mass   : str,
+        q2bin  : str,
+        sample : str):
     '''
     Builds KDE for leaked ccbar component
     '''
@@ -270,7 +275,7 @@ def test_cc_leakage(nbrem : list[int], q2bin : str, sample : str):
     cfg['input']['q2bin']    = q2bin
     cfg['output']['out_dir'] = f'{Data.out_dir}/leakage_{brem_name}'
 
-    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    obs = zfit.Space(mass, limits=(4500, 6000))
     pdf = cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
 
     if pdf is None:
