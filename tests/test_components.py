@@ -284,21 +284,32 @@ def test_cc_leakage(
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-def test_jpsi_leakage():
+@pytest.mark.parametrize('max_q2',
+                         [
+                             8000000,
+                             7000000,
+                             6500000,
+                             6000000])
+def test_jpsi_leakage(max_q2 : float):
     '''
-    Builds KDE for jpsi leakage in central bin 
+    Builds KDE for jpsi leakage in central bin
     '''
+    sel.reset_custom_selection()
+
     q2bin = 'central'
     sample= 'Bu_JpsiK_ee_eq_DPC'
 
     log.info('')
     cfg = _load_config(test='ccbar_leak')
-    sel.set_custom_selection(d_cut = {'q2' : '(1)', 'mass' : '(1)'})
+    q2_cut = f'(q2       >  1100000) && (q2 <  {max_q2})'
+    sel.set_custom_selection(d_cut = {'q2' : q2_cut, 'mass' : '(1)'})
 
     cfg['input']['q2bin']    = q2bin
-    cfg['output']['out_dir'] = f'{Data.out_dir}/leakage_jpsi'
+    cfg['output']['out_dir'] = f'{Data.out_dir}/leakage_jpsi_{max_q2}'
 
-    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    mass = 'B_M_smr_brem_track_2'
+
+    obs = zfit.Space(mass, limits=(4500, 6000))
     cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
 # --------------------------------------------------------------
 def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
