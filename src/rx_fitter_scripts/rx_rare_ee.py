@@ -8,17 +8,11 @@ from typing              import Union
 from importlib.resources import files
 
 import yaml
-import ROOT
 import numpy
-import zfit
+
 import matplotlib.pyplot as plt
 
-from zfit.core.data              import Data       as zdata
-from zfit.core.basepdf           import BasePDF    as zpdf
-from zfit.core.interfaces        import ZfitSpace  as zobs
-from zfit.core.parameter         import Parameter  as zpar
-from zfit.result                 import FitResult  as zres
-
+from dmu.stats.zfit              import zfit
 from dmu.generic                 import hashing
 from dmu.generic                 import utilities  as gut
 from dmu.logging.log_store       import LogStore
@@ -26,6 +20,12 @@ from dmu.stats.zfit_plotter      import ZFitPlotter
 from dmu.stats.fitter            import Fitter
 from dmu.stats.fit_stats         import FitStats
 from dmu.stats                   import utilities  as stat_utilities
+
+from zfit.core.data              import Data       as zdata
+from zfit.core.basepdf           import BasePDF    as zpdf
+from zfit.core.interfaces        import ZfitSpace  as zobs
+from zfit.core.parameter         import Parameter  as zpar
+from zfit.result                 import FitResult  as zres
 
 from rx_misid.misid_pdf          import MisIdPdf
 from rx_data.rdf_getter          import RDFGetter
