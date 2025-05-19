@@ -32,6 +32,9 @@ class Data:
 def get_rdf(sample : str, q2bin : str, trigger : str, smeared : bool = True) -> RDataFrame:
     '''
     Function that returns a ROOT dataframe for a given dataset, MC or real data
+
+    smeared will control on what Jpsi and B masses the selection will be applied.
+    If true (default) the cut will be in smeared masses, IF MC electron.
     '''
     gtr  = RDFGetter(sample=sample, trigger=trigger)
     rdf  = gtr.get_rdf()
