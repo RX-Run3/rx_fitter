@@ -284,6 +284,23 @@ def test_cc_leakage(
 
     print_pdf(pdf)
 # --------------------------------------------------------------
+def test_jpsi_leakage():
+    '''
+    Builds KDE for jpsi leakage in central bin 
+    '''
+    q2bin = 'central'
+    sample= 'Bu_JpsiK_ee_eq_DPC'
+
+    log.info('')
+    cfg = _load_config(test='ccbar_leak')
+    sel.set_custom_selection(d_cut = {'q2' : '(1)', 'mass' : '(1)'})
+
+    cfg['input']['q2bin']    = q2bin
+    cfg['output']['out_dir'] = f'{Data.out_dir}/leakage_jpsi'
+
+    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
+# --------------------------------------------------------------
 def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
     sel.reset_custom_selection()
 
