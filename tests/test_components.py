@@ -248,7 +248,7 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
     cfg['input']['q2bin']   = q2bin
     cfg['output']['out_dir']= f'{Data.out_dir}/bxhsee_{brem_name}'
 
-    obs = zfit.Space('B_M_brem_track_2', limits=(4500, 6000))
+    obs = zfit.Space(Data.mass, limits=(4500, 6000))
     pdf = cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
 
     if pdf is None:
