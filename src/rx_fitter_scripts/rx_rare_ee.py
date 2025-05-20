@@ -295,11 +295,11 @@ def _initialize() -> None:
 
     sel.set_custom_selection(d_cut=Data.d_sel)
 
-    fit_dir = os.environ['FITDIR']
+    ana_dir = os.environ['ANADIR']
     sample  = Data.sample.replace('*', 'p')
 
     _set_hash(cfg=cfg)
-    Data.fit_dir = f'{fit_dir}/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}/{Data.hsh}'
+    Data.fit_dir = f'{ana_dir}/fits/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}/{Data.hsh}'
     gut.dump_json(cfg, f'{Data.fit_dir}/config.yaml')
     Data.l_pdf   = []
 # --------------------------
