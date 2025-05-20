@@ -250,6 +250,7 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
 
     if pdf is None:
         log.warning(f'No KDE can be built for {nbrem}/{q2bin}/{sample}')
+        sel.reset_custom_selection()
         return
 
     print_pdf(pdf)
