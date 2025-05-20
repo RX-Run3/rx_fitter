@@ -295,11 +295,12 @@ def _initialize() -> None:
     cfg = _load_config(component='data')
     _initialize_settings(cfg=cfg)
 
-    sel.set_custom_selection(d_cut=Data.d_sel)
-
     ana_dir = os.environ['ANADIR']
     sample  = Data.sample.replace('*', 'p')
 
+    _set_selection()
+    # Has function needs to be called at the end.
+    # It uses the Data class attributes to build hash
     _set_hash(cfg=cfg)
     Data.fit_dir = f'{ana_dir}/fits/{sample}/{Data.trigger}/{Data.version}/{Data.q2bin}/{Data.hsh}'
     gut.dump_json(cfg, f'{Data.fit_dir}/config.yaml')
@@ -313,16 +314,14 @@ def _initialize_settings(cfg : dict) -> None:
     Data.nbins   = cfg['input']['nbins']
     Data.trigger = cfg['input']['trigger']
     Data.sample  = cfg['input']['sample']
+
     if 'selection' in cfg['input']:
-        Data.d_sel = cfg['input']['selection']
+        Data.d_custom_sel = cfg['input']['selection']
     else:
-        Data.d_sel = {}
+        Data.d_custom_sel = {}
 
     Data.mid_vers = cfg['fitting']['misid']['version']
-
-    _update_selection_with_brem()
-
-    Data.obs = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
+    Data.obs      = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------
 @gut.timeit
 def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -> Union[zres,None]:
