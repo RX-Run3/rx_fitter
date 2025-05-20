@@ -55,7 +55,6 @@ class Data:
     obs          : zobs
     l_pdf        : list[zpdf]
 
-    cache_dir    : str        = '/tmp/rx_fitter/cache'
     gut.TIMER_ON : bool       = True
     log_level    : int        = 20
     version      : str        = 'v1'
