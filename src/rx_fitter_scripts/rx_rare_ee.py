@@ -210,6 +210,9 @@ def _get_pdf() -> zpdf:
 # --------------------------
 @gut.timeit
 def _get_data() -> zdata:
+    log.info(20 * '-')
+    log.info('Getting data')
+    log.info(20 * '-')
     d_sel           = sel.selection(trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
     hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger, Data.mass])
     data_cache_path = f'{Data.cache_dir}/{hsh}.json'
