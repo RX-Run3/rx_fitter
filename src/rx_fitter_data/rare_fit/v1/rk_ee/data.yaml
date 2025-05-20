@@ -3,11 +3,10 @@ input :
   trigger    : Hlt2RD_BuToKpEE_MVA
   observable : B_M_smr_brem_track_2
   minx       : 4500
-  maxx       : 7060
-  nbins      : 80
+  maxx       : 6900 
+  nbins      : 75 
   selection :
     bdt : mva_cmb > 0.6 && mva_prc > 0.8
-    mass: (1)
 fitting:
   misid:
     version : v1
