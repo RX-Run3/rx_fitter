@@ -70,10 +70,16 @@ def _get_mc_rdf(cfg : dict, component_name : str, nbrem : int) -> RDataFrame:
 
     d_cmp   = cfg['fitting']['config'][component_name]
     sample  = d_cmp['sample']
-    rdf     = get_rdf(sample, q2bin, trigger)
+
+    # The data taken from here will be used to fit MC and get tails
+    # MC should not be smeared, differences in width and scale will
+    # be taken into account as nuisance parameters
+    rdf     = get_rdf(sample, q2bin, trigger, smeared=False)
+
     # This is needed to get fit per-brem category
     # It does not override analysis selection
     rdf     = rdf.Filter(brem_cut, f'Brem {nbrem}')
+
     rdf     = rdf.Define('weights', '1')
 
     if 'max_entries' in cfg['input']:
