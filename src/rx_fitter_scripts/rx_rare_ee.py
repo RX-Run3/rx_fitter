@@ -256,12 +256,10 @@ def _get_sensitivity() -> float:
 # --------------------------
 def _get_text(data : zdata) -> str:
     arr_mass = data.to_numpy()
-    mask     = (arr_mass > Data.minx) & (arr_mass < Data.maxx)
-    arr_mass = arr_mass[mask]
     nentries = len(arr_mass)
 
     text = ''
-    for name, cut in Data.d_sel.items():
+    for name, cut in Data.d_custom_sel.items():
         # Brem cut is too long and will be in title anyway
         if name == 'nbrem':
             continue
