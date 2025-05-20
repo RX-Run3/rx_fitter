@@ -96,14 +96,6 @@ class Data:
 
         return val
 # --------------------------
-def _update_selection_with_brem() -> None:
-    if set(Data.l_nbrem) == {0, 1, 2}:
-        return
-
-    l_brem_cut = [ f'(nbrem == {brem})' for brem in Data.l_nbrem ]
-    brem_cut   = ' || '.join(l_brem_cut)
-
-    Data.d_sel['nbrem'] = brem_cut
 # --------------------------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
@@ -286,6 +278,15 @@ def _get_text(data : zdata) -> str:
 def _set_hash(cfg : dict) -> None:
     data_hash = Data.get_hash()
     Data.hsh  = hashing.hash_object([data_hash, cfg])
+# --------------------------
+def _set_selection() -> None:
+    l_brem_cut = [ f'(nbrem == {brem})' for brem in Data.l_nbrem ]
+    brem_cut   = ' || '.join(l_brem_cut)
+
+    Data.d_custom_sel['nbrem'] = brem_cut
+    sel.set_custom_selection(d_cut=Data.d_custom_sel)
+
+    Data.d_total_sel = sel.selection(trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
 # --------------------------
 def _initialize() -> None:
     LogStore.set_level('rx_fitter:constraint_reader' , Data.log_level)
