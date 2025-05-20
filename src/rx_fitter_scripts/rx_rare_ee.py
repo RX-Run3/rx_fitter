@@ -46,7 +46,8 @@ class Data:
     sample       : str
     mass         : str
     l_nbrem      : list[int]
-    d_sel        : dict[str,str]
+    d_custom_sel : dict[str,str]
+    d_total_sel  : dict[str,str]
     minx         : int
     maxx         : int
     nbins        : int
