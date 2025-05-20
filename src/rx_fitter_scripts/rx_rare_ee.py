@@ -349,23 +349,25 @@ def _plot_fit(data : zdata, pdf : zpdf):
 
     text, title = _get_text(data)
     obj   = ZFitPlotter(data=data, model=pdf)
-    obj.plot(
-            nbins   =Data.nbins,
-            d_leg   =d_leg,
-            stacked =True,
-            title   =title,
-            leg_loc ='upper right',
-            ext_text=text)
+    for stacked in [True, False]:
+        obj.plot(
+                nbins   =Data.nbins,
+                d_leg   =d_leg,
+                stacked =stacked,
+                title   =title,
+                leg_loc ='upper right',
+                ext_text=text)
 
-    obj.axs[1].set_xlabel(Data.mass)
-    obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
+        obj.axs[1].set_xlabel(Data.mass)
+        obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
-    obj.axs[1].set_ylim([-5, +5])
-    obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
-    obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
+        obj.axs[1].set_ylim([-5, +5])
+        obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
+        obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
-    plt.savefig(f'{Data.fit_dir}/fit.png')
-    plt.close()
+        kind = 'stacked' if stacked else 'overlaid'
+        plt.savefig(f'{Data.fit_dir}/fit_{kind}.png')
+        plt.close()
 # --------------------------
 def main():
     '''
