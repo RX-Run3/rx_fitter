@@ -70,7 +70,7 @@ def _get_fitting_range(kind : str) -> dict[str:list[int]]:
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('kind' , ['brem_track_2'])
-@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('mass' , [Data.mass])
 def test_brem_definitions(nbrem : int, kind : str, mass : str):
     '''
     Will test old and new brem definition
@@ -93,7 +93,7 @@ def test_brem_definitions(nbrem : int, kind : str, mass : str):
     print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('mass' , [Data.mass])
 @pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_create(nbrem : int, mass : str, name : str):
     '''
@@ -112,7 +112,7 @@ def test_mc_create(nbrem : int, mass : str, name : str):
     print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('mass' , [Data.mass])
 @pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_reuse(nbrem : int, mass : str, name : str):
     '''
@@ -133,7 +133,7 @@ def test_mc_reuse(nbrem : int, mass : str, name : str):
     print_pdf(pdf)
 # --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
-@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('mass' , [Data.mass])
 @pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_fix(nbrem : int, mass : str, name : str):
     '''
@@ -151,7 +151,7 @@ def test_mc_fix(nbrem : int, mass : str, name : str):
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-@pytest.mark.parametrize('mass' , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('mass' , [Data.mass])
 @pytest.mark.parametrize('name' , ['Signal'])
 def test_mc_reparametrized(mass : str, name : str):
     '''
@@ -169,7 +169,7 @@ def test_mc_reparametrized(mass : str, name : str):
 
     print_pdf(pdf)
 # --------------------------------------------------------------
-@pytest.mark.parametrize('mass'   , ['B_M_brem_track_2'])
+@pytest.mark.parametrize('mass'   , [Data.mass])
 @pytest.mark.parametrize('name'   , ['Signal'])
 @pytest.mark.parametrize('kind'   , ['signal'])
 @pytest.mark.parametrize('l_nbrem', [[0], [1], [2], [1,2], [0,1,2]])
