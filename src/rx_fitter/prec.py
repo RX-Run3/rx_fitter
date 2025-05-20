@@ -52,11 +52,7 @@ class PRec:
 
         self._d_match     = self._get_match_str()
         self._l_mass      = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
-        self._d_def       = {
-                'nbrem'            : 'int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2)',
-                'B_M_brem_track_2' : 'brem_track_2.B_M_brem_track_2'
-                }
-        self._initialized        = False
+        self._initialized = False
     #-----------------------------------------------------------
     def _initialize(self):
         if self._initialized:
@@ -109,19 +105,6 @@ class PRec:
 
         return rdf
     #-----------------------------------------------------------
-    def _add_columns(self, rdf : RDataFrame) -> RDataFrame:
-        for name, expr in self._d_def.items():
-            if '.' in expr:
-                # This is needed for variables in friend trees
-                # This RDF will become a pandas dataframe, where the
-                # "name.variable" is not recognized as "variable"
-                # Unlike in ROOT dataframes
-                rdf = rdf.Redefine(name, expr)
-            else:
-                rdf = rdf.Define(name, expr)
-
-        return rdf
-    #-----------------------------------------------------------
     def _get_samples_df(self) -> dict[str,pnd.DataFrame]:
         '''
         Returns dataframes for each sample
@@ -130,7 +113,6 @@ class PRec:
         for sample in self._l_sample:
             gtr        = RDFGetter(sample=sample, trigger=self._trig)
             rdf        = gtr.get_rdf()
-            rdf        = self._add_columns(rdf)
             rdf        = self._filter_rdf(rdf, sample)
             l_var      = [ name.c_str() for name in rdf.GetColumnNames() if self._need_var( name.c_str() )]
             data       = rdf.AsNumpy(l_var)
