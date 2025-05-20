@@ -15,6 +15,8 @@ from ROOT                                        import RDataFrame, RDF
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
 from dmu.generic                                 import hashing
+from dmu.generic                                 import utilities as gut
+
 from rx_selection                                import selection as sel
 from rx_data.rdf_getter                          import RDFGetter
 from rx_calibration.hltcalibration.fit_component import FitComponent
@@ -248,6 +250,8 @@ def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
     d_plt    = cfg['fitting']['config'][sample]['plotting']
     out_dir  = cfg['output']['out_dir']
     out_dir  = f'{out_dir}/{sample}/{q2bin}/{mass}/{hsh}'
+
+    gut.dump_json(d_cut, f'{out_dir}/selection.json')
 
     d_plt['title'] = sample
     cfg['name']    = sample
