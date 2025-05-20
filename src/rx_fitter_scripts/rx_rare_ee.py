@@ -8,14 +8,14 @@ from typing              import Union
 from importlib.resources import files
 
 import yaml
-import numpy
-
+import pandas            as pnd
 import matplotlib.pyplot as plt
 
 from dmu.stats.zfit              import zfit
 from dmu.generic                 import hashing
 from dmu.generic                 import utilities  as gut
 from dmu.logging.log_store       import LogStore
+from dmu.rdataframe              import utilities  as rut
 from dmu.stats.zfit_plotter      import ZFitPlotter
 from dmu.stats.fitter            import Fitter
 from dmu.stats.fit_stats         import FitStats
