@@ -205,14 +205,11 @@ def _get_data() -> zdata:
     log.info(20 * '-')
     log.info('Getting data')
     log.info(20 * '-')
-    d_sel           = sel.selection(trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
-    hsh             = hashing.hash_object([d_sel, Data.sample, Data.trigger, Data.mass])
-    data_cache_path = f'{Data.cache_dir}/{hsh}.json'
-    if os.path.isfile(data_cache_path):
-        log.warning(f'Caching data from: {data_cache_path}')
-        l_mass   = gut.load_json(data_cache_path)
-        arr_mass = numpy.array(l_mass)
-        data = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
+    data_path = f'{Data.fit_dir}/data.json'
+    if os.path.isfile(data_path):
+        log.warning(f'Caching data from: {data_path}')
+        df   = pnd.read_json(data_path)
+        data = zfit.Data.from_pandas(df=df, obs=Data.obs)
 
         return data
 
