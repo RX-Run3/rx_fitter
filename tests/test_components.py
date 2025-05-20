@@ -195,9 +195,6 @@ def test_prec_brem(mass : str, nbrem : list[int], q2bin : str):
     '''
     Testing creation of PDF from MC sample with brem cut
     '''
-    # TODO: Inclusive charmonium samples do not have brem corrected branches
-    # Add them and retry this test
-    return
     log.info('')
 
     cfg                      = _load_config('prec')
