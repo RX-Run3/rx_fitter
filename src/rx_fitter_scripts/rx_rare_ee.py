@@ -234,7 +234,10 @@ def _get_data() -> zdata:
     rep = rdf.Report()
     rep.Print()
 
-    arr_mass = rdf.AsNumpy([Data.mass])[Data.mass]
+    mass = Data.mass.replace('_smr_', '_') # Real data is not smeared
+    log.info(f'Using mass {mass} for real data')
+
+    arr_mass = rdf.AsNumpy([mass])[mass]
     log.info(f'Caching data to: {data_cache_path}')
     gut.dump_json(arr_mass.tolist(), data_cache_path)
 
