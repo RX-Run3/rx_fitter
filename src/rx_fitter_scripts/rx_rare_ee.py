@@ -186,13 +186,12 @@ def _add_pdf_mid() -> None:
 @gut.timeit
 def _get_pdf() -> zpdf:
     _add_pdf_cmb()
-    _add_pdf_mid()
+    #_add_pdf_mid()
+    _add_pdf_leak(sample='Bu_JpsiK_ee_eq_DPC')
+    _add_pdf_leak(sample='Bu_psi2SK_ee_eq_DPC')
     _add_pdf_prc(sample='Bu_Kstee_Kpi0_eq_btosllball05_DPC')
     _add_pdf_prc(sample='Bd_Kstee_eq_btosllball05_DPC')
     _add_pdf_prc(sample='Bs_phiee_eq_Ball_DPC')
-
-    _add_pdf_leak(sample='Bu_JpsiK_ee_eq_DPC')
-    _add_pdf_leak(sample='Bu_psi2SK_ee_eq_DPC')
 
     _add_pdf_sig()
 
