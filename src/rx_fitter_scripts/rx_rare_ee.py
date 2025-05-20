@@ -213,24 +213,25 @@ def _get_data() -> zdata:
 
         return data
 
-    gtr = RDFGetter(sample=Data.sample, trigger=Data.trigger)
-    rdf = gtr.get_rdf()
-
-    for cut_name, cut_expr in d_sel.items():
+    gtr   = RDFGetter(sample=Data.sample, trigger=Data.trigger)
+    rdf   = gtr.get_rdf()
+    for cut_name, cut_expr in Data.d_total_sel.items():
         log.info(f'{cut_name:<20}{cut_expr}')
         rdf = rdf.Filter(cut_expr, cut_name)
 
+    gut.dump_json(Data.d_total_sel, f'{Data.fit_dir}/selection.yaml')
+
     rep = rdf.Report()
     rep.Print()
+
+    df = rut.rdf_report_to_df(rep)
+    df.to_json(f'{Data.fit_dir}/cutflow.json', indent=2)
 
     mass = Data.mass.replace('_smr_', '_') # Real data is not smeared
     log.info(f'Using mass {mass} for real data')
 
     arr_mass = rdf.AsNumpy([mass])[mass]
-    log.info(f'Caching data to: {data_cache_path}')
-    gut.dump_json(arr_mass.tolist(), data_cache_path)
-
-    data = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
+    data     = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
 
     return data
 # --------------------------
