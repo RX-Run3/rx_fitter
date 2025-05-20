@@ -29,7 +29,8 @@ class FitParameters:
         '''
         self._l_brem    = [0, 1, 2]
         self._l_kind    = ['data', 'mc']
-        self._fit_dir   = os.environ['FITDIR']
+        self._ana_dir   = os.environ['ANADIR']
+        self._fit_dir   = f'{self._ana_dir}/fits'
 
         self._mc_sample = 'Signal'
         self._trigger   = 'Hlt2RD_BuToKpEE_MVA'
