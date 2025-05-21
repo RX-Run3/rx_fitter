@@ -96,7 +96,6 @@ class Data:
         val = hashing.hash_object(data)
 
         return val
-# --------------------------
 # --------------------------------------------------------------
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
