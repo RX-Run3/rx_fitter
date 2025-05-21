@@ -336,7 +336,7 @@ def _initialize_settings(cfg : dict) -> None:
     else:
         Data.d_custom_sel = {}
 
-    Data.mid_vers = cfg['fitting']['misid']['version']
+    Data.mid_vers = Data.comp['misid']['version']
     Data.obs      = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------
 @gut.timeit
