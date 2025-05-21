@@ -7,9 +7,6 @@ input :
   nbins      : 75
   selection :
     bdt : mva_cmb > 0.6 && mva_prc > 0.8
-fitting:
-  misid:
-    version : v1
 components:
   signal     : Bu_Kee_eq_btosllball05_DPC
   #signal     : parametric
@@ -20,6 +17,8 @@ components:
     Bu_Kstee_Kpi0_eq_btosllball05_DPC : prc
     Bd_Kstee_eq_btosllball05_DPC      : prc
     Bs_phiee_eq_Ball_DPC              : prc
+  misid:
+    version : v1
 nbrem:
   low :
     - 0
