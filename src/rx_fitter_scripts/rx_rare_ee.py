@@ -266,8 +266,9 @@ def _get_text(data : zdata) -> str:
         if name == 'nbrem':
             continue
 
-        text += f'\n{name}: {cut}\n'
+        text += f'\n{cut}'
 
+    text += '\n'
     sensitivity = _get_sensitivity()
     title       = f'$\\delta={sensitivity:.2f}$%; Entries={nentries:.0f}; Brem:{Data.l_nbrem}'
 
