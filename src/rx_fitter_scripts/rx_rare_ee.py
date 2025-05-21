@@ -122,7 +122,7 @@ def _add_pdf_cmb() -> None:
 
     cfg  = _load_config(component = 'combinatorial')
     pdf  = cmp.get_cb(obs=Data.obs, q2bin=Data.q2bin, cfg=cfg)
-    ncmb = zfit.Parameter('ncmb', 0, 0, 20_000)
+    ncmb = zfit.Parameter('ncmb', 1000, 0, 20_000)
     pdf  = pdf.create_extended(ncmb)
 
     Data.l_pdf.append(pdf)
