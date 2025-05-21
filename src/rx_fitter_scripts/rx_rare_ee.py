@@ -357,7 +357,7 @@ def _fit(pdf : zpdf, data : zdata, constraints : dict[str,tuple[float,float]]) -
 def _plot_fit(data : zdata, pdf : zpdf):
     d_leg = {
             'SumPDF_ext'                        : 'Signal',
-            'SumPDF'                            : 'Total',
+            'SumPDF'                            : 'Model',
             'exp_1_ext'                         : 'Combinatorial',
             'Bu_Kee_eq_btosllball05_DPC'        : r'$B^+\to K^+ee$',
             'Bu_JpsiK_ee_eq_DPC'                : r'$B^+\to J/\psi(\to ee) K^+$',
