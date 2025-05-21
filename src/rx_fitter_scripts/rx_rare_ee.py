@@ -188,15 +188,29 @@ def _add_pdf_mid() -> None:
 # --------------------------
 @gut.timeit
 def _get_pdf() -> zpdf:
-    _add_pdf_cmb()
-    #_add_pdf_mid()
-    _add_pdf_leak(sample='Bu_JpsiK_ee_eq_DPC')
-    _add_pdf_leak(sample='Bu_psi2SK_ee_eq_DPC')
-    _add_pdf_prc(sample='Bu_Kstee_Kpi0_eq_btosllball05_DPC')
-    _add_pdf_prc(sample='Bd_Kstee_eq_btosllball05_DPC')
-    _add_pdf_prc(sample='Bs_phiee_eq_Ball_DPC')
+    d_bkg = Data.comp['background']
+    for component, kind in d_bkg.items():
+        if kind == 'prc':
+            _add_pdf_prc(sample=component)
+            continue
 
-    _add_pdf_sig()
+        if kind == 'leak':
+            _add_pdf_leak(sample=component)
+            continue
+
+        if kind == 'parametric' and component == 'combinatorial':
+            _add_pdf_cmb()
+            continue
+
+        raise ValueError(f'Invalid component/kind: {component}/{kind}')
+
+    signal_sample = Data.comp['signal']
+    if signal_sample == 'parametric':
+        _add_pdf_sig()
+    elif signal_sample == 'Bu_Kee_eq_btosllball05_DPC':
+        _add_pdf_prc(sample=signal_sample, is_signal=True)
+    else:
+        raise ValueError(f'Invalid signal sample: {signal_sample}')
 
     pdf = zfit.pdf.SumPDF(Data.l_pdf)
 
