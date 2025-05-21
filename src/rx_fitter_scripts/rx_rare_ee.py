@@ -127,7 +127,7 @@ def _add_pdf_cmb() -> None:
 
     Data.l_pdf.append(pdf)
 # --------------------------
-def _add_pdf_prc(sample : str) -> None:
+def _add_pdf_prc(sample : str, is_signal : bool = False) -> None:
     log.info(30 * '-')
     log.info(f'Adding: {sample}')
     log.info(30 * '-')
@@ -139,9 +139,12 @@ def _add_pdf_prc(sample : str) -> None:
         log.warning(f'No PDF found for PRec sample {sample}, skipping')
         return
 
-    scale= zfit.Parameter(f's{sample}', 0, 0, 10)
-    nprc = zfit.ComposedParameter(f'n{sample}', lambda x : x['nsig'] * x['scale'], params={'nsig' : Data.nsig, 'scale' : scale})
-    pdf.set_yield(nprc)
+    if is_signal:
+        pdf.set_yield(Data.nsig)
+    else:
+        scale= zfit.Parameter(f's{sample}', 0, 0, 10)
+        nprc = zfit.ComposedParameter(f'n{sample}', lambda x : x['nsig'] * x['scale'], params={'nsig' : Data.nsig, 'scale' : scale})
+        pdf.set_yield(nprc)
 
     Data.l_pdf.append(pdf)
 # --------------------------
