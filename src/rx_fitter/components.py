@@ -216,7 +216,6 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
 
     mod  = ModelFactory(preffix='cmb', obs=obs, l_pdf = [kind], l_shared = [], l_float= [], d_fix=d_fix)
     pdf  = mod.get_pdf()
-
     obj  = FitComponent(cfg=cfg, rdf=None, pdf=pdf, obs=obs)
 
     return obj.get_pdf()
