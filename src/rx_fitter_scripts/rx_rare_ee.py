@@ -46,6 +46,7 @@ class Data:
     sample       : str
     mass         : str
     l_nbrem      : list[int]
+    comp         : dict
     d_custom_sel : dict[str,str]
     d_total_sel  : dict[str,str]
     minx         : int
@@ -315,6 +316,7 @@ def _initialize_settings(cfg : dict) -> None:
     Data.nbins   = cfg['input']['nbins']
     Data.trigger = cfg['input']['trigger']
     Data.sample  = cfg['input']['sample']
+    Data.comp    = cfg['components']
 
     if 'selection' in cfg['input']:
         Data.d_custom_sel = cfg['input']['selection']
