@@ -343,6 +343,7 @@ def _plot_fit(data : zdata, pdf : zpdf):
     d_leg = {
             'SumPDF_ext'                        : 'Signal',
             'exp_1_ext'                         : 'Combinatorial',
+            'Bu_Kee_eq_btosllball05_DPC'        : r'$B^+\to K^+ee$',
             'Bu_JpsiK_ee_eq_DPC'                : r'$B^+\to J/\psi(\to ee) K^+$',
             'Bu_Kstee_Kpi0_eq_btosllball05_DPC' : r'$B^+\to K^{*+}ee$',
             'Bd_Kstee_eq_btosllball05_DPC'      : r'$B^0\to K^{*0}ee$',
