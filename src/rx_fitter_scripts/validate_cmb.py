@@ -17,6 +17,7 @@ from dmu.stats.zfit_plotter import ZFitPlotter
 from ROOT                   import RDataFrame
 from zfit.core.data         import Data      as zdata
 from zfit.core.basepdf      import BasePDF   as zpdf
+from zfit.core.interfaces   import ZfitSpace as zobs
 from rx_data.rdf_getter     import RDFGetter
 from rx_selection           import selection as sel
 from rx_fitter              import models
@@ -29,8 +30,8 @@ class Data:
     '''
     minx = 4500
     maxx = 7000
-    obs  = zfit.Space('mass', limits=(minx, maxx))
 
+    obs    : zobs
     cfg    : dict
     q2bin  : str
     model  : str
@@ -141,6 +142,9 @@ def _initialize() -> None:
     conf_path = files('rx_fitter_data').joinpath(f'combinatorial/{Data.config}.yaml')
     with open(conf_path, encoding='utf-8') as ifile:
         Data.cfg = yaml.safe_load(ifile)
+
+    var = Data.cfg['input']['observable']
+    obs = zfit.Space(var, limits=(minx, maxx))
 # --------------------------------
 def _skip_fit(index : int) -> bool:
     if Data.initial <= index <= Data.final:
