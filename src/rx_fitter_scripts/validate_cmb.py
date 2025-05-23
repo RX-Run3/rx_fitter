@@ -63,7 +63,7 @@ def _parse_args() -> None:
     Data.ntries = args.ntries
 # --------------------------------
 def _apply_selection(rdf : RDataFrame) -> RDataFrame:
-    d_sel = sel.selection(project='RK', trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
+    d_sel = sel.selection(trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
     if 'selection' in Data.cfg:
         log.info('Updating selection')
         d_cut = Data.cfg['selection']
