@@ -28,8 +28,8 @@ class Data:
     '''
     Dataclass
     '''
-    minx = 4500
-    maxx = 7000
+    minx = 4700
+    maxx = 6000
 
     obs    : zobs
     cfg    : dict
