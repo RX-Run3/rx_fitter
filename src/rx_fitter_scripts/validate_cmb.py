@@ -112,8 +112,8 @@ def _fit(pdf : zpdf, data : zdata) -> None:
     return res
 # --------------------------------
 def _get_out_dir() -> str:
-    fit_dir = os.environ['FITDIR']
-    plt_dir = f'{fit_dir}/{Data.sample}/{Data.trigger}/{Data.q2bin}/{Data.model}'
+    ana_dir = os.environ['ANADIR']
+    plt_dir = f'{ana_dir}/fits/{Data.sample}/{Data.trigger}/{Data.q2bin}/{Data.model}'
     plt_dir = plt_dir.replace('*', 'p')
 
     os.makedirs(plt_dir, exist_ok=True)
