@@ -1,3 +1,5 @@
+[TOC]
+
 # Description
 
 This project is meant to do fits for the rare mode. It should be replaced eventually by the RX code used in the 
