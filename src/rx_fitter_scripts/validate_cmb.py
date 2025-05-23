@@ -7,16 +7,16 @@ import argparse
 from importlib.resources    import files
 
 import yaml
-import ROOT
-import zfit
 import matplotlib.pyplot as plt
+
+from dmu.logging.log_store  import LogStore
+from dmu.stats.zfit         import zfit
+from dmu.stats.fitter       import Fitter
+from dmu.stats.zfit_plotter import ZFitPlotter
 
 from ROOT                   import RDataFrame
 from zfit.core.data         import Data      as zdata
 from zfit.core.basepdf      import BasePDF   as zpdf
-from dmu.logging.log_store  import LogStore
-from dmu.stats.fitter       import Fitter
-from dmu.stats.zfit_plotter import ZFitPlotter
 from rx_data.rdf_getter     import RDFGetter
 from rx_selection           import selection as sel
 from rx_fitter              import models
