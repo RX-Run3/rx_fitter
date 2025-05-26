@@ -10,8 +10,7 @@ fitting:
       pvalue_thresh : 0.05
       ignore_status : False
   ranges :
-    - [ 4500, 5050]
-    - [ 5750, 6000]
+    - [ 4500, 6000]
 selection:
   q2   : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
   bdt  : (1)
