@@ -1,7 +1,17 @@
-fits:
+model:
   observable:
+    name : B_M_brem_track_2
     minx : 4500
     maxx : 6000
+fitting:
+  strategy :
+    retry :
+      ntries        : 1
+      pvalue_thresh : 0.05
+      ignore_status : False
+  ranges :
+    - [ 4500, 5050]
+    - [ 5750, 6000]
 selection:
   q2   : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
   bdt  : (1)
@@ -21,4 +31,3 @@ cutflow:
   $BDT_{prc} > 0.70 && BDT_{cmb} > 0.40$ : (mva_prc > 0.70 && mva_cmb > 0.40) && (mva_prc < 0.80 || mva_cmb < 0.6)
   $BDT_{prc} > 0.70 && BDT_{cmb} > 0.50$ : (mva_prc > 0.70 && mva_cmb > 0.50) && (mva_prc < 0.80 || mva_cmb < 0.6)
 input:
-  observable : B_M_brem_track_2
