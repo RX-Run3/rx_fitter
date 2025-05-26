@@ -31,6 +31,9 @@ class Data:
     minx   : float
     maxx   : float
 
+    wp_cmb : float
+    wp_prc : float
+
     obs    : zobs
     cfg    : dict
     q2bin  : str
@@ -51,8 +54,12 @@ def _parse_args() -> None:
     parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'    , default='Hlt2RD_BuToKpEE_SameSign_MVA')
     parser.add_argument('-i', '--initial', type=int, help='Index of initial fit', default=0)
     parser.add_argument('-f', '--final'  , type=int, help='Index of final fit, if not passed, will do all', default=1000)
+    parser.add_argument('-w', '--wpoint' , nargs=2 , help='Array with two working points, combinatorial and prec')
     parser.add_argument('-n', '--ntries' , type=int, help='Maximum number of tries, default 1', default=1)
     args = parser.parse_args()
+
+    if args.wpoint is not None:
+        [Data.wp_cmb, Data.wp_prc] = args.wpoint
 
     Data.q2bin  = args.q2bin
     Data.model  = args.model
@@ -155,6 +162,15 @@ def _skip_fit(index : int) -> bool:
 
     return True
 # --------------------------------
+def _get_cutflow() -> dict[str,str]:
+    if (Data.wp_cmb is None) or (Data.wp_prc is None):
+        log.debug('Picking up cutflow from YAML')
+        return Data.cfg['cutflow']
+
+    cut = f'mva_cmb > {Data.wp_cmb:.2f} && mva_prc > {Data.wp_prc:.2f}'
+
+    return {'bdt' : cut}
+# --------------------------------
 def main():
     '''
     Start here
@@ -165,7 +181,7 @@ def main():
     pdf  = models.get_pdf(obs=Data.obs, name=Data.model)
     rdf  = _get_rdf()
 
-    d_cutflow = Data.cfg['cutflow']
+    d_cutflow = _get_cutflow() 
 
     index = 0
     for name, cut in d_cutflow.items():
