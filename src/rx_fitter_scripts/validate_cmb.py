@@ -169,10 +169,11 @@ def _get_cutflow() -> dict[str,str]:
         log.debug('Picking up cutflow from YAML')
         return Data.cfg['cutflow']
 
-    cut = f'mva_cmb > {Data.wp_cmb:.2f} && mva_prc > {Data.wp_prc:.2f}'
+    key = f'$BDT_{{cmb}} > {Data.wp_cmb:.2f}$ && $BDT_{{prc}} > {Data.wp_prc:.2f}$'
+    cut = f'     mva_cmb > {Data.wp_cmb:.2f}  &&      mva_prc > {Data.wp_prc:.2f}'
     log.warning(f'Overriding WP with: {cut}')
 
-    return {cut : cut}
+    return {key : cut}
 # --------------------------------
 def main():
     '''
