@@ -40,6 +40,7 @@ class Data:
     Data class
     '''
     dry_run      : bool
+    cfg_name     : str
     q2bin        : str
     trigger      : str
     hsh          : str
@@ -100,11 +101,13 @@ class Data:
 def _parse_args():
     parser = argparse.ArgumentParser(description='Script used to fit rare mode electron channel data for RK')
     parser.add_argument('-q', '--q2bin'  , type=str, help='q2 bin', required=True, choices=['low', 'central', 'high'])
+    parser.add_argument('-c', '--config' , type=str, help='Name of config file', default='os_data')
     parser.add_argument('-l', '--loglv'  , type=int, help='Logging level', default=Data.log_level, choices=[10, 20, 30])
     parser.add_argument('-d', '--dry_run', action='store_true', help='If used, will skip fit')
     args = parser.parse_args()
 
     Data.q2bin     = args.q2bin
+    Data.cfg_name  = args.config
     Data.dry_run   = args.dry_run
     Data.log_level = args.loglv
 # --------------------------------------------------------------
@@ -307,7 +310,7 @@ def _initialize() -> None:
     LogStore.set_level('rx_fitter:rx_rare_ee'        , Data.log_level)
     LogStore.set_level('rx_calibration:fit_component', Data.log_level)
 
-    cfg = _load_config(component='data')
+    cfg = _load_config(component=Data.cfg_name)
     _initialize_settings(cfg=cfg)
 
     ana_dir = os.environ['ANADIR']
