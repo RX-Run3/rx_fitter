@@ -172,7 +172,7 @@ def _get_cutflow() -> dict[str,str]:
     cut = f'mva_cmb > {Data.wp_cmb:.2f} && mva_prc > {Data.wp_prc:.2f}'
     log.warning(f'Overriding WP with: {cut}')
 
-    return {'bdt' : cut}
+    return {cut : cut}
 # --------------------------------
 def main():
     '''
