@@ -145,7 +145,9 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
     obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
-    plt.savefig(f'{out_dir}/fit_{suffix}.png')
+    plot_path = f'{out_dir}/fit_{suffix}.png'
+    log.info(f'Saving to: {plot_path}')
+    plt.savefig(plot_path)
 # --------------------------------
 def _initialize() -> None:
     conf_path = files('rx_fitter_data').joinpath(f'combinatorial/{Data.config}.yaml')
