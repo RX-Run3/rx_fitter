@@ -165,15 +165,15 @@ def _skip_fit(index : int) -> bool:
     return True
 # --------------------------------
 def _get_cutflow() -> dict[str,str]:
-    if (Data.wp_cmb is None) or (Data.wp_prc is None):
-        log.debug('Picking up cutflow from YAML')
-        return Data.cfg['cutflow']
+    if hasattr(Data, 'wp_cmb') and hasattr(Data, 'wp_prc'):
+        key = f'$BDT_{{cmb}} > {Data.wp_cmb:.2f}$ && $BDT_{{prc}} > {Data.wp_prc:.2f}$'
+        cut = f'     mva_cmb > {Data.wp_cmb:.2f}  &&      mva_prc > {Data.wp_prc:.2f}'
+        log.warning(f'Overriding WP with: {cut}')
 
-    key = f'$BDT_{{cmb}} > {Data.wp_cmb:.2f}$ && $BDT_{{prc}} > {Data.wp_prc:.2f}$'
-    cut = f'     mva_cmb > {Data.wp_cmb:.2f}  &&      mva_prc > {Data.wp_prc:.2f}'
-    log.warning(f'Overriding WP with: {cut}')
+        return {key : cut}
 
-    return {key : cut}
+    log.debug('Picking up cutflow from YAML')
+    return Data.cfg['cutflow']
 # --------------------------------
 def main():
     '''
