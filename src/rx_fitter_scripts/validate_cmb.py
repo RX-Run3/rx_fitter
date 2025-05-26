@@ -154,11 +154,11 @@ def _initialize() -> None:
     with open(conf_path, encoding='utf-8') as ifile:
         Data.cfg = yaml.safe_load(ifile)
 
-    Data.minx= Data.cfg['fits']['observable']['minx']
-    Data.maxx= Data.cfg['fits']['observable']['maxx']
+    Data.minx= Data.cfg['model']['observable']['minx']
+    Data.maxx= Data.cfg['model']['observable']['maxx']
+    Data.mass= Data.cfg['model']['observable']['name']
 
-    var      = Data.cfg['input']['observable']
-    Data.obs = zfit.Space(var, limits=(Data.minx, Data.maxx))
+    Data.obs = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------
 def _skip_fit(index : int) -> bool:
     if Data.initial <= index <= Data.final:
