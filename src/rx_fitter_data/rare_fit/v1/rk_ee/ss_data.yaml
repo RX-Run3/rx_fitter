@@ -1,6 +1,6 @@
 input :
   sample     : DATA*
-  trigger    : Hlt2RD_BuToKpEE_MVA
+  trigger    : Hlt2RD_BuToKpEE_SameSign_MVA
   observable : B_M_smr_brem_track_2
   minx       : 4500
   maxx       : 6900
@@ -14,9 +14,6 @@ components:
     combinatorial                     : parametric
     Bu_JpsiK_ee_eq_DPC                : leak
     Bu_psi2SK_ee_eq_DPC               : leak
-    Bu_Kstee_Kpi0_eq_btosllball05_DPC : prc
-    Bd_Kstee_eq_btosllball05_DPC      : prc
-    Bs_phiee_eq_Ball_DPC              : prc
   misid:
     version : v1
 nbrem:
