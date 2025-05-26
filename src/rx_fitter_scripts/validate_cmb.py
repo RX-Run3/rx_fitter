@@ -185,7 +185,7 @@ def main():
     pdf  = models.get_pdf(obs=Data.obs, name=Data.model)
     rdf  = _get_rdf()
 
-    d_cutflow = _get_cutflow() 
+    d_cutflow = _get_cutflow()
 
     index = 0
     for name, cut in d_cutflow.items():
