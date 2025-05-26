@@ -75,11 +75,6 @@ def _parse_args() -> None:
 # --------------------------------
 def _apply_selection(rdf : RDataFrame) -> RDataFrame:
     d_sel = sel.selection(trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
-    if 'selection' in Data.cfg:
-        log.info('Updating selection')
-        d_cut = Data.cfg['selection']
-        d_sel.update(d_cut)
-
     for cut_name, cut_expr in d_sel.items():
         rdf = rdf.Filter(cut_expr, cut_name)
 
@@ -154,6 +149,11 @@ def _initialize() -> None:
     conf_path = files('rx_fitter_data').joinpath(f'combinatorial/{Data.config}.yaml')
     with open(conf_path, encoding='utf-8') as ifile:
         Data.cfg = yaml.safe_load(ifile)
+
+    if 'selection' in Data.cfg:
+        log.info('Updating selection')
+        d_cut = Data.cfg['selection']
+        sel.set_custom_selection(d_cut = d_cut)
 
     Data.minx= Data.cfg['model']['observable']['minx']
     Data.maxx= Data.cfg['model']['observable']['maxx']
