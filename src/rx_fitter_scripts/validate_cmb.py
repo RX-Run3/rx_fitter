@@ -30,6 +30,7 @@ class Data:
     '''
     minx   : float
     maxx   : float
+    mass   : str
 
     wp_cmb : float
     wp_prc : float
@@ -107,17 +108,16 @@ def _get_rdf() ->  zdata:
 # --------------------------------
 def _data_from_rdf(rdf : RDataFrame, cut : str) ->  zdata:
     rdf      = rdf.Filter(cut)
-    var      = Data.cfg['input']['observable']
-    arr_mass = rdf.AsNumpy([var])[var]
+    arr_mass = rdf.AsNumpy([Data.mass])[Data.mass]
     data     = zfit.Data.from_numpy(obs=Data.obs, array=arr_mass)
 
     return data
 # --------------------------------
 def _fit(pdf : zpdf, data : zdata) -> None:
-    d_retry = {'ntries' : Data.ntries, 'pvalue_thresh' : 0.05, 'ignore_status' : False}
+    fit_cfg = Data.cfg['fitting']
 
     obj = Fitter(pdf, data)
-    res = obj.fit(cfg={'strategy' : {'retry' : d_retry}})
+    res = obj.fit(cfg=fit_cfg)
 
     return res
 # --------------------------------
@@ -135,7 +135,6 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     out_dir  = _get_out_dir()
     nentries = data.value().shape[0]
     ext_text = f'Entries={nentries}\n{Data.sample}\n{Data.trigger}'
-
 
     obj= ZFitPlotter(data=data, model=pdf)
     rng= Data.cfg['fitting']['ranges']
