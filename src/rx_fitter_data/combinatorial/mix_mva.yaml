@@ -1,3 +1,7 @@
+fits:
+  observable:
+    minx : 4500
+    maxx : 6000
 selection:
   #leak: B_const_mass_M < 5250 || B_const_mass_M > 5350 # Can be turned on to check effect of charge misidentification followed by resonant leakage into SS
   q2   : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
