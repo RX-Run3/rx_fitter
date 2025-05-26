@@ -59,7 +59,9 @@ def _parse_args() -> None:
     args = parser.parse_args()
 
     if args.wpoint is not None:
-        [Data.wp_cmb, Data.wp_prc] = args.wpoint
+        [ cmb, prc] = args.wpoint
+        Data.wp_cmb = float(cmb)
+        Data.wp_prc = float(prc)
 
     Data.q2bin  = args.q2bin
     Data.model  = args.model
@@ -168,6 +170,7 @@ def _get_cutflow() -> dict[str,str]:
         return Data.cfg['cutflow']
 
     cut = f'mva_cmb > {Data.wp_cmb:.2f} && mva_prc > {Data.wp_prc:.2f}'
+    log.warning(f'Overriding WP with: {cut}')
 
     return {'bdt' : cut}
 # --------------------------------
