@@ -10,7 +10,7 @@ input :
 components:
   signal     : Bu_Kee_eq_btosllball05_DPC
   #signal     : parametric
-  background : 
+  background :
     combinatorial                     : parametric
     Bu_JpsiK_ee_eq_DPC                : leak
     Bu_psi2SK_ee_eq_DPC               : leak
