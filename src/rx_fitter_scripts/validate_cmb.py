@@ -136,8 +136,10 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     nentries = data.value().shape[0]
     ext_text = f'Entries={nentries}\n{Data.sample}\n{Data.trigger}'
 
+
     obj= ZFitPlotter(data=data, model=pdf)
-    obj.plot(nbins=50, title=name, ext_text=ext_text, d_leg={'ZPDF' : Data.model})
+    rng= Data.cfg['fitting']['ranges']
+    obj.plot(nbins=50, ranges=rng, title=name, ext_text=ext_text, d_leg={'ZPDF' : Data.model})
 
     obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
