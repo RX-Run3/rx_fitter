@@ -25,3 +25,5 @@ cutflow:
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.60$ : mva_prc > 0.80 && mva_cmb > 0.60
 input:
   observable : B_M_brem_track_2
+output:
+  path : plots/fits/SS/q2_kind_vs_mva
