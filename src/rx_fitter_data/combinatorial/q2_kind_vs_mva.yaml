@@ -23,10 +23,8 @@ selection:
   bdt  : (1)
   mass : (1)
 cutflow:
-  $BDT_{prc} > 0.00$ && $BDT_{cmb} > 0.00$ : mva_prc > 0.00 && mva_cmb > 0.00
-  $BDT_{prc} > 0.10$ && $BDT_{cmb} > 0.00$ : mva_prc > 0.10 && mva_cmb > 0.00
-  $BDT_{prc} > 0.20$ && $BDT_{cmb} > 0.00$ : mva_prc > 0.20 && mva_cmb > 0.00
-  $BDT_{prc} > 0.30$ && $BDT_{cmb} > 0.00$ : mva_prc > 0.30 && mva_cmb > 0.00
+  $BDT_{prc} > 0.20$ && $BDT_{cmb} > 0.20$ : mva_prc > 0.20 && mva_cmb > 0.20
+  $BDT_{prc} > 0.30$ && $BDT_{cmb} > 0.20$ : mva_prc > 0.30 && mva_cmb > 0.20
   $BDT_{prc} > 0.30$ && $BDT_{cmb} > 0.10$ : mva_prc > 0.30 && mva_cmb > 0.10
   $BDT_{prc} > 0.30$ && $BDT_{cmb} > 0.20$ : mva_prc > 0.30 && mva_cmb > 0.20
   $BDT_{prc} > 0.30$ && $BDT_{cmb} > 0.30$ : mva_prc > 0.30 && mva_cmb > 0.30
