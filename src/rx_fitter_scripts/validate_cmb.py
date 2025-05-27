@@ -38,6 +38,7 @@ class Data:
     obs    : zobs
     cfg    : dict
     q2bin  : str
+    q2_kind: str
     model  : str
     config : str
     sample : str
@@ -48,15 +49,16 @@ class Data:
 # --------------------------------
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Used to perform fits to validate choice of PDF for combinatorial')
-    parser.add_argument('-q', '--q2bin'  , type=str, help='Q2bin', choices=['low', 'central', 'high'], required=True)
-    parser.add_argument('-m', '--model'  , type=str, help='Fitting model', choices=['HypExp', 'ModExp', 'Exp', 'Pol2', 'Pol3', 'SUJohnson'], required=True)
-    parser.add_argument('-c', '--config' , type=str, help='Name of config file', default='validation')
-    parser.add_argument('-s', '--sample' , type=str, help='Name of sample'     , default='DATA*')
-    parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'    , default='Hlt2RD_BuToKpEE_SameSign_MVA')
-    parser.add_argument('-i', '--initial', type=int, help='Index of initial fit', default=0)
+    parser.add_argument('-q', '--q2bin'  , type=str, help='Q2bin'         , choices=['low', 'central', 'high'], required=True)
+    parser.add_argument('-m', '--model'  , type=str, help='Fitting model' , choices=['HypExp', 'ModExp', 'Exp', 'Pol2', 'Pol3', 'SUJohnson'], required=True)
+    parser.add_argument('-k', '--q2_kind', type=str, help='Kind of q2 cut', choices=['def', 'dtf', 'trk'])
+    parser.add_argument('-c', '--config' , type=str, help='Name of config file'                           , default='validation')
+    parser.add_argument('-s', '--sample' , type=str, help='Name of sample'                                , default='DATA*')
+    parser.add_argument('-t', '--trigger', type=str, help='Name of trigger'                               , default='Hlt2RD_BuToKpEE_SameSign_MVA')
+    parser.add_argument('-i', '--initial', type=int, help='Index of initial fit'                          , default=0)
     parser.add_argument('-f', '--final'  , type=int, help='Index of final fit, if not passed, will do all', default=1000)
+    parser.add_argument('-n', '--ntries' , type=int, help='Maximum number of tries, default 1'            , default=1)
     parser.add_argument('-w', '--wpoint' , nargs=2 , help='Array with two working points, combinatorial and prec')
-    parser.add_argument('-n', '--ntries' , type=int, help='Maximum number of tries, default 1', default=1)
     args = parser.parse_args()
 
     if args.wpoint is not None:
@@ -66,6 +68,7 @@ def _parse_args() -> None:
 
     Data.q2bin  = args.q2bin
     Data.model  = args.model
+    Data.q2_kind= args.q2_kind
     Data.config = args.config
     Data.sample = args.sample
     Data.trigger= args.trigger
@@ -145,6 +148,14 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     log.info(f'Saving to: {plot_path}')
     plt.savefig(plot_path)
 # --------------------------------
+def _override_q2(cuts : dict[str,str]) -> dict[str,str]:
+    if Data.q2kind is None:
+        return cuts
+
+    cuts['q2'] = Data.cfg['q2_kind'][Data.q2_kind]
+
+    return cuts
+# --------------------------------
 def _initialize() -> None:
     conf_path = files('rx_fitter_data').joinpath(f'combinatorial/{Data.config}.yaml')
     with open(conf_path, encoding='utf-8') as ifile:
@@ -153,6 +164,8 @@ def _initialize() -> None:
     if 'selection' in Data.cfg:
         log.info('Updating selection')
         d_cut = Data.cfg['selection']
+        d_cut = _override_q2(cuts=d_cut)
+
         sel.set_custom_selection(d_cut = d_cut)
 
     Data.minx= Data.cfg['model']['observable']['minx']
