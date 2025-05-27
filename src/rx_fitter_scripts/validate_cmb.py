@@ -124,7 +124,11 @@ def _fit(pdf : zpdf, data : zdata) -> None:
 def _get_out_dir() -> str:
     ana_dir = os.environ['ANADIR']
     out_dir = Data.cfg['output']['path']
-    out_dir = f'{ana_dir}/{out_dir}'
+
+    if hasattr(Data, 'q2_kind'):
+        out_dir = f'{ana_dir}/{Data.q2_kind}/{out_dir}'
+    else:
+        out_dir = f'{ana_dir}/{out_dir}'
 
     os.makedirs(out_dir, exist_ok=True)
 
