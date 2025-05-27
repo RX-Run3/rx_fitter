@@ -145,15 +145,18 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
     obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
-    plot_path = f'{out_dir}/fit_{suffix}.png'
+    plot_path = f'{Data.out_dir}/fit_{suffix}.png'
     log.info(f'Saving to: {plot_path}')
     plt.savefig(plot_path)
 # --------------------------------
 def _override_q2(cuts : dict[str,str]) -> dict[str,str]:
-    if Data.q2kind is None:
+    if Data.q2_kind is None:
+        log.debug('Not overriding q2 cut')
         return cuts
 
-    cuts['q2'] = Data.cfg['q2_kind'][Data.q2_kind]
+    cut = Data.cfg['q2_kind'][Data.q2_kind]
+    log.info(f'Using q2 cut: {cut}')
+    cuts['q2'] = cut
 
     return cuts
 # --------------------------------
