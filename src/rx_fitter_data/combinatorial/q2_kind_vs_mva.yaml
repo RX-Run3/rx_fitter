@@ -1,6 +1,12 @@
+# Config used to validate combinatorial shape through fits to SS data
+# and under different q2 cuts. The config should allow:
+#
+# - Tightening progressively the MVA, starting from 0.2, to remove stuff that does not look like final background 
+
+q2_kind:
+  dtt : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
+  def : q2_smr > 15000000 && q2_smr < 22000000
 selection:
-  #leak: B_const_mass_M < 5250 || B_const_mass_M > 5350 # Can be turned on to check effect of charge misidentification followed by resonant leakage into SS
-  q2   : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
   bdt  : (1)
   mass : (1)
 cutflow:
