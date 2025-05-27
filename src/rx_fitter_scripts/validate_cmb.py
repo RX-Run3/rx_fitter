@@ -51,7 +51,7 @@ class Data:
 def _parse_args() -> None:
     parser = argparse.ArgumentParser(description='Used to perform fits to validate choice of PDF for combinatorial')
     parser.add_argument('-q', '--q2bin'  , type=str, help='Q2bin'         , choices=['low', 'central', 'high'], required=True)
-    parser.add_argument('-m', '--model'  , type=str, help='Fitting model' , choices=['HypExp', 'ModExp', 'Exp', 'Pol2', 'Pol3', 'SUJohnson'], required=True)
+    parser.add_argument('-m', '--model'  , type=str, help='Fitting model' , choices=['HypExp', 'ModExp', 'Exp', 'Pol2', 'Pol3', 'SUJohnson'], default='SUJohnson')
     parser.add_argument('-k', '--q2_kind', type=str, help='Kind of q2 cut', choices=['def', 'dtf', 'trk'])
     parser.add_argument('-c', '--config' , type=str, help='Name of config file'                           , default='validation')
     parser.add_argument('-s', '--sample' , type=str, help='Name of sample'                                , default='DATA*')
