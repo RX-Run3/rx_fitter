@@ -17,7 +17,7 @@ fitting:
   ranges :
     - [ 4500, 7000]
 q2_kind:
-  dtt : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
+  dtf : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
   def : q2_smr > 15000000 && q2_smr < 22000000
 selection:
   bdt  : (1)
