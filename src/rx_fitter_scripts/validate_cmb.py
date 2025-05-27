@@ -125,10 +125,10 @@ def _get_out_dir() -> str:
     ana_dir = os.environ['ANADIR']
     out_dir = Data.cfg['output']['path']
 
-    if hasattr(Data, 'q2_kind'):
-        out_dir = f'{ana_dir}/{Data.q2_kind}/{out_dir}'
-    else:
+    if Data.q2_kind is None:
         out_dir = f'{ana_dir}/{out_dir}'
+    else:
+        out_dir = f'{ana_dir}/{Data.q2_kind}/{out_dir}'
 
     os.makedirs(out_dir, exist_ok=True)
 
