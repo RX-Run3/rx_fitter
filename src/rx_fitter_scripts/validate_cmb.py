@@ -37,6 +37,7 @@ class Data:
 
     obs    : zobs
     cfg    : dict
+    out_dir: str
     q2bin  : str
     q2_kind: str
     model  : str
@@ -84,15 +85,16 @@ def _apply_selection(rdf : RDataFrame) -> RDataFrame:
     return rdf
 # --------------------------------
 def _suffix_from_name(name : str) -> str:
-    name = name.replace(' ',  '_')
-    name = name.replace('<', 'lt')
-    name = name.replace('>', 'gt')
-    name = name.replace('=', 'eq')
-    name = name.replace('{', '_')
-    name = name.replace('}', '_')
-    name = name.replace('.', 'p')
-    name = name.replace('$', '_')
-    name = name.replace('&&', 'and')
+    name = name.replace('||', 'OR')
+    name = name.replace(' ' ,  '_')
+    name = name.replace('<' , 'lt')
+    name = name.replace('>' , 'gt')
+    name = name.replace('=' , 'eq')
+    name = name.replace('{' ,  '_')
+    name = name.replace('}' ,  '_')
+    name = name.replace('.' ,  'p')
+    name = name.replace('$' ,  '_')
+    name = name.replace('&&','and')
     name = re.sub(r'_+', '_', name)
 
     return name
@@ -121,16 +123,15 @@ def _fit(pdf : zpdf, data : zdata) -> None:
 # --------------------------------
 def _get_out_dir() -> str:
     ana_dir = os.environ['ANADIR']
-    plt_dir = f'{ana_dir}/fits/{Data.sample}/{Data.trigger}/{Data.q2bin}/{Data.model}'
-    plt_dir = plt_dir.replace('*', 'p')
+    out_dir = Data.cfg['output']['path']
+    out_dir = f'{ana_dir}/{out_dir}'
 
-    os.makedirs(plt_dir, exist_ok=True)
+    os.makedirs(out_dir, exist_ok=True)
 
-    return plt_dir
+    return out_dir
 # --------------------------------
 def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     suffix   = _suffix_from_name(name)
-    out_dir  = _get_out_dir()
     nentries = data.value().shape[0]
     ext_text = f'Entries={nentries}\n{Data.sample}\n{Data.trigger}'
 
@@ -172,7 +173,9 @@ def _initialize() -> None:
     Data.maxx= Data.cfg['model']['observable']['maxx']
     Data.mass= Data.cfg['model']['observable']['name']
 
-    Data.obs = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
+
+    Data.out_dir = _get_out_dir()
+    Data.obs     = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
 # --------------------------------
 def _skip_fit(index : int) -> bool:
     if Data.initial <= index <= Data.final:
