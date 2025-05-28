@@ -4,7 +4,7 @@ input :
   observable : B_M_smr_brem_track_2
   minx       : 4500
   maxx       : 6900
-  nbins      : 75
+  nbins      : 30 
   selection :
     bdt : mva_cmb > 0.6 && mva_prc > 0.8
 components:
