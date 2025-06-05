@@ -116,6 +116,8 @@ def _load_config(component : str) -> dict:
     with open(cfg_path, encoding='utf-8') as ifile:
         cfg = yaml.safe_load(ifile)
 
+    log.info(f'Using config: {cfg_path}')
+
     return cfg
 # --------------------------
 def _add_pdf_cmb() -> None:
