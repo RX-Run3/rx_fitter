@@ -11,6 +11,7 @@ import zfit
 import numpy
 import pandas as pnd
 
+from zfit.core.parameter   import Parameter as zpar
 from zfit.core.basepdf     import BasePDF   as zpdf
 from rx_selection          import selection as sel
 from rx_data.rdf_getter    import RDFGetter
@@ -407,6 +408,25 @@ class PRec:
             log.debug(f'{cut:<30}{inum:<20}{fnum:<20}')
         log.debug('-' * 50)
     #-----------------------------------------------------------
+    def _frac_from_pdf(self, pdf : zpdf, frc : float) -> zpar:
+        name = pdf.name
+        name = name.replace(r' ', '_')
+        name = name.replace(r'$', '_')
+        name = name.replace(r'{', '_')
+        name = name.replace(r'}', '_')
+        name = name.replace(r'(', '_')
+        name = name.replace(r')', '_')
+        name = name.replace(r'>', '_')
+        name = name.replace(r'-', '_')
+        name = name.replace('\\', '_')
+        name = name.replace(r'/', '_')
+        name = name.replace(r'+', '_')
+        name = name.replace(r'^', '_')
+
+        par  = zfit.param.Parameter(f'f_{name}', frc, 0, 1)
+
+        return par
+    #-----------------------------------------------------------
     def get_sum(self, mass : str, name='unnamed', **kwargs) -> Union[zpdf,None]:
         '''Provides extended PDF that is the sum of multiple KDEs representing PRec background
 
@@ -428,7 +448,7 @@ class PRec:
         l_pdf     = list(d_pdf.values())
         l_wgt_yld = [ sum(pdf.arr_wgt) for pdf in l_pdf ]
         l_frc     = [ wgt_yld / sum(l_wgt_yld) for wgt_yld in l_wgt_yld ]
-        l_yld     = [ zfit.param.Parameter(f'f_{pdf.name}', frc, 0, 1) for pdf, frc in zip(l_pdf, l_frc)]
+        l_yld     = [ self._frac_from_pdf(pdf=pdf, frc=frc) for pdf, frc in zip(l_pdf, l_frc)]
         for yld in l_yld:
             yld.floating = False
 
