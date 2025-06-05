@@ -259,3 +259,23 @@ def test_extended():
 
     assert pdf.is_extended is False
 #-----------------------------------------------
+def test_low_stats():
+    '''
+    Testing with low statistics sample, tight MVA
+    '''
+    _set_selection(d_cut = {'bdt' : 'mva_cmb > 0.9 && mva_prc > 0.9'})
+
+    obs=zfit.Space('mass', limits=(4500, 6000))
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    obp=PRec(samples=l_samp, trig=trig, q2bin='high', d_weight=d_wgt)
+    pdf=obp.get_sum(mass='B_Mass', name='PRec_1', obs=obs)
+
+    PRec.plot_pdf(pdf, name='pdf', title='', out_dir=f'{Data.out_dir}/low_stats')
+#-----------------------------------------------
