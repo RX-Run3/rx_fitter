@@ -82,7 +82,7 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
 #-----------------------------------------------
 def _set_selection(d_cut : dict[str,str]) -> None:
     sel.reset_custom_selection()
-    sel.set_custom_selection(d_cut = d_cut) 
+    sel.set_custom_selection(d_cut = d_cut)
 #-----------------------------------------------
 @pytest.mark.parametrize('q2bin', ['jpsi', 'psi2'])
 def test_reso(q2bin : str):
@@ -171,7 +171,7 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     ('nbrem >= 2', 't')])
 def test_brem(brem_cut : str, name : str):
     '''
-    Testing by brem category 
+    Testing by brem category
     '''
     _set_selection(d_cut = {'brem' : brem_cut})
 
