@@ -91,15 +91,20 @@ def test_reso(q2bin : str):
     '''
     Tests PRec building in resonant bins
     '''
-    obs=zfit.Space('mass', limits=(4500, 6000))
     trig   = 'Hlt2RD_BuToKpEE_MVA'
+
     mass   = {'jpsi' : 'B_const_mass_M',
               'psi2' : 'B_const_mass_psi2S_M',
               'high' : 'B_Mass'}[q2bin]
 
+    label  = {
+            'jpsi' :r'$M_{DTF}(K^+e^+e^-)$',
+            'psi2' :r'$M_{DTF}(K^+e^+e^-)$',
+            'high' :r'$M(K^+e^+e^-)$'}[q2bin]
+
     maxy   = {'jpsi' : 10_000,
               'psi2' :  2_000,
-              'high' :  2_000}[q2bin]
+              'high' :    150}[q2bin]
 
     q2     = {'jpsi' : r'$J/\psi$',
               'psi2' : r'\psi(2S)',
@@ -110,6 +115,8 @@ def test_reso(q2bin : str):
             'Bd_JpsiX_ee_eq_JpsiInAcc',
             'Bs_JpsiX_ee_eq_JpsiInAcc',
             ]
+
+    obs=zfit.Space(label, limits=(4500, 6900))
 
     test = f'reso/{q2bin}'
 
