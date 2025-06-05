@@ -184,7 +184,7 @@ class PRec:
             d_match = self._get_match_str_jpsi()
         elif self._q2bin == 'psi2':
             d_match = self._get_match_str_psi2()
-        elif self._q2bin == 'high':
+        elif self._q2bin in ['central', 'high']:
             d_match = self._get_match_str_psi2()
         else:
             raise ValueError(f'Invalid q2bin: {self._q2bin}')
