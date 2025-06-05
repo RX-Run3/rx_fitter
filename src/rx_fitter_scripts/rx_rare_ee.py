@@ -211,6 +211,9 @@ def _add_ccbar_prc() -> None:
     obp=PRec(samples=l_samp, trig=Data.trigger, q2bin=Data.q2bin, d_weight=d_wgt)
     pdf=obp.get_sum(mass=Data.mass, name=r'$c\bar{c}$', obs=Data.obs)
 
+    nccbar = zfit.Parameter(f'nccbar', 0, 0, 10_000)
+    pdf.set_yield(nccbar)
+
     Data.l_pdf.append(pdf)
 # --------------------------
 @gut.timeit
