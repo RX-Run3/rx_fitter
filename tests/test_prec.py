@@ -2,7 +2,6 @@
 Module with tests for the PRec class
 '''
 
-import os
 import mplhep
 import pytest
 import matplotlib.pyplot as plt
@@ -10,7 +9,6 @@ import matplotlib.pyplot as plt
 from dmu.stats.fitter       import Fitter
 from dmu.stats              import utilities as sut
 from dmu.stats.zfit         import zfit
-from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
 from rx_selection           import selection as sel
 from rx_data.rdf_getter     import RDFGetter
