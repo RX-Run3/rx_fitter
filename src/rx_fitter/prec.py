@@ -453,7 +453,7 @@ class PRec:
             yld.floating = False
 
         if   len(l_pdf) >= 2:
-            pdf   = zfit.pdf.SumPDF(l_pdf, fracs=l_yld)
+            pdf   = zfit.pdf.SumPDF(l_pdf, fracs=l_yld, name='ccbar PRec')
         elif len(l_pdf) == 1:
             [pdf] = l_pdf
         else:
