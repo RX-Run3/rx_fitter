@@ -7,9 +7,9 @@ import mplhep
 import pytest
 import matplotlib.pyplot as plt
 
+from dmu.stats.fitter       import Fitter
 from dmu.stats              import utilities as sut
 from dmu.stats.zfit         import zfit
-from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
 from rx_selection           import selection as sel
@@ -81,7 +81,7 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
     plt.close('all')
 
     text_path = plot_path.replace('png', 'txt')
-    print_pdf(pdf, txt_path=text_path)
+    sut.print_pdf(pdf, txt_path=text_path)
 #-----------------------------------------------
 def _set_selection(d_cut : dict[str,str]) -> None:
     sel.reset_custom_selection()
