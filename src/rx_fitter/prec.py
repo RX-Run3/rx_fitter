@@ -484,8 +484,8 @@ class PRec:
             pdf     : zpdf,
             name    : str,
             title   : str,
-            maxy    : float,
-            out_dir : str) -> None:
+            out_dir : str,
+            maxy    : float = None) -> None:
         '''
         Utility method, meant to plot PDF after it was built
 
@@ -511,7 +511,10 @@ class PRec:
         obj.plot(stacked=True)
 
         obj.axs[0].set_title(f'#Entries: {arr_mass.size}; {title}')
-        obj.axs[0].set_ylim(bottom=0, top=maxy)
+
+        if maxy is not None:
+            obj.axs[0].set_ylim(bottom=0, top=maxy)
+
         obj.axs[0].axvline(x=5080, linestyle=':')
         obj.axs[0].axvline(x=5680, linestyle=':')
         obj.axs[0].axvline(x=5280, label=r'$B^+$', color='gray', linestyle='--')
