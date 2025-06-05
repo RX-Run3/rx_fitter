@@ -7,12 +7,15 @@ import json
 from typing   import Union
 
 import numpy
-import pandas as pnd
+import pandas            as pnd
+import matplotlib.pyplot as plt
 
-from dmu.stats.zfit        import zfit
-from dmu.generic           import hashing
-from dmu.stats.utilities   import is_pdf_usable
-from dmu.logging.log_store import LogStore
+from dmu.stats.zfit         import zfit
+from dmu.generic            import hashing
+from dmu.logging.log_store  import LogStore
+from dmu.stats.zfit_plotter import ZFitPlotter
+from dmu.stats.utilities    import is_pdf_usable
+from dmu.stats              import utilities as sut
 
 from zfit.core.parameter   import Parameter as zpar
 from zfit.core.basepdf     import BasePDF   as zpdf
