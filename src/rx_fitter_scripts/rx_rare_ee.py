@@ -27,11 +27,11 @@ from zfit.core.interfaces        import ZfitSpace  as zobs
 from zfit.core.parameter         import Parameter  as zpar
 from zfit.result                 import FitResult  as zres
 
-from rx_fitter.prec              import PRec
 from rx_misid.misid_pdf          import MisIdPdf
 from rx_data.rdf_getter          import RDFGetter
 from rx_selection                import selection  as sel
 from rx_fitter                   import components as cmp
+from rx_fitter.prec              import PRec
 from rx_fitter.constraint_reader import ConstraintReader
 
 log=LogStore.add_logger('rx_fitter:rx_rare_ee')
