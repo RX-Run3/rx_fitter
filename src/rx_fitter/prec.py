@@ -52,6 +52,7 @@ class PRec:
 
         self._d_match     = self._get_match_str()
         self._l_mass      = ['B_Mass', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
+        self._min_entries = 40 # Will not build KDE if fewer entries than this are found
         self._initialized = False
     #-----------------------------------------------------------
     def _initialize(self):
@@ -386,9 +387,11 @@ class PRec:
 
         arr_mass     = df[mass].to_numpy()
         nentries     = len(arr_mass)
-        if nentries == 0:
-            log.warning('No entries found, not making any KDE PDF')
+        if nentries < self._min_entries:
+            log.warning(f'Found fewer than {self._min_entries}: {nentries}, skipping PDF')
             return None
+
+        log.info(f'Building PDF with {nentries} entries')
 
         pdf          = zfit.pdf.KDE1DimISJ(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         pdf.arr_mass = arr_mass
