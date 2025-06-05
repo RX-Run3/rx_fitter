@@ -53,10 +53,11 @@ class PRec:
         self._df       : pnd.DataFrame
         self._d_fstat  = {}
 
-        self._d_match     = self._get_match_str()
-        self._l_mass      = ['B_Mass', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
-        self._min_entries = 40 # Will not build KDE if fewer entries than this are found
-        self._initialized = False
+        self._d_match         = self._get_match_str()
+        self._l_mass          = ['B_Mass', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
+        self._min_entries     = 40 # Will not build KDE if fewer entries than this are found
+        self._min_isj_entries = 1000 #if Fewer entries than this, switch from ISJ to FFT 
+        self._initialized      = False
     #-----------------------------------------------------------
     def _initialize(self):
         if self._initialized:
@@ -367,9 +368,7 @@ class PRec:
         Optional arguments:
         Cut
 
-        **kwargs: These are all arguments for KDE1DimFFT
-
-        and it will return a KDE1DimFFT PDF.
+        **kwargs: These are all arguments for KDE1DimISJ or KDE1DimFFT
         '''
         identifier = self._get_identifier(mass, cut, **kwargs)
         cache_path = self._path_from_identifier(identifier)
@@ -396,7 +395,13 @@ class PRec:
 
         log.info(f'Building PDF with {nentries} entries')
 
-        pdf          = zfit.pdf.KDE1DimISJ(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
+        if nentries < self._min_isj_entries:
+            log.info('Using FFT KDE for low statistics sample')
+            pdf      = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
+        else:
+            log.info('Using ISJ KDE for high statistics sample')
+            pdf      = zfit.pdf.KDE1DimISJ(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
+
         pdf.arr_mass = arr_mass
         pdf.arr_wgt  = df.wgt_br.to_numpy()
         pdf.arr_sam  = df.wgt_sam.to_numpy()
