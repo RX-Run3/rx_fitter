@@ -97,6 +97,7 @@ class PRec:
             if name == 'mass':
                 continue
 
+            log.debug(f'{name:<20}{expr}')
             rdf = rdf.Filter(expr, name)
 
         rep = rdf.Report()
