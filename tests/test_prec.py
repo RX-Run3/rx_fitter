@@ -136,7 +136,7 @@ def test_fit():
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
 
     title=f'$q^2$: {q2}, both weights'
-    _plot_pdf(pdf, test, 'both_weights', maxy=maxy, title=title)
+    PRec.plot_pdf(pdf, name='both_weights', maxy=maxy, title=title, out_dir=f'{Data.out_dir}/{test}')
 
     nev = zfit.Parameter('nev', 0, 0, 10_000)
     pdf.set_yield(nev)
@@ -186,7 +186,7 @@ def test_bdt(q2bin : str, bdt_cut : str, name : str):
     wp    = name.replace('p', '.')
     title = f'$MVA_{{cmb}} > {wp}$ && $MVA_{{prc}} > {wp}$'
 
-    _plot_pdf(pdf, test, name, maxy=maxy, title=title)
+    PRec.plot_pdf(pdf, name, maxy=maxy, title=title, out_dir=f'{Data.out_dir}/{test}')
 #-----------------------------------------------
 @pytest.mark.parametrize('brem_cut, name', [
     ('nbrem == 0', 'z'),
@@ -215,7 +215,7 @@ def test_brem(brem_cut : str, name : str):
 
     brem  = {'z' : 0, 'o' : 1, 't' : 2}[name]
     title = f'Brem: {brem}'
-    _plot_pdf(pdf, test, f'bdt_{name}', maxy=3_000, title=title)
+    PRec.plot_pdf(pdf, f'bdt_{name}', maxy=3_000, title=title, out_dir=f'{Data.out_dir}/{test}')
 #-----------------------------------------------
 def test_cache():
     '''
@@ -239,7 +239,7 @@ def test_cache():
     obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
     pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
 
-    _plot_pdf(pdf, test, 'cache', maxy=maxy, title='cache test')
+    PRec.plot_pdf(pdf, 'cache', maxy=maxy, title='cache test', out_dir=f'{Data.out_dir}/{test}')
 #-----------------------------------------------
 def test_extended():
     '''
