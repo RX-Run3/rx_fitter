@@ -187,12 +187,20 @@ def _add_pdf_sig() -> None:
     Data.l_pdf.append(pdf)
 # --------------------------
 def _add_pdf_mid() -> None:
+    log.info(30 * '-')
+    log.info('Adding MisID component')
+    log.info(30 * '-')
+
     obj = MisIdPdf(obs=Data.obs, q2bin=Data.q2bin, version=Data.mid_vers)
     pdf = obj.get_pdf()
 
     Data.l_pdf.append(pdf)
 # --------------------------
 def _add_ccbar_prc() -> None:
+    log.info(30 * '-')
+    log.info('Adding ccbar part reco component')
+    log.info(30 * '-')
+
     d_wgt  = {'dec' : 1, 'sam' : 1}
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
