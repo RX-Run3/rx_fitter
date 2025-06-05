@@ -7,6 +7,7 @@ import mplhep
 import pytest
 import matplotlib.pyplot as plt
 
+from dmu.stats              import utilities as sut
 from dmu.stats.zfit         import zfit
 from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
@@ -147,6 +148,35 @@ def test_reso(q2bin : str):
 
     title=f'$q^2$: {q2}, both weights'
     _plot_pdf(pdf_1, test, 'both_weights', maxy=maxy, title=title)
+#-----------------------------------------------
+def test_fit():
+    '''
+    Tests that the PDF is fittable
+    '''
+    q2bin  = 'high'
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    mass   = 'B_Mass'
+    label  = r'$M(K^+e^+e^-)$'
+    maxy   = 150
+    q2     = 'High'
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
+
+    obs=zfit.Space(label, limits=(4500, 6900))
+
+    test = f'reso/fit/{q2bin}'
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+    pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
+
+    title=f'$q^2$: {q2}, both weights'
+    _plot_pdf(pdf, test, 'both_weights', maxy=maxy, title=title)
+
+    sut.print_pdf(pdf)
 #-----------------------------------------------
 @pytest.mark.parametrize('bdt_cut, name', [
     ('mva.mva_prc > 0.0 && mva.mva_cmb > 0.0', '0p0'),
