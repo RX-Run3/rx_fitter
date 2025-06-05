@@ -6,12 +6,11 @@ import argparse
 from importlib.resources import files
 
 import yaml
-import ROOT
-import zfit
 
-from ROOT                                        import EnableImplicitMT
+from dmu.stats.zfit                              import zfit
 from dmu.generic                                 import version_management as vman
 from dmu.logging.log_store                       import LogStore
+from ROOT                                        import EnableImplicitMT
 from rx_calibration.hltcalibration.dt_fitter     import DTFitter
 from rx_calibration.hltcalibration.fit_component import FitComponent
 from rx_fitter                                   import components as cmp
