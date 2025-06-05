@@ -131,6 +131,9 @@ class PRec:
         return d_df
     #-----------------------------------------------------------
     def _add_dec_weights(self, sample : str, df : pnd.DataFrame) -> pnd.DataFrame:
+        if len(df) == 0:
+            return df
+
         dec = self._d_wg['dec']
 
         if   dec == 1:
@@ -148,7 +151,10 @@ class PRec:
 
         return df
     #-----------------------------------------------------------
-    def _add_sam_weights(self, df):
+    def _add_sam_weights(self, df : pnd.DataFrame) -> pnd.DataFrame:
+        if len(df) == 0:
+            return df
+
         sam = self._d_wg['sam']
 
         if   sam == 1:
