@@ -4,9 +4,7 @@ Module containing PRec
 import os
 import copy
 import json
-import hashlib
 from typing   import Union
-
 
 from ROOT     import RDataFrame
 import zfit
@@ -81,6 +79,7 @@ class PRec:
     #-----------------------------------------------------------
     def _need_var(self, name : str) -> bool:
         needed = False
+
         if name.endswith('ID'):
             needed = True
 
