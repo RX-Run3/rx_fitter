@@ -395,6 +395,9 @@ class PRec:
 
         log.info(f'Building PDF with {nentries} entries')
 
+        # This is the safest padding
+        kwargs['padding'] = {'lowermirror': 1.0, 'uppermirror': 1.0}
+
         if nentries < self._min_isj_entries:
             log.info('Using FFT KDE for low statistics sample')
             pdf      = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
