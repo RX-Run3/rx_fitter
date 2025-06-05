@@ -3,12 +3,11 @@ Module with tests for the PRec class
 '''
 
 import os
-import ROOT
-import zfit
 import mplhep
 import pytest
 import matplotlib.pyplot as plt
 
+from dmu.stats.zfit         import zfit
 from dmu.stats.utilities    import print_pdf
 from dmu.stats.zfit_plotter import ZFitPlotter
 from dmu.logging.log_store  import LogStore
