@@ -44,6 +44,10 @@ def _plot_weight(arr_wgt, label : str, linestyle : str):
     plt.hist(arr_wgt, bins=30, label=label, histtype='step', linestyle=linestyle)
 #-----------------------------------------------
 def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
+    if pdf is None:
+        log.warning(f'PDF {name} not build, not plotting')
+        return
+
     arr_mass = pdf.arr_mass
     arr_wgt  = pdf.arr_wgt
     arr_sam  = pdf.arr_sam
