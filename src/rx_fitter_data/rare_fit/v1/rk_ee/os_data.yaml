@@ -1,7 +1,7 @@
 input :
   sample     : DATA*
   trigger    : Hlt2RD_BuToKpEE_MVA
-  observable : B_M_smr_brem_track_2
+  observable : B_Mass 
   minx       : 4500
   maxx       : 6900
   nbins      : 30 
