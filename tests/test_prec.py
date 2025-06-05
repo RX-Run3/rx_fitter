@@ -176,7 +176,20 @@ def test_fit():
     title=f'$q^2$: {q2}, both weights'
     _plot_pdf(pdf, test, 'both_weights', maxy=maxy, title=title)
 
-    sut.print_pdf(pdf)
+    nev = zfit.Parameter('nev', 0, 0, 10_000)
+    pdf.set_yield(nev)
+
+    sam = pdf.create_sampler(n=1000)
+
+    obj = Fitter(pdf, sam)
+    res = obj.fit()
+
+    sut.save_fit(
+            data   =sam,
+            model  =pdf,
+            res    =res,
+            fit_dir=f'{Data.out_dir}/{test}',
+            d_const={})
 #-----------------------------------------------
 @pytest.mark.parametrize('bdt_cut, name', [
     ('mva.mva_prc > 0.0 && mva.mva_cmb > 0.0', '0p0'),
