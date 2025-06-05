@@ -389,11 +389,12 @@ class PRec:
 
         arr_mass     = df[mass].to_numpy()
         nentries     = len(arr_mass)
+        name         = kwargs['name']
         if nentries < self._min_entries:
-            log.warning(f'Found fewer than {self._min_entries}: {nentries}, skipping PDF')
+            log.warning(f'Found fewer than {self._min_entries}: {nentries}, skipping PDF {name}')
             return None
 
-        log.info(f'Building PDF with {nentries} entries')
+        log.info(f'Building PDF with {nentries} entries for {name}')
 
         # This is the safest padding
         kwargs['padding'] = {'lowermirror': 1.0, 'uppermirror': 1.0}
