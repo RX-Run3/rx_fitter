@@ -79,6 +79,9 @@ class PRec:
         df           = pnd.concat(d_df.values(), axis=0)
         df           = self._add_sam_weights(df)
 
+        if len(df) == 0:
+            return df
+
         arr_wgt      = df.wgt_dec.to_numpy() * df.wgt_sam.to_numpy()
         df['wgt_br'] = self._normalize_weights(arr_wgt)
 
@@ -383,8 +386,13 @@ class PRec:
             log.info(f'Cached PDF found, loading: {cache_path}')
             log.debug(f'Cut: {cut}')
             df = pnd.read_json(cache_path)
+            if len(self._df) == 0:
+                return None
         else:
             self._initialize()
+            if len(self._df) == 0:
+                return None
+
             log.info('Cached PDF not found, calculating it')
             df = self._filter_cut(cut)
             df = self._filter_mass(df, mass, kwargs['obs'])
