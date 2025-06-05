@@ -2,11 +2,12 @@ input :
   sample     : DATA*
   trigger    : Hlt2RD_BuToKpEE_MVA
   observable : B_Mass 
-  minx       : 4500
+  minx       : 4600
   maxx       : 6900
   nbins      : 30 
   selection :
     bdt : mva_cmb > 0.6 && mva_prc > 0.8
+    blk : block > 0
 components:
   signal     : Bu_Kee_eq_btosllball05_DPC
   #signal     : parametric
