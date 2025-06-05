@@ -218,7 +218,7 @@ def _add_ccbar_prc() -> None:
 # --------------------------
 @gut.timeit
 def _get_pdf() -> zpdf:
-    d_bkg = Data.comp['background']
+    d_bkg = Data.comp['background'][Data.q2bin]
     for component, kind in d_bkg.items():
         if kind == 'prc':
             _add_pdf_prc(sample=component)
