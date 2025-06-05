@@ -87,29 +87,36 @@ def _set_selection(d_cut : dict[str,str]) -> None:
     sel.reset_custom_selection()
     sel.set_custom_selection(d_cut = d_cut)
 #-----------------------------------------------
-@pytest.mark.parametrize('q2bin', ['jpsi', 'psi2', 'high'])
+@pytest.mark.parametrize('q2bin', ['central', 'jpsi', 'psi2', 'high'])
 def test_reso(q2bin : str):
     '''
     Tests PRec building in resonant bins
     '''
     trig   = 'Hlt2RD_BuToKpEE_MVA'
 
-    mass   = {'jpsi' : 'B_const_mass_M',
-              'psi2' : 'B_const_mass_psi2S_M',
-              'high' : 'B_Mass'}[q2bin]
+    mass   = {
+            'central' : 'B_Mass',
+            'jpsi'    : 'B_const_mass_M',
+            'psi2'    : 'B_const_mass_psi2S_M',
+            'high'    : 'B_Mass'}[q2bin]
 
     label  = {
-            'jpsi' :r'$M_{DTF}(K^+e^+e^-)$',
-            'psi2' :r'$M_{DTF}(K^+e^+e^-)$',
-            'high' :r'$M(K^+e^+e^-)$'}[q2bin]
+            'central' :r'$M(K^+e^+e^-)$',
+            'jpsi'    :r'$M_{DTF}(K^+e^+e^-)$',
+            'psi2'    :r'$M_{DTF}(K^+e^+e^-)$',
+            'high'    :r'$M(K^+e^+e^-)$'}[q2bin]
 
-    maxy   = {'jpsi' : 10_000,
-              'psi2' :  2_000,
-              'high' :    150}[q2bin]
+    maxy   = {
+            'central' : 1000,
+            'jpsi'    : 10_000,
+            'psi2'    :  2_000,
+            'high'    :    150}[q2bin]
 
-    q2     = {'jpsi' : r'$J/\psi$',
-              'psi2' : r'\psi(2S)',
-              'high' : r'High'}[q2bin]
+    q2     = {
+            'central' : 'Central',
+            'jpsi'    : r'$J/\psi$',
+            'psi2'    : r'\psi(2S)',
+            'high'    : r'High'}[q2bin]
 
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
