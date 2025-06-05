@@ -49,7 +49,9 @@ def _plot_pdf(pdf, test : str, name : str, maxy : str, title : str):
     arr_dec  = pdf.arr_dec
 
     obj = ZFitPlotter(data=arr_mass, model=pdf, weights=arr_wgt)
-    obj.plot(stacked=True, ext_text=f'#Entries: {arr_mass.size}')
+    obj.plot(stacked=True)
+
+    obj.axs[0].set_title(f'#Entries: {arr_mass.size}')
     obj.axs[0].set_ylim(bottom=0, top=maxy)
     obj.axs[0].axvline(x=5080, linestyle=':')
     obj.axs[0].axvline(x=5680, linestyle=':')
