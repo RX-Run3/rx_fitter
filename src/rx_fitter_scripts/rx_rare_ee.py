@@ -212,6 +212,10 @@ def _add_ccbar_prc() -> None:
     obp=PRec(samples=l_samp, trig=Data.trigger, q2bin=Data.q2bin, d_weight=d_wgt)
     pdf=obp.get_sum(mass=Data.mass, name=r'$c\bar{c}$', obs=Data.obs)
 
+    if pdf is None:
+        log.info('No PDF retrieved, will skip this component')
+        return
+
     PRec.plot_pdf(
             pdf     =pdf,
             name    ='prc',
