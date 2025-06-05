@@ -84,15 +84,25 @@ def _set_selection(d_cut : dict[str,str]) -> None:
     sel.reset_custom_selection()
     sel.set_custom_selection(d_cut = d_cut)
 #-----------------------------------------------
-@pytest.mark.parametrize('q2bin', ['jpsi', 'psi2'])
+@pytest.mark.parametrize('q2bin', ['jpsi', 'psi2', 'high'])
 def test_reso(q2bin : str):
     '''
     Tests PRec building in resonant bins
     '''
     obs=zfit.Space('mass', limits=(4500, 6000))
     trig   = 'Hlt2RD_BuToKpEE_MVA'
-    mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
-    maxy   = {'jpsi' : 10_000          , 'psi2' :                  2_000}[q2bin]
+    mass   = {'jpsi' : 'B_const_mass_M',
+              'psi2' : 'B_const_mass_psi2S_M',
+              'high' : 'B_Mass'}[q2bin]
+
+    maxy   = {'jpsi' : 10_000,
+              'psi2' :  2_000,
+              'high' :  2_000}[q2bin]
+
+    q2     = {'jpsi' : r'$J/\psi$',
+              'psi2' : r'\psi(2S)',
+              'high' : r'High'}[q2bin]
+
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
             'Bd_JpsiX_ee_eq_JpsiInAcc',
@@ -100,7 +110,6 @@ def test_reso(q2bin : str):
             ]
 
     test = f'reso/{q2bin}'
-    q2   = {'jpsi' : r'$J/\psi$', 'psi2' : r'\psi(2S)'}[q2bin]
 
     d_wgt= {'dec' : 0, 'sam' : 0}
     obp_4=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
