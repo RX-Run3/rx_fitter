@@ -40,6 +40,7 @@ class Data:
     '''
     Data class
     '''
+    fit_dir      : str
     dry_run      : bool
     cfg_name     : str
     q2bin        : str
@@ -210,6 +211,12 @@ def _add_ccbar_prc() -> None:
 
     obp=PRec(samples=l_samp, trig=Data.trigger, q2bin=Data.q2bin, d_weight=d_wgt)
     pdf=obp.get_sum(mass=Data.mass, name=r'$c\bar{c}$', obs=Data.obs)
+
+    PRec.plot_pdf(
+            pdf     =pdf,
+            name    ='prc',
+            title   =f'{Data.q2bin}',
+            out_dir =f'{Data.fit_dir}/ccbar_prc')
 
     nccbar = zfit.Parameter('nccbar', 0, 0, 10_000)
     pdf.set_yield(nccbar)
