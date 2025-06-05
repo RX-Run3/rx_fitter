@@ -478,4 +478,65 @@ class PRec:
         pdf.arr_sam  = numpy.concatenate(l_arr_sam )
 
         return pdf
+    #-----------------------------------------------------------
+    @staticmethod
+    def plot_pdf(
+            pdf     : zpdf,
+            name    : str,
+            title   : str,
+            maxy    : float,
+            out_dir : str) -> None:
+        '''
+        Utility method, meant to plot PDF after it was built
+
+        Parameters
+        ------------------
+        pdf    : PDF
+        neme   : used to name the PNG file as {name}.png
+        title  : Title for plots, will be appended after number of entries
+        maxy   : Will be used to plot fit properly in case labels overlap
+        out_dir: Directory where plots will go
+        '''
+
+        if pdf is None:
+            log.warning(f'PDF {name} not build, not plotting')
+            return
+
+        arr_mass = pdf.arr_mass
+        arr_wgt  = pdf.arr_wgt
+        arr_sam  = pdf.arr_sam
+        arr_dec  = pdf.arr_dec
+
+        obj = ZFitPlotter(data=arr_mass, model=pdf, weights=arr_wgt)
+        obj.plot(stacked=True)
+
+        obj.axs[0].set_title(f'#Entries: {arr_mass.size}; {title}')
+        obj.axs[0].set_ylim(bottom=0, top=maxy)
+        obj.axs[0].axvline(x=5080, linestyle=':')
+        obj.axs[0].axvline(x=5680, linestyle=':')
+        obj.axs[0].axvline(x=5280, label=r'$B^+$', color='gray', linestyle='--')
+
+        obj.axs[1].set_ylim(-5, +5)
+        obj.axs[1].axhline(y=-3, color='red')
+        obj.axs[1].axhline(y=+3, color='red')
+        obj.axs[1].set_label('M$(B^+)$[MeV/${}_{c^2}$]')
+
+        os.makedirs(out_dir, exist_ok=True)
+
+        plot_path = f'{out_dir}/{name}.png'
+        log.info(f'Saving to: {plot_path}')
+        plt.savefig(plot_path)
+        plt.close('all')
+
+        plt.hist(arr_sam, bins=30, label='sample', histtype='step', linestyle='-' )
+        plt.hist(arr_dec, bins=30, label='decay' , histtype='step', linestyle='--')
+        plt.hist(arr_wgt, bins=30, label='Total' , histtype='step', linestyle=':' )
+
+        plt.legend()
+        plt.title(title)
+        plt.savefig(f'{out_dir}/{name}_wgt.png')
+        plt.close('all')
+
+        text_path = plot_path.replace('png', 'txt')
+        sut.print_pdf(pdf, txt_path=text_path)
 #-----------------------------------------------------------
