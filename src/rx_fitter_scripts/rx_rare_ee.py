@@ -198,7 +198,7 @@ def _add_pdf_mid() -> None:
 # --------------------------
 def _add_ccbar_prc() -> None:
     log.info(30 * '-')
-    log.info('Adding ccbar part reco component')
+    log.info('Adding ccbar Part reco component')
     log.info(30 * '-')
 
     d_wgt  = {'dec' : 1, 'sam' : 1}
