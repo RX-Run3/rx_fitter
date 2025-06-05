@@ -6,18 +6,19 @@ import copy
 import json
 from typing   import Union
 
-from ROOT     import RDataFrame
-import zfit
 import numpy
 import pandas as pnd
+
+from dmu.stats.zfit        import zfit
+from dmu.generic           import hashing
+from dmu.stats.utilities   import is_pdf_usable
+from dmu.logging.log_store import LogStore
 
 from zfit.core.parameter   import Parameter as zpar
 from zfit.core.basepdf     import BasePDF   as zpdf
 from rx_selection          import selection as sel
 from rx_data.rdf_getter    import RDFGetter
-from dmu.generic           import hashing
-from dmu.stats.utilities   import is_pdf_usable
-from dmu.logging.log_store import LogStore
+from ROOT                  import RDataFrame
 
 from rx_fitter.inclusive_decays_weights import Reader as inclusive_decays_weights
 from rx_fitter.inclusive_sample_weights import Reader as inclusive_sample_weights
