@@ -386,7 +386,7 @@ class PRec:
             log.info(f'Cached PDF found, loading: {cache_path}')
             log.debug(f'Cut: {cut}')
             df = pnd.read_json(cache_path)
-            if len(self._df) == 0:
+            if len(df) == 0:
                 return None
         else:
             self._initialize()
