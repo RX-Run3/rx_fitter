@@ -49,7 +49,7 @@ class PRec:
         self._d_fstat  = {}
 
         self._d_match     = self._get_match_str()
-        self._l_mass      = ['B_M', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
+        self._l_mass      = ['B_Mass', 'B_const_mass_M', 'B_const_mass_psi2S_M', 'B_M_brem_track_2']
         self._initialized = False
     #-----------------------------------------------------------
     def _initialize(self):
