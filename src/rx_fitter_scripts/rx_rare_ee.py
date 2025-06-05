@@ -27,6 +27,7 @@ from zfit.core.interfaces        import ZfitSpace  as zobs
 from zfit.core.parameter         import Parameter  as zpar
 from zfit.result                 import FitResult  as zres
 
+from rx_fitter.prec              import PRec
 from rx_misid.misid_pdf          import MisIdPdf
 from rx_data.rdf_getter          import RDFGetter
 from rx_selection                import selection  as sel
@@ -191,6 +192,19 @@ def _add_pdf_mid() -> None:
 
     Data.l_pdf.append(pdf)
 # --------------------------
+def _add_ccbar_prc() -> None:
+    d_wgt  = {'dec' : 1, 'sam' : 1}
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
+
+    obp=PRec(samples=l_samp, trig=Data.trigger, q2bin=Data.q2bin, d_weight=d_wgt)
+    pdf=obp.get_sum(mass=Data.mass, name=r'$c\bar{c}$', obs=Data.obs)
+
+    Data.l_pdf.append(pdf)
+# --------------------------
 @gut.timeit
 def _get_pdf() -> zpdf:
     d_bkg = Data.comp['background']
@@ -205,6 +219,10 @@ def _get_pdf() -> zpdf:
 
         if kind == 'parametric' and component == 'combinatorial':
             _add_pdf_cmb()
+            continue
+
+        if kind == 'ccbar_prc':
+            _add_ccbar_prc()
             continue
 
         raise ValueError(f'Invalid component/kind: {component}/{kind}')
