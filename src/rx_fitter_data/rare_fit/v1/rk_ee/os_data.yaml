@@ -12,12 +12,12 @@ components:
   #signal     : parametric
   background :
     combinatorial                     : parametric
+    ccbar_prc                         : ccbar_prc 
     Bu_JpsiK_ee_eq_DPC                : leak
     Bu_psi2SK_ee_eq_DPC               : leak
     Bu_Kstee_Kpi0_eq_btosllball05_DPC : prc
     Bd_Kstee_eq_btosllball05_DPC      : prc
     Bs_phiee_eq_Ball_DPC              : prc
-    ccbar_prc                         : ccbar_prc 
   misid:
     version : v1
 nbrem:
