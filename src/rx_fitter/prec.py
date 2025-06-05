@@ -209,7 +209,7 @@ class PRec:
         bp_ex       = f'(abs(B_TRUEID) == 521) & ({neg_bp_psjp})'
 
         d_cut       = {}
-        d_cut[r'$B^+\to \psi(2S)(\to J/\psi X)H_{s}$'] = bp_psjp
+        d_cut[r'$B^+\to \psi(2S)(\to J/\psi+X)H_{s}$'] = bp_psjp
         d_cut[r'$B^+\to c\bar{c}(\to ee)H_s$']         = bp_ex
         d_cut[r'$B_d\to c\bar{c}(\to ee)H_s$']         = bd
         d_cut[r'$B_s\to c\bar{c}(\to ee)H_s$']         = bs
