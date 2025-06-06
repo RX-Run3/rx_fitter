@@ -13,7 +13,9 @@ fitting:
         nbins: 30
         stacked: true
     Bu_psi2SK_ee_eq_DPC:
+      model  : Exact 
       cfg_kde:
+        bandwidth : 30
         padding:
           lowermirror: 0.5
           uppermirror: 0.5
