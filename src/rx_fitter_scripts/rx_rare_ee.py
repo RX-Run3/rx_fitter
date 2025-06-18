@@ -59,9 +59,9 @@ class Data:
     obs          : zobs
     l_pdf        : list[zpdf]
 
-    gut.TIMER_ON : bool       = True
+    gut.TIMER_ON              = True
     log_level    : int        = 20
-    version      : str        = 'v1'
+    version      : str        = 'v2'
     nsig         : zpar       = zfit.Parameter('nsig', 0, 0, 10_000)
     # --------------------------------
     @staticmethod
