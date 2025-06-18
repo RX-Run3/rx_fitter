@@ -1,0 +1,42 @@
+brem:
+  0: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 0
+  1: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) == 1
+  2: int(L1_HASBREMADDED_brem_track_2) + int(L2_HASBREMADDED_brem_track_2) >= 2
+fitting:
+  config:
+    Bu_Kee_eq_btosllball05_DPC:
+      cfg_kde:
+        padding:
+          lowermirror: 0.5
+          uppermirror: 0.5
+      plotting:
+        nbins: 30
+        stacked: true
+    Bd_Kstee_eq_btosllball05_DPC:
+      cfg_kde:
+        padding:
+          lowermirror: 0.5
+          uppermirror: 0.5
+      plotting:
+        nbins: 30
+        stacked: true
+    Bu_Kstee_Kpi0_eq_btosllball05_DPC:
+      cfg_kde:
+        padding:
+          lowermirror: 0.5
+          uppermirror: 0.5
+      plotting:
+        nbins: 30
+        stacked: true
+    Bs_phiee_eq_Ball_DPC:
+      cfg_kde:
+        padding:
+          lowermirror: 0.5
+          uppermirror: 0.5
+      plotting:
+        nbins: 30
+        stacked: true
+input:
+  trigger: Hlt2RD_BuToKpEE_MVA
+output:
+  out_dir: /home/acampove/external_ssd/fits/data/
