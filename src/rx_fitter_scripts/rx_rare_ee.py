@@ -61,7 +61,7 @@ class Data:
 
     gut.TIMER_ON              = True
     log_level    : int        = 20
-    version      : str        = 'v2'
+    version      : str        = 'v1'
     nsig         : zpar       = zfit.Parameter('nsig', 0, 0, 10_000)
     # --------------------------------
     @staticmethod
@@ -467,8 +467,8 @@ def main():
     Anything global, cuts, variable definitions, dataset definitions
     goes here
     '''
-    with RDFGetter.custom_friends(versions={'mva' : 'v5'}):
-        _run()
+    #with RDFGetter.custom_friends(versions={'mva' : 'v5'}):
+    _run()
 # --------------------------
 if __name__ == '__main__':
     main()
