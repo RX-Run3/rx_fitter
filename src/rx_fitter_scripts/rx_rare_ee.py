@@ -439,10 +439,7 @@ def _plot_fit(data : zdata, pdf : zpdf):
         plt.savefig(f'{Data.fit_dir}/fit_{kind}.png')
         plt.close()
 # --------------------------
-def main():
-    '''
-    Start here
-    '''
+def _run():
     _parse_args()
     _initialize()
 
@@ -463,6 +460,15 @@ def main():
             d_const=d_cns)
 
     _plot_fit(data=data, pdf=pdf)
+# --------------------------
+def main():
+    '''
+    This fuction will start the fit
+    Anything global, cuts, variable definitions, dataset definitions
+    goes here
+    '''
+    with RDFGetter.custom_friends(versions={'mva' : 'v5'}):
+        _run()
 # --------------------------
 if __name__ == '__main__':
     main()
