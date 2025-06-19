@@ -394,7 +394,7 @@ class PRec:
             if len(self._df) == 0:
                 return None
 
-            if PRec.use_cache
+            if PRec.use_cache:
                 log.info('Cached PDF not found, calculating it')
             else:
                 log.warning('Caching turned off, recalculating PDF')
