@@ -21,8 +21,8 @@ from dmu.stats.fitter            import Fitter
 from dmu.stats.fit_stats         import FitStats
 from dmu.stats                   import utilities  as stat_utilities
 
-from zfit.core.data              import Data       as zdata
-from zfit.core.basepdf           import BasePDF    as zpdf
+from zfit.core.interfaces        import ZfitData   as zdata
+from zfit.core.interfaces        import ZfitPDF    as zpdf
 from zfit.core.interfaces        import ZfitSpace  as zobs
 from zfit.core.parameter         import Parameter  as zpar
 from zfit.result                 import FitResult  as zres
