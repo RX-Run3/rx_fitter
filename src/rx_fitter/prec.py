@@ -394,7 +394,11 @@ class PRec:
             if len(self._df) == 0:
                 return None
 
-            log.info('Cached PDF not found, calculating it')
+            if PRec.use_cache
+                log.info('Cached PDF not found, calculating it')
+            else:
+                log.warning('Caching turned off, recalculating PDF')
+
             df = self._filter_cut(cut)
             df = self._filter_mass(df, mass, kwargs['obs'])
             log.info(f'Using mass: {mass} for component {kwargs["name"]}')
