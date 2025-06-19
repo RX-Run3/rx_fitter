@@ -383,7 +383,7 @@ class PRec:
         identifier = self._get_identifier(mass, cut, **kwargs)
         cache_path = self._path_from_identifier(identifier)
 
-        if os.path.isfile(cache_path):
+        if os.path.isfile(cache_path) and PRec.use_cache:
             log.warning(f'Cached PDF found, loading: {cache_path}')
             log.debug(f'Cut: {cut}')
             df = pnd.read_json(cache_path)
