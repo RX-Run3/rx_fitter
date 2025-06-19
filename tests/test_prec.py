@@ -50,10 +50,11 @@ def test_reso(q2bin : str):
     trig   = 'Hlt2RD_BuToKpEE_MVA'
 
     mass   = {
-            'central' : 'B_Mass',
+            'low'     : 'B_Mass_smr',
+            'central' : 'B_Mass_smr',
             'jpsi'    : 'B_const_mass_M',
             'psi2'    : 'B_const_mass_psi2S_M',
-            'high'    : 'B_Mass'}[q2bin]
+            'high'    : 'B_Mass_smr'}[q2bin]
 
     label  = {
             'central' :r'$M(K^+e^+e^-)$',
@@ -117,9 +118,9 @@ def test_fit():
     '''
     q2bin  = 'high'
     trig   = 'Hlt2RD_BuToKpEE_MVA'
-    mass   = 'B_Mass'
+    mass   = 'B_Mass_smr'
     label  = r'$M(K^+e^+e^-)$'
-    maxy   = 150
+    maxy   = 250
     q2     = 'High'
     l_samp = [
             'Bu_JpsiX_ee_eq_JpsiInAcc',
@@ -255,7 +256,7 @@ def test_extended():
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp=PRec(samples=l_samp, trig=trig, q2bin='jpsi', d_weight=d_wgt)
-    pdf=obp.get_sum(mass='B_Mass', name='PRec_1', obs=obs)
+    pdf=obp.get_sum(mass='B_Mass_smr', name='PRec_1', obs=obs)
 
     assert pdf.is_extended is False
 #-----------------------------------------------
@@ -275,7 +276,7 @@ def test_low_stats():
 
     d_wgt= {'dec' : 1, 'sam' : 1}
     obp=PRec(samples=l_samp, trig=trig, q2bin='high', d_weight=d_wgt)
-    pdf=obp.get_sum(mass='B_Mass', name='PRec_1', obs=obs)
+    pdf=obp.get_sum(mass='B_Mass_smr', name='PRec_1', obs=obs)
 
     PRec.plot_pdf(pdf, name='pdf', title='', out_dir=f'{Data.out_dir}/low_stats')
 #-----------------------------------------------
