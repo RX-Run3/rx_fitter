@@ -67,5 +67,3 @@ fitting:
     - 6000
 input:
   trigger: Hlt2RD_BuToKpEE_MVA
-output:
-  out_dir: /home/acampove/external_ssd/fits/mc/jpsi # The fits used to fix tails come from fits to unconstrained brem corrected mass in jpsi bin

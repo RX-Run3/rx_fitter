@@ -38,5 +38,3 @@ fitting:
         stacked: true
 input:
   trigger: Hlt2RD_BuToKpEE_MVA
-output:
-  out_dir: /home/acampove/external_ssd/fits/data/

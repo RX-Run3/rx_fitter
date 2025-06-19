@@ -39,5 +39,3 @@ input:
   selection:
     mass: B_const_mass_M > 5160
   trigger: Hlt2RD_BuToKpEE_MVA
-output:
-  out_dir: /tmp/tests/rx_fitter/components

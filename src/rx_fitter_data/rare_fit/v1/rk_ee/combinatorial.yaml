@@ -11,5 +11,3 @@ q2:
 plotting:
   nbins: 30
   stacked: true
-output:
-  out_dir: /tmp/tests/rx_fitter/components/combinatorial
