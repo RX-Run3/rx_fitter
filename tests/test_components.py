@@ -69,9 +69,8 @@ def _get_fitting_range(kind : str) -> dict[str,list[int]]:
 
     return {f'B_M_{kind}' : [4500, 6000]}
 # --------------------------------------------------------------
-def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
-    l_cut    = [ cfg['brem'][nbrem] for nbrem in l_brem ]
-    l_cut    = [ f'({cut})'         for cut   in l_cut  ]
+def _set_brem_category(l_brem : list[int]) -> None:
+    l_cut    = [ f'(nbrem == {nbrem})' for nbrem in l_brem ]
     brem_cut = ' || '.join(l_cut)
 
     log.info(f'Overriding selection with: {brem_cut}')
