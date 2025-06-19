@@ -247,7 +247,7 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
     Test B(u,d,s) -> K*ee
     '''
     log.info('')
-    cfg                     = _load_config(test='bxhsee')
+    cfg       = _load_config(test='bxhsee')
     _set_brem_category(l_brem=nbrem, cfg=cfg)
     nbrem_str = [ str(elm) for elm in nbrem ]
     brem_name = '_'.join(nbrem_str)
