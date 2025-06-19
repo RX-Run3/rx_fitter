@@ -115,6 +115,7 @@ def _parse_args():
 # --------------------------------------------------------------
 def _load_config(component : str) -> dict:
     cfg_path = files('rx_fitter_data').joinpath(f'rare_fit/{Data.version}/rk_ee/{component}.yaml')
+    cfg_path = str(cfg_path)
     with open(cfg_path, encoding='utf-8') as ifile:
         cfg = yaml.safe_load(ifile)
 
