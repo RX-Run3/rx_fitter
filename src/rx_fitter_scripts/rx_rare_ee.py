@@ -132,7 +132,7 @@ def _add_pdf_cmb() -> None:
     cfg['output'] = {'out_dir' : f'{Data.fit_dir}/combinatorial'}
 
     pdf  = cmp.get_cb(obs=Data.obs, q2bin=Data.q2bin, cfg=cfg)
-    ncmb = zfit.Parameter('ncmb', 1000, 0, 20_000)
+    ncmb = zfit.Parameter('ncmb', 1000, 0, 100_000)
     pdf  = pdf.create_extended(ncmb)
 
     Data.l_pdf.append(pdf)
@@ -227,7 +227,7 @@ def _add_ccbar_prc() -> None:
             title   =f'{Data.q2bin}',
             out_dir =f'{Data.fit_dir}/ccbar_prc')
 
-    nccbar = zfit.Parameter('nccbar', 0, 0, 10_000)
+    nccbar = zfit.Parameter('nccbar', 0, 0, 100_000)
     pdf.set_yield(nccbar)
 
     Data.l_pdf.append(pdf)
