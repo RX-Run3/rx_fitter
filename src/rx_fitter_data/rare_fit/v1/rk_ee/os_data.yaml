@@ -2,15 +2,16 @@ input :
   sample     : DATA*
   trigger    : Hlt2RD_BuToKpEE_MVA
   observable : B_Mass_smr
-  minx       : 4600
+  minx       : 4500
   maxx       : 6900
   nbins      : 30
+  #nbins      : 72 
   selection :
-    #q2  : q2_dtf > 1100000 && q2_dtf < 6000000
-    #q2  : q2_track > 14300000 && q2_track < 22000000 && q2 < 22000000
+    q2  : q2      > 15000000 && q2 < 22000000 
     #bdt : mva_cmb > 0.8 && mva_prc > 0.8
-    bdt : mva_cmb > 0.6 && mva_prc > 0.8
-    blk : block > 0
+    bdt  : mva_cmb > 0.9 && mva_prc > 0.9
+    blk  : block > 0
+    mass : (1)
 components:
   signal     : Bu_Kee_eq_btosllball05_DPC
   #signal     : parametric
@@ -30,7 +31,7 @@ components:
       Bs_phiee_eq_Ball_DPC              : prc
     high:
       combinatorial                     : parametric
-      ccbar_prc                         : ccbar_prc
+      #ccbar_prc                         : ccbar_prc
       Bu_JpsiK_ee_eq_DPC                : leak
       Bu_psi2SK_ee_eq_DPC               : leak
       Bu_Kstee_Kpi0_eq_btosllball05_DPC : prc
@@ -40,7 +41,6 @@ components:
     version : v1
 nbrem:
   low :
-    - 0
     - 1
     - 2
   central:
