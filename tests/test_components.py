@@ -69,6 +69,15 @@ def _get_fitting_range(kind : str) -> dict[str,list[int]]:
 
     return {f'B_M_{kind}' : [4500, 6000]}
 # --------------------------------------------------------------
+def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
+    l_cut    = [ cfg['brem'][nbrem] for nbrem in l_brem ]
+    l_cut    = [ f'({cut})'         for cut   in l_cut  ]
+    brem_cut = ' || '.join(l_cut)
+
+    log.info(f'Overriding selection with: {brem_cut}')
+
+    sel.set_custom_selection(d_cut = {'brem' : brem_cut})
+# --------------------------------------------------------------
 @pytest.mark.parametrize('nbrem', [0, 1, 2])
 @pytest.mark.parametrize('kind' , ['brem_track_2'])
 @pytest.mark.parametrize('mass' , [Data.mass])
@@ -306,13 +315,4 @@ def test_jpsi_leakage():
 
     obs = zfit.Space(mass, limits=(4500, 6000))
     cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
-# --------------------------------------------------------------
-def _set_brem_category(l_brem : list[int], cfg : dict) -> None:
-    l_cut    = [ cfg['brem'][nbrem] for nbrem in l_brem ]
-    l_cut    = [ f'({cut})'         for cut   in l_cut  ]
-    brem_cut = ' || '.join(l_cut)
-
-    log.info(f'Overriding selection with: {brem_cut}')
-
-    sel.set_custom_selection(d_cut = {'brem' : brem_cut})
 # --------------------------------------------------------------
