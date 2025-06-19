@@ -62,7 +62,7 @@ def _get_brem_cut(nbrem : int, kind : str) -> str:
 
     return cut
 # --------------------------------------------------------------
-def _get_fitting_range(kind : str) -> dict[str:list[int]]:
+def _get_fitting_range(kind : str) -> dict[str,list[int]]:
     if kind is None:
         return {Data.mass : [4500, 6000]}
 
@@ -173,7 +173,7 @@ def test_mc_reparametrized(mass : str, name : str):
 @pytest.mark.parametrize('name'   , ['Signal'])
 @pytest.mark.parametrize('kind'   , ['signal'])
 @pytest.mark.parametrize('l_nbrem', [[0], [1], [2], [1,2], [0,1,2]])
-def test_mc_brem_reparametrized(mass : str, name : str, kind : str, l_nbrem : list[str]):
+def test_mc_brem_reparametrized(mass : str, name : str, kind : str, l_nbrem : list[int]):
     '''
     Test building full signal PDF for electron channel with Brem reparametrization
     '''
