@@ -206,11 +206,11 @@ def test_prec_brem(mass : str, nbrem : list[int], q2bin : str):
     '''
     log.info('')
 
-    cfg                      = _load_config('prec')
-    _set_brem_category(l_brem=nbrem, cfg=cfg)
+    _set_brem_category(l_brem=nbrem)
     nbrem_str = [ str(elm) for elm in nbrem ]
     brem_name = '_'.join(nbrem_str)
 
+    cfg                      = _load_config('prec')
     cfg['input']['q2bin']    = q2bin
     cfg['output']['out_dir'] = f'{Data.out_dir}/prec/{mass}/{q2bin}/{brem_name}'
 
@@ -246,11 +246,11 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
     Test B(u,d,s) -> K*ee
     '''
     log.info('')
-    cfg       = _load_config(test='bxhsee')
-    _set_brem_category(l_brem=nbrem, cfg=cfg)
+    _set_brem_category(l_brem=nbrem)
     nbrem_str = [ str(elm) for elm in nbrem ]
     brem_name = '_'.join(nbrem_str)
 
+    cfg                   = _load_config(test='bxhsee')
     cfg['input']['q2bin'] = q2bin
     cfg['output']         = {'out_dir' : f'{Data.out_dir}/bxhsee_{brem_name}'}
 
@@ -278,12 +278,12 @@ def test_cc_leakage(
     Builds KDE for leaked ccbar component
     '''
     log.info('')
-    cfg                      = _load_config(test='ccbar_leak')
-    _set_brem_category(l_brem=nbrem, cfg=cfg)
+    _set_brem_category(l_brem=nbrem)
 
     nbrem_str = [ str(elm) for elm in nbrem ]
     brem_name = '_'.join(nbrem_str)
 
+    cfg                      = _load_config(test='ccbar_leak')
     cfg['input']['q2bin']    = q2bin
     cfg['output']['out_dir'] = f'{Data.out_dir}/leakage_{brem_name}'
 
