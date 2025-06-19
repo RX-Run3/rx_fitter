@@ -279,3 +279,27 @@ def test_low_stats():
 
     PRec.plot_pdf(pdf, name='pdf', title='', out_dir=f'{Data.out_dir}/low_stats')
 #-----------------------------------------------
+def test_apply_settings():
+    '''
+    Will test context manager used to override behavior
+    '''
+    q2bin  = 'jpsi'
+
+    obs=zfit.Space('mass', limits=(4500, 6000))
+    trig   = 'Hlt2RD_BuToKpEE_MVA'
+    mass   = {'jpsi' : 'B_const_mass_M', 'psi2' : 'B_const_mass_psi2S_M'}[q2bin]
+    maxy   = {'jpsi' : 20_000          , 'psi2' :                  4_000}[q2bin]
+    l_samp = [
+            'Bu_JpsiX_ee_eq_JpsiInAcc',
+            'Bd_JpsiX_ee_eq_JpsiInAcc',
+            'Bs_JpsiX_ee_eq_JpsiInAcc',
+            ]
+
+    test = f'no_cache/{q2bin}'
+
+    d_wgt= {'dec' : 1, 'sam' : 1}
+    with PRec.apply_setting(use_cache=False):
+        obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
+        pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
+        PRec.plot_pdf(pdf, 'cache', maxy=maxy, title='no cache test', out_dir=f'{Data.out_dir}/{test}')
+
