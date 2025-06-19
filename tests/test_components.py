@@ -32,6 +32,7 @@ def _intialize():
 # --------------------------------------------------------------
 def _load_config(test : str) -> dict:
     cfg_path = files('rx_fitter_data').joinpath(f'rare_fit/v1/rk_ee/{test}.yaml')
+    cfg_path = str(cfg_path)
     with open(cfg_path, encoding='utf-8') as ifile:
         cfg = yaml.safe_load(ifile)
 
@@ -199,8 +200,8 @@ def test_prec_brem(mass : str, nbrem : list[int], q2bin : str):
 
     cfg                      = _load_config('prec')
     _set_brem_category(l_brem=nbrem, cfg=cfg)
-    nbrem     = [ str(elm) for elm in nbrem ]
-    brem_name = '_'.join(nbrem)
+    nbrem_str = [ str(elm) for elm in nbrem ]
+    brem_name = '_'.join(nbrem_str)
 
     cfg['input']['q2bin']    = q2bin
     cfg['output']['out_dir'] = f'{Data.out_dir}/prec/{mass}/{q2bin}/{brem_name}'
@@ -272,8 +273,8 @@ def test_cc_leakage(
     cfg                      = _load_config(test='ccbar_leak')
     _set_brem_category(l_brem=nbrem, cfg=cfg)
 
-    nbrem     = [ str(elm) for elm in nbrem ]
-    brem_name = '_'.join(nbrem)
+    nbrem_str = [ str(elm) for elm in nbrem ]
+    brem_name = '_'.join(nbrem_str)
 
     cfg['input']['q2bin']    = q2bin
     cfg['output']['out_dir'] = f'{Data.out_dir}/leakage_{brem_name}'
