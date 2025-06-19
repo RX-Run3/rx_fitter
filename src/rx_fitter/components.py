@@ -14,7 +14,6 @@ from zfit.core.basepdf                           import BasePDF   as zpdf
 from ROOT                                        import RDataFrame, RDF
 from dmu.stats.model_factory                     import ModelFactory
 from dmu.logging.log_store                       import LogStore
-from dmu.generic                                 import hashing
 from dmu.generic                                 import utilities as gut
 
 from rx_selection                                import selection as sel
@@ -210,7 +209,7 @@ def get_cb(obs : zobs, q2bin : str, cfg : dict) -> zpdf:
     kind        = cfg['q2'][q2bin]['model']
     cfg['name'] = 'Combinatorial'
 
-    d_fix = None
+    d_fix : dict[str,float] = {}
     if 'fix' in cfg['q2'][q2bin]:
         d_fix= cfg['q2'][q2bin]['fix']
 
