@@ -239,11 +239,11 @@ def test_bxhsee(nbrem : list[int], q2bin : str, sample : str):
     log.info('')
     cfg                     = _load_config(test='bxhsee')
     _set_brem_category(l_brem=nbrem, cfg=cfg)
-    nbrem     = [ str(elm) for elm in nbrem ]
-    brem_name = '_'.join(nbrem)
+    nbrem_str = [ str(elm) for elm in nbrem ]
+    brem_name = '_'.join(nbrem_str)
 
-    cfg['input']['q2bin']   = q2bin
-    cfg['output']['out_dir']= f'{Data.out_dir}/bxhsee_{brem_name}'
+    cfg['input']['q2bin'] = q2bin
+    cfg['output']         = {'out_dir' : f'{Data.out_dir}/bxhsee_{brem_name}'}
 
     obs = zfit.Space(Data.mass, limits=(4500, 6000))
     pdf = cmp.get_kde(obs=obs, sample=sample, cfg=cfg)
