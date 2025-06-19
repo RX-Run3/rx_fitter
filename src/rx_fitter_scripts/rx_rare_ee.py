@@ -469,7 +469,6 @@ def main():
     Anything global, cuts, variable definitions, dataset definitions
     goes here
     '''
-    #with RDFGetter.custom_friends(versions={'mva' : 'v5'}):
     with PRec.apply_setting(use_cache=False):
         _run()
 # --------------------------
