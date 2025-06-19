@@ -4,7 +4,8 @@ Module containing PRec
 import os
 import copy
 import json
-from typing   import Union
+from typing     import Union
+from contextlib import contextmanager
 
 import numpy
 import pandas            as pnd
@@ -32,7 +33,7 @@ class PRec:
     '''
     Class used to calculate the PDF associated to the partially reconstructed background
     '''
-    # pylint: disable=too-many-instance-attributes
+    use_cache = True # Use cached if found
     #-----------------------------------------------------------
     def __init__(self, samples : list[str], trig : str, q2bin : str, d_weight : dict[str,int]):
         '''
@@ -565,4 +566,19 @@ class PRec:
 
         text_path = plot_path.replace('png', 'txt')
         sut.print_pdf(pdf, txt_path=text_path)
+    #-----------------------------------------------------------
+    @staticmethod
+    @contextmanager
+    def apply_setting(use_cache : bool):
+        '''
+        Used to override default behaviour
+
+        use_cache : If False (default is True) will recalculate the PDF
+        '''
+        old_val = PRec.use_cache
+        try:
+            PRec.use_cache = use_cache
+            yield
+        finally:
+            PRec.use_cache = old_val
 #-----------------------------------------------------------
