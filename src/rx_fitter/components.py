@@ -250,11 +250,8 @@ def get_kde(obs : zobs, sample : str, cfg : dict) -> zpdf:
             q2bin  =q2bin,
             process=sample)
 
-    hsh      = hashing.hash_object(obj=[obs.to_json(), sample, cfg, d_cut])
-
     d_plt    = cfg['fitting']['config'][sample]['plotting']
     out_dir  = cfg['output']['out_dir']
-    out_dir  = f'{out_dir}/{sample}/{q2bin}/{mass}/{hsh}'
 
     gut.dump_json(d_cut, f'{out_dir}/selection.json')
 
