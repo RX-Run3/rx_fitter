@@ -3,14 +3,13 @@ Module with functions to test functions in components.py
 '''
 from importlib.resources import files
 
-import ROOT
-import zfit
 import yaml
 import pytest
 
-from zfit.core.interfaces   import ZfitSpace as zobs
 from dmu.logging.log_store  import LogStore
+from dmu.stats.zfit         import zfit
 from dmu.stats.utilities    import print_pdf
+from zfit.core.interfaces   import ZfitSpace  as zobs
 from rx_selection           import selection  as sel
 from rx_fitter              import components as cmp
 
