@@ -19,7 +19,7 @@ class Data:
     '''
     Data class
     '''
-    mass    = 'B_M_smr_brem_track_2'
+    mass    = 'B_Mass_smr'
     out_dir = '/tmp/tests/rx_fitter/components'
 # --------------------------------------------------------------
 @pytest.fixture(scope='session', autouse=True)
