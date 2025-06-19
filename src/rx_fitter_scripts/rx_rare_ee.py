@@ -470,7 +470,8 @@ def main():
     goes here
     '''
     #with RDFGetter.custom_friends(versions={'mva' : 'v5'}):
-    _run()
+    with PRec.apply_setting(use_cache=False):
+        _run()
 # --------------------------
 if __name__ == '__main__':
     main()
