@@ -89,7 +89,7 @@ def _get_mc_rdf(cfg : dict, component_name : str, nbrem : int) -> RDataFrame:
 
     return rdf
 # ------------------------------------
-def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> FitComponent:
+def get_mc(obs : zobs, component_name : str, nbrem : int, cfg : dict) -> zpdf:
     '''
     Will return FitComponent object for given MC sample
     '''
@@ -203,14 +203,14 @@ def get_prc(obs : zobs, cfg : dict) -> Union[FitComponent,None]:
 
     return fcm
 # ------------------------------------
-def get_cb(obs : zobs, q2bin : str, cfg : dict) -> FitComponent:
+def get_cb(obs : zobs, q2bin : str, cfg : dict) -> zpdf:
     '''
     Returns fit component for combinatorial fit
     '''
     kind        = cfg['q2'][q2bin]['model']
     cfg['name'] = 'Combinatorial'
 
-    d_fix= None
+    d_fix = None
     if 'fix' in cfg['q2'][q2bin]:
         d_fix= cfg['q2'][q2bin]['fix']
 

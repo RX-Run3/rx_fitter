@@ -46,7 +46,7 @@ class MCParPdf:
         self._cfg['out_dir'] = out_dir
         self._cfg['name'   ] = self._component_name
     # ---------------------------------------
-    def _get_output_dir(self, out_dir : str, version : str = None) -> str:
+    def _get_output_dir(self, out_dir : str, version : None | str = None) -> str:
         model_name = '_'.join(self._model)
         fnal_dir   = f'{self._component_name}_{self._trigger}/{self._mass}_{self._nbrem}/{model_name}'
 
