@@ -320,7 +320,7 @@ def _get_sensitivity() -> float:
 
     return 100 * err/val
 # --------------------------
-def _get_text(data : zdata) -> str:
+def _get_text(data : zdata) -> tuple[str,str]:
     arr_mass = data.to_numpy()
     nentries = len(arr_mass)
 
@@ -433,7 +433,7 @@ def _plot_fit(data : zdata, pdf : zpdf):
         obj.axs[1].set_xlabel(Data.mass)
         obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
-        obj.axs[1].set_ylim([-5, +5])
+        obj.axs[1].set_ylim((-5, +5))
         obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
         obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
