@@ -42,7 +42,7 @@ def _set_selection(d_cut : dict[str,str]) -> None:
     sel.reset_custom_selection()
     sel.set_custom_selection(d_cut = d_cut)
 #-----------------------------------------------
-@pytest.mark.parametrize('q2bin', ['central', 'jpsi', 'psi2', 'high'])
+@pytest.mark.parametrize('q2bin', ['low', 'central', 'jpsi', 'psi2', 'high'])
 def test_reso(q2bin : str):
     '''
     Tests PRec building in resonant bins
@@ -303,4 +303,4 @@ def test_apply_settings():
         obp=PRec(samples=l_samp, trig=trig, q2bin=q2bin, d_weight=d_wgt)
         pdf=obp.get_sum(mass=mass, name='PRec_1', obs=obs)
         PRec.plot_pdf(pdf, 'cache', maxy=maxy, title='no cache test', out_dir=f'{Data.out_dir}/{test}')
-
+#-----------------------------------------------
