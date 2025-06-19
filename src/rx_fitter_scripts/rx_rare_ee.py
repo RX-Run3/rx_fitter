@@ -128,8 +128,8 @@ def _add_pdf_cmb() -> None:
     log.info('Adding combinatorial')
     log.info(30 * '-')
 
-    cfg  = _load_config(component = 'combinatorial')
-    cfg['output']['out_dir'] = f'{Data.fit_dir}/combinatorial'
+    cfg           = _load_config(component = 'combinatorial')
+    cfg['output'] = {'out_dir' : f'{Data.fit_dir}/combinatorial'}
 
     pdf  = cmp.get_cb(obs=Data.obs, q2bin=Data.q2bin, cfg=cfg)
     ncmb = zfit.Parameter('ncmb', 1000, 0, 20_000)
@@ -143,6 +143,7 @@ def _add_pdf_prc(sample : str, is_signal : bool = False) -> None:
     log.info(30 * '-')
     cfg                   = _load_config(component='bxhsee')
     cfg['input']['q2bin'] = Data.q2bin
+    cfg['output']         = {'out_dir' : f'{Data.fit_dir}/{sample}'}
     pdf                   = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
 
     if pdf is None:
@@ -164,7 +165,7 @@ def _add_pdf_leak(sample : str) -> None:
     log.info(30 * '-')
     cfg                      = _load_config(component='ccbar_leak')
     cfg['input']['q2bin']    = Data.q2bin
-    cfg['output']['out_dir'] = f'{Data.fit_dir}/{sample}'
+    cfg['output']            = {'out_dir' : f'{Data.fit_dir}/ccbar_leak'}
     pdf                      = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
 
     if pdf is None:
