@@ -2,7 +2,7 @@ input :
   sample     : DATA*
   trigger    : Hlt2RD_BuToKpEE_MVA
   observable : B_Mass_smr
-  minx       : 4500
+  minx       : 4600
   maxx       : 6900
   nbins      : 30
   selection :
