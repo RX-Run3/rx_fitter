@@ -5,11 +5,8 @@ input :
   minx       : 4500
   maxx       : 6900
   nbins      : 30
-  #nbins      : 72 
   selection :
-    q2  : q2      > 15000000 && q2 < 22000000 
-    #bdt : mva_cmb > 0.8 && mva_prc > 0.8
-    bdt  : mva_cmb > 0.9 && mva_prc > 0.9
+    bdt : mva_cmb > 0.6 && mva_prc > 0.8
     blk  : block > 0
     mass : (1)
 components:
