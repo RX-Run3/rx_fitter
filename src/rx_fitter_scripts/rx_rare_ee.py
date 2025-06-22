@@ -165,7 +165,7 @@ def _add_pdf_leak(sample : str) -> None:
     log.info(30 * '-')
     cfg                      = _load_config(component='ccbar_leak')
     cfg['input']['q2bin']    = Data.q2bin
-    cfg['output']            = {'out_dir' : f'{Data.fit_dir}/ccbar_leak'}
+    cfg['output']            = {'out_dir' : f'{Data.fit_dir}/{sample}'}
     pdf                      = cmp.get_kde(obs=Data.obs, sample=sample, cfg=cfg)
 
     if pdf is None:
