@@ -2,6 +2,7 @@ fitting:
   config:
     Bu_JpsiK_ee_eq_DPC:
       cfg_kde:
+        bandwidth : 10
         padding:
           lowermirror: 1.0
           uppermirror: 0.5
@@ -10,6 +11,7 @@ fitting:
         stacked: true
     Bu_psi2SK_ee_eq_DPC:
       cfg_kde:
+        bandwidth : 10
         padding:
           lowermirror: 0.5
           uppermirror: 1.0
