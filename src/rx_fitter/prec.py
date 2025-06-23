@@ -420,6 +420,9 @@ class PRec:
             pdf      = zfit.pdf.KDE1DimFFT(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
         else:
             log.info('Using ISJ KDE for high statistics sample')
+            if 'bandwidth' in kwargs: # ISJ does not accept this argument
+                del kwargs['bandwidth']
+
             pdf      = zfit.pdf.KDE1DimISJ(arr_mass, weights=df.wgt_br.to_numpy(), **kwargs)
 
         pdf.arr_mass = arr_mass
