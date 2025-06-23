@@ -4,6 +4,7 @@ fitting:
   config:
     PRec:
       cfg_kde:
+        bandwidth : 10
         padding:
           lowermirror: 1.0
           uppermirror: 1.0
