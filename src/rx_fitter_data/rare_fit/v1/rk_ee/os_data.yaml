@@ -6,7 +6,7 @@ input :
   maxx       : 6900
   nbins      : 30
   selection :
-    bdt : mva_cmb > 0.6 && mva_prc > 0.8
+    bdt  : mva_cmb > 0.6 && mva_prc > 0.8
     blk  : block > 0
     mass : (1)
 components:
