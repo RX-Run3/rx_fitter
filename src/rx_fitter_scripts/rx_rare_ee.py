@@ -351,11 +351,25 @@ def _set_selection() -> None:
 
     Data.d_total_sel = sel.selection(trigger=Data.trigger, q2bin=Data.q2bin, process=Data.sample)
 # --------------------------
-def _initialize() -> None:
-    LogStore.set_level('rx_fitter:constraint_reader' , Data.log_level)
+def _set_logs() -> None:
     LogStore.set_level('rx_fitter:components'        , Data.log_level)
     LogStore.set_level('rx_fitter:rx_rare_ee'        , Data.log_level)
-    LogStore.set_level('rx_calibration:fit_component', Data.log_level)
+
+    _set_dependency_logger(name='rx_calibration:fit_component')
+    _set_dependency_logger(name='rx_fitter:constraint_reader' )
+    _set_dependency_logger(name='rx_data:rdf_getter'          )
+    _set_dependency_logger(name='rx_data:path_splitter'       )
+    _set_dependency_logger(name='rx_selection:selection'      )
+    _set_dependency_logger(name='rx_selection:truth_matching' )
+# --------------------------
+def _set_dependency_logger(name : str, level : int = 30) -> None:
+    if Data.log_level < 20:
+        LogStore.set_level(name, Data.log_level)
+    else:
+        LogStore.set_level(name,          level)
+# --------------------------
+def _initialize() -> None:
+    _set_logs()
 
     cfg = _load_config(component=Data.cfg_name)
     _initialize_settings(cfg=cfg)
