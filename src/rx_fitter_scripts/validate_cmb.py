@@ -143,11 +143,11 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
 
     obj.axs[0].axvline(x=5280, linestyle='--', color='gray', label='$B^+$')
 
-    obj.axs[1].set_ylim([-5, +5])
+    obj.axs[1].set_ylim((-5, +5))
     obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
     obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
-    plot_path = f'{Data.ana_dir}/{Data.out_dir}/fit_{suffix}.png'
+    plot_path = f'{Data.out_dir}/fit_{suffix}.png'
     log.info(f'Saving to: {plot_path}')
     plt.savefig(plot_path)
 # --------------------------------
