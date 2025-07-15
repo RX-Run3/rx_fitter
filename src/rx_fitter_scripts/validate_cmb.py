@@ -124,7 +124,9 @@ def _get_out_dir() -> str:
     out_dir = Data.cfg['output']['path']
 
     if Data.q2_kind is not None:
-        out_dir = f'{ana_dir}/{out_dir}/{Data.q2_kind}'
+        out_dir = f'{ana_dir}/{out_dir}/{Data.q2_kind}/{Data.q2bin}'
+    else:
+        out_dir = f'{ana_dir}/{out_dir}/{Data.q2bin}'
 
     os.makedirs(out_dir, exist_ok=True)
 
