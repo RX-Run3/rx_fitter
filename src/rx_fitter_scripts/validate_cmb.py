@@ -36,6 +36,7 @@ class Data:
     obs    : zobs
     cfg    : dict
     out_dir: str
+    ana_dir: str = os.environ['ANADIR']
     q2bin  : str
     q2_kind: str
     model  : str
@@ -145,7 +146,7 @@ def _plot(pdf : zpdf, data : zdata, name : str) -> None:
     obj.axs[1].plot([Data.minx, Data.maxx], [+3, +3], linestyle='--', color='red')
     obj.axs[1].plot([Data.minx, Data.maxx], [-3, -3], linestyle='--', color='red')
 
-    plot_path = f'{Data.out_dir}/fit_{suffix}.png'
+    plot_path = f'{Data.ana_dir}/{Data.out_dir}/fit_{suffix}.png'
     log.info(f'Saving to: {plot_path}')
     plt.savefig(plot_path)
 # --------------------------------
