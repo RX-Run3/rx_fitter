@@ -4,12 +4,10 @@ Script used to validate PDFs needed to fit combinatorial
 import os
 import re
 import argparse
-from importlib.resources    import files
-
-import yaml
 import matplotlib.pyplot as plt
 
 from dmu.logging.log_store  import LogStore
+from dmu.generic            import utilities as gut
 from dmu.stats.zfit         import zfit
 from dmu.stats.fitter       import Fitter
 from dmu.stats.zfit_plotter import ZFitPlotter
@@ -163,9 +161,7 @@ def _override_q2(cuts : dict[str,str]) -> dict[str,str]:
     return cuts
 # --------------------------------
 def _initialize() -> None:
-    conf_path = files('rx_fitter_data').joinpath(f'combinatorial/{Data.config}.yaml')
-    with open(conf_path, encoding='utf-8') as ifile:
-        Data.cfg = yaml.safe_load(ifile)
+    Data.cfg = gut.load_data(package='rx_fitter_data', fpath=f'combinatorial/{Data.config}.yaml')
 
     if 'selection' in Data.cfg:
         log.info('Updating selection')
@@ -174,10 +170,9 @@ def _initialize() -> None:
 
         sel.set_custom_selection(d_cut = d_cut)
 
-    Data.minx= Data.cfg['model']['observable']['minx']
-    Data.maxx= Data.cfg['model']['observable']['maxx']
-    Data.mass= Data.cfg['model']['observable']['name']
-
+    Data.minx= Data.cfg['fits']['observable']['minx']
+    Data.maxx= Data.cfg['fits']['observable']['maxx']
+    Data.mass= Data.cfg['fits']['observable']['name']
 
     Data.out_dir = _get_out_dir()
     Data.obs     = zfit.Space(Data.mass, limits=(Data.minx, Data.maxx))
