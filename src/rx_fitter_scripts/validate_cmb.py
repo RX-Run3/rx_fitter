@@ -36,9 +36,8 @@ class Data:
     obs    : zobs
     cfg    : dict
     out_dir: str
-    ana_dir: str = os.environ['ANADIR']
     q2bin  : str
-    q2_kind: str
+    q2_kind: str|None=None
     model  : str
     config : str
     sample : str
