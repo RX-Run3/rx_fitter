@@ -8,6 +8,14 @@ fits:
     minx : 4500
     maxx : 7000
     name : B_M_brem_track_2
+fitting:
+  strategy :
+    retry :
+      ntries        : 1
+      pvalue_thresh : 0.05
+      ignore_status : False
+  ranges :
+    - [ 4500, 7000]
 selection:
   bdt  : (1)
   mass : (1)
