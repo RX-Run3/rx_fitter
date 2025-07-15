@@ -1,10 +1,14 @@
+# This config is used to fit the same sign samples in order to validate the
+# combinatorial model.
+#
+# Here the combinatorial and PRec MVAs are tightened one after the other
+
 fits:
   observable:
     minx : 4500
-    maxx : 6000
+    maxx : 7000
+    name : B_M_brem_track_2
 selection:
-  #leak: B_const_mass_M < 5250 || B_const_mass_M > 5350 # Can be turned on to check effect of charge misidentification followed by resonant leakage into SS
-  q2   : q2_dtf > 15000000 && q2_dtf < 22000000 && q2_smr < 22000000
   bdt  : (1)
   mass : (1)
 cutflow:
@@ -26,5 +30,5 @@ cutflow:
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.85$ : mva_prc > 0.80 && mva_cmb > 0.85
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.90$ : mva_prc > 0.80 && mva_cmb > 0.90
   $BDT_{prc} > 0.80$ && $BDT_{cmb} > 0.95$ : mva_prc > 0.80 && mva_cmb > 0.95
-input:
-  observable : B_M_brem_track_2
+output:
+  path : fits/SS/mix_mva
